@@ -10,10 +10,15 @@ import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
 import { ASSET_NAME } from './LandingPage.duck';
+import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
+
+const sectionOverrides = {
+  columns: { component: SectionMasonary },
+};
 
 export const LandingPageComponent = props => {
   const { pageAssetsData, inProgress, error } = props;
@@ -22,6 +27,7 @@ export const LandingPageComponent = props => {
     <PageBuilder
       pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
       inProgress={inProgress}
+      options={{sectionComponents: sectionOverrides}}
       error={error}
       fallbackPage={<FallbackPage error={error} />}
     />
@@ -33,6 +39,8 @@ LandingPageComponent.propTypes = {
   inProgress: bool,
   error: propTypes.error,
 };
+
+
 
 const mapStateToProps = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};

@@ -1,0 +1,88 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.media {
+  width: 100%;
+}
+
+.text {
+  width: 100%;
+  margin-top: 20px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.testy {
+  @media (--viewportLarge) {
+    border-radius: 0;
+  }
+}
+
+.testy > div {
+  @media (--viewportLarge) {
+    padding-bottom: 30%   !important;
+  }
+}
+
+.testy > div > div > img {
+  border-radius: 0;
+}
+
+.posabs {
+  @media (--viewportLarge) {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.posrel {
+  position: relative;
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignCenter {
+  text-align: center;
+
+  & > ul,
+  & > ol {
+    text-align: left;
+    width: fit-content;
+    /* center */
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  & > p {
+    /* center */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.alignRight {
+  text-align: right;
+  & > ul,
+  & > ol {
+    text-align: left;
+    width: fit-content;
+    /* push to right */
+    margin-left: auto;
+  }
+
+  & > p {
+    /* push to right */
+    margin-left: auto;
+  }
+}
+
+
+
