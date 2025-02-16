@@ -8,10 +8,15 @@ import SectionFeatures from './SectionFeatures';
 import SectionCarousel from './SectionCarousel';
 import SectionHero from './SectionHero';
 import SectionMasonary from './SectionMasonary';
+import SectionTextblurb from './SectionTextblurb';
+import SectionRecommendedListings from './SectionRecommendedListings';
+import SectionHeroImgCustom from './SectionHeroImgCustom';
+
+
 
 // Main component: SectionBuilder
 import SectionBuilder from './SectionBuilder';
 
-export { SectionContainer, SectionColumns, SectionArticle, SectionFeatures, SectionCarousel, SectionMasonary };
+export { SectionContainer, SectionColumns, SectionArticle, SectionFeatures, SectionCarousel, SectionMasonary, SectionTextblurb, SectionRecommendedListings, SectionHeroImgCustom };
 
 export default SectionBuilder;

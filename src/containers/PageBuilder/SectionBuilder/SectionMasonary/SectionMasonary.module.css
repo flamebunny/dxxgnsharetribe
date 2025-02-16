@@ -61,13 +61,13 @@
 
 .box {
   @media (--viewportLarge) {
-    color: white;
-    background: #333;
+      color: white;
+      background: #333;
 
-    display: grid;
-    font-size: 12px;
+      display: grid;
+      font-size: 12px;
 
-    box-shadow: 0 0px 1px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0px 1px rgba(0, 0, 0, 0.4);
   }
 }
 

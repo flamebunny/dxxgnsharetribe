@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import loadable from '@loadable/component';
 
 import { bool, object } from 'prop-types';
@@ -9,25 +9,156 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME } from './LandingPage.duck';
+import { ASSET_NAME, getRecommendedListingParams, masonarySectionId, recommendedSectionId, textblurbSectionId, heroimgcustomSectionId } from './LandingPage.duck';
+import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
+import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
+import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
+
+import { searchListings } from '../SearchPage/SearchPage.duck';
+import { useConfiguration } from '../../context/configurationContext';
 
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
 
-const sectionOverrides = {
-  columns: { component: SectionMasonary },
-};
+import { SectionRecommendedListings } from '../PageBuilder/SectionBuilder';
+
+const recommendedSectionType = 'recommended';
+const textblurbSectionType = 'textblurb';
+const heroimgcustomSectionType = 'heroimgcustom';
+const masonarySectionType = 'masonary';
+const columns = 'columns';
+const userSectionType = 'user';
 
 export const LandingPageComponent = props => {
-  const { pageAssetsData, inProgress, error } = props;
+  const {
+    pageAssetsData,
+    listings,
+    inProgress,
+    error,
+    currentUser,
+    recommendedListingIds,
+    onFetchRecommendedListings,
+  } = props;
+
+  const config = useConfiguration();
+  useEffect(() => {
+    const params = getRecommendedListingParams(config, recommendedListingIds);
+    onFetchRecommendedListings(params, config);
+  }, [recommendedListingIds]);
+
+  // Construct custom page data
+  const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
+
+  // Recommended Listing Section
+  const recommendedSectionIdx = pageData?.sections.findIndex(
+    s => s.sectionId === recommendedSectionId
+  );
+  const recommendedSection = pageData?.sections[recommendedSectionIdx];
+
+  const customRecommendedSection = {
+    ...recommendedSection,
+    sectionId: recommendedSectionId,
+    sectionType: recommendedSectionType,
+    listings: listings,
+  };
+
+  // Masonary Section
+  const masonarySectionIdx = pageData?.sections.findIndex(
+    s => s.sectionId === masonarySectionId
+  );
+  const masonarySection = pageData?.sections[masonarySectionIdx];
+
+  const customMasonarySection = {
+    ...masonarySection,
+    sectionId: masonarySectionId,
+    sectionType: masonarySectionType,
+    listings: listings,
+  };
+
+  // Textblurb Section
+  const textblurbSectionIdx = pageData?.sections.findIndex(
+    s => s.sectionId === textblurbSectionId
+  );
+  const textblurbSection = pageData?.sections[textblurbSectionIdx];
+
+  const customTextblurbSection = {
+    ...textblurbSection,
+    sectionId: textblurbSectionId,
+    sectionType: textblurbSectionType,
+    listings: listings,
+  };
+
+  // HeroImgCustom Section
+  const heroimgcustomSectionIdx = pageData?.sections.findIndex(
+    s => s.sectionId === heroimgcustomSectionId
+  );
+  const heroimgcustomSection = pageData?.sections[heroimgcustomSectionIdx];
+
+  const customHeroimgcustomSection = {
+    ...heroimgcustomSection,
+    sectionId: heroimgcustomSectionId,
+    sectionType: heroimgcustomSectionType,
+    listings: listings,
+  };
+
+  // Current user Section
+  const customCurrentUserSection = {
+    sectionType: userSectionType,
+    currentUser,
+  };
+
+  const customSections = pageData
+    ? [
+        customCurrentUserSection,
+        ,
+        ...pageData?.sections?.map((section, idx) =>{
+          //idx === masonarySectionIdx ? customMasonarySection : section,
+          //idx === recommendedSectionIdx ? customRecommendedSection : section,
+
+
+          if (idx === masonarySectionIdx) {
+            return customMasonarySection;
+          } else if (idx === recommendedSectionIdx) {
+            return customRecommendedSection;
+          } else if (idx === textblurbSectionIdx) {
+            return customTextblurbSection;
+          } else if (idx === heroimgcustomSectionIdx) {
+            return customHeroimgcustomSection;
+
+            
+          } else {
+            return section;
+          }
+          
+        }),
+      ]
+    : null;
+
+  const customPageData = pageData
+    ? {
+        ...pageData,
+        sections: customSections,
+      }
+    : pageData;
+
+  console.log(customPageData);
+
 
   return (
+
     <PageBuilder
-      pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
+      pageAssetsData={customPageData}
+      options={{
+        sectionComponents: {
+          [recommendedSectionType]: { component: SectionRecommendedListings },
+          [masonarySectionType]: { component: SectionMasonary },
+          [textblurbSectionType]: { component: SectionTextblurb },
+          [heroimgcustomSectionType]: { component: SectionHeroImgCustom },          
+        },
+      }}
       inProgress={inProgress}
-      options={{sectionComponents: sectionOverrides}}
       error={error}
       fallbackPage={<FallbackPage error={error} />}
     />
@@ -40,12 +171,18 @@ LandingPageComponent.propTypes = {
   error: propTypes.error,
 };
 
-
-
 const mapStateToProps = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
-  return { pageAssetsData, inProgress, error };
+  const { recommendedListingIds } = state.LandingPage;
+  const { currentPageResultIds } = state.SearchPage;
+  const { currentUser } = state.user;
+  const listings = getListingsById(state, currentPageResultIds);
+  return { pageAssetsData, listings, inProgress, error, currentUser, recommendedListingIds };
 };
+
+const mapDispatchToProps = dispatch => ({
+  onFetchRecommendedListings: (params, config) => dispatch(searchListings(params, config)),
+});
 
 // Note: it is important that the withRouter HOC is **outside** the
 // connect HOC, otherwise React Router won't rerender any Route
@@ -53,6 +190,11 @@ const mapStateToProps = state => {
 // lifecycle hook.
 //
 // See: https://github.com/ReactTraining/react-router/issues/4671
-const LandingPage = compose(connect(mapStateToProps))(LandingPageComponent);
+const LandingPage = compose(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )
+)(LandingPageComponent);
 
 export default LandingPage;

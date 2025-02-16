@@ -133,6 +133,13 @@ export const IncludeScripts = props => {
     }
   };
 
+
+const fontScript = (
+  <style key="font">
+    {`@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap');`}
+  </style>
+)
+
   // React Helmet Async doesn't support onLoad prop for scripts.
   // However, it does have onChangeClientState functionality.
   // We can use that to start listen 'load' events when the library is added on client-side.
@@ -147,6 +154,8 @@ export const IncludeScripts = props => {
     }
   };
 
-  const allScripts = [...analyticsLibraries, ...mapLibraries];
+  
+
+  const allScripts = [...analyticsLibraries, ...mapLibraries, fontScript];
   return <Helmet onChangeClientState={onChangeClientState}>{allScripts}</Helmet>;
 };

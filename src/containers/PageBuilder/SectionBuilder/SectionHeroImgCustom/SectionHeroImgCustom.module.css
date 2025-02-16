@@ -1,0 +1,23 @@
+.root {
+  /* SectionContainer defaults */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  position: relative;
+
+  /* Hero specific */
+  min-height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.imgwidthunset {
+  max-width: 1680px !important;
+  margin: 0 auto;
+}
+
+.imgheightunset img {
+  height: auto;
+}

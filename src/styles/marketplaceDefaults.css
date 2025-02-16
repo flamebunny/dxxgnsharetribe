@@ -72,7 +72,7 @@
 
   /* ================ Font ================ */
   --fontFamily: -apple-system, BlinkMacSystemFont, 'Inter', Helvetica, Arial, sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'EB Garamond';
 
   --fontWeightRegular: 400;
   --fontWeightMedium: 500;

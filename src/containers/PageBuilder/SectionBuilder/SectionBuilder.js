@@ -9,6 +9,8 @@ import SectionColumns from './SectionColumns';
 import SectionMasonary from './SectionMasonary';
 import SectionFeatures from './SectionFeatures';
 import SectionHero from './SectionHero';
+import SectionTextblurb from './SectionTextblurb';
+import SectionHeroImgCustom from './SectionHeroImgCustom';
 
 // Styles
 // Note: these contain
@@ -41,6 +43,8 @@ const defaultSectionComponents = {
   features: { component: SectionFeatures },
   footer: { component: SectionFooter },
   hero: { component: SectionHero },
+  textblurb: { component: SectionTextblurb },
+  sectionheroimgcustom: { component: SectionHeroImgCustom },  
 };
 
 //////////////////////
