@@ -5,6 +5,7 @@ export const masonarySectionId = 'new-listing-masonary';
 export const textblurbSectionId = 'new-listing-textblurb';
 export const recommendedSectionId = 'recommended-listings';
 export const heroimgcustomSectionId = 'hero-img-custom';
+export const textlinksSectionId = 'new-listing-textlinks';
 
 // ================ Action types ================ //
 

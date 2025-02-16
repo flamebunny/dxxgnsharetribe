@@ -9,11 +9,13 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getRecommendedListingParams, masonarySectionId, recommendedSectionId, textblurbSectionId, heroimgcustomSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getRecommendedListingParams, masonarySectionId, recommendedSectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
+import SectionTextLinks from '../../containers/PageBuilder/SectionBuilder/SectionTextLinks';
+
 
 import { searchListings } from '../SearchPage/SearchPage.duck';
 import { useConfiguration } from '../../context/configurationContext';
@@ -28,6 +30,7 @@ const recommendedSectionType = 'recommended';
 const textblurbSectionType = 'textblurb';
 const heroimgcustomSectionType = 'heroimgcustom';
 const masonarySectionType = 'masonary';
+const textlinksSectionType = 'textlinks';
 const columns = 'columns';
 const userSectionType = 'user';
 
@@ -103,6 +106,19 @@ export const LandingPageComponent = props => {
     listings: listings,
   };
 
+    // TextLinks Section
+    const textlinksSectionIdx = pageData?.sections.findIndex(
+      s => s.sectionId === textlinksSectionId
+    );
+    const textlinksSection = pageData?.sections[textlinksSectionIdx];
+  
+    const customTextlinksSection = {
+      ...textlinksSection,
+      sectionId: textlinksSectionId,
+      sectionType: textlinksSectionType,
+      listings: listings,
+    };
+
   // Current user Section
   const customCurrentUserSection = {
     sectionType: userSectionType,
@@ -126,7 +142,8 @@ export const LandingPageComponent = props => {
             return customTextblurbSection;
           } else if (idx === heroimgcustomSectionIdx) {
             return customHeroimgcustomSection;
-
+          } else if (idx === textlinksSectionIdx) {
+            return customTextlinksSection;
             
           } else {
             return section;
@@ -155,7 +172,9 @@ export const LandingPageComponent = props => {
           [recommendedSectionType]: { component: SectionRecommendedListings },
           [masonarySectionType]: { component: SectionMasonary },
           [textblurbSectionType]: { component: SectionTextblurb },
-          [heroimgcustomSectionType]: { component: SectionHeroImgCustom },          
+          [heroimgcustomSectionType]: { component: SectionHeroImgCustom },     
+          [textlinksSectionType]: { component: SectionTextLinks },     
+               
         },
       }}
       inProgress={inProgress}
