@@ -45,6 +45,10 @@
 
 }
 
+.fontPermanentMarker {
+  font-family: "Permanent Marker", serif;
+}
+
 .masonary {
   @media (--viewportLarge) {
     position: relative;

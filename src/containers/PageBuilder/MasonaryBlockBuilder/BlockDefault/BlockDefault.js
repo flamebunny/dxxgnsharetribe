@@ -53,10 +53,10 @@ const BlockDefault = props => {
         options={options}
       />
       {hasTextComponentFields ? (
-        <div className={classNames(textClassName, alignmentClass, css.posabs)}>
-          <Field data={title} options={options} />
+        <div className={classNames(textClassName, alignmentClass, css.posabs, css.maxwh)}>
+          <Field data={title} options={options} className={classNames(css.hide)} />
           <Field data={text} options={options} />
-          <Field data={callToAction} className={ctaButtonClass} options={options} />
+          <Field data={callToAction} className={classNames(ctaButtonClass, css.buttonMaxwh)} options={options} />
         </div>
       ) : null}
     </BlockContainer>

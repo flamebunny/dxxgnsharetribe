@@ -61,7 +61,7 @@ const SectionMasonary = props => {
     >
       {hasHeaderFields ? (
         <header className={defaultClasses.sectionDetails}>
-          <Field data={title} className={css.title} options={fieldOptions} />
+          <Field data={title} className={classNames(css.title, css.fontPermanentMarker)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
