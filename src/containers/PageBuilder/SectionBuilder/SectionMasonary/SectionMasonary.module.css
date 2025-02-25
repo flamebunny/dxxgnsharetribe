@@ -49,6 +49,10 @@
   font-family: "Permanent Marker", serif;
 }
 
+.noSidePaddings{
+  padding: 0 !important;
+}
+
 .masonary {
   @media (--viewportLarge) {
     position: relative;

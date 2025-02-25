@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
@@ -32,10 +33,11 @@ import css from './PasswordRecoveryPage.module.css';
 
 const PasswordRecovery = props => {
   const { initialEmail, onChange, onSubmitEmail, recoveryInProgress, recoveryError } = props;
+  const classes = classNames(props.modalTitle, css.ebgaramond);
   return (
     <div className={css.submitEmailContent}>
       <IconKeys className={css.modalIcon} />
-      <Heading as="h1" rootClassName={css.modalTitle}>
+      <Heading as="h1" rootClassName={classes}>
         <FormattedMessage id="PasswordRecoveryPage.forgotPasswordTitle" />
       </Heading>
       <p className={css.modalMessage}>

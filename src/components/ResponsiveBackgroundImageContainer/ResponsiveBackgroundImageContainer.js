@@ -59,18 +59,22 @@ const ResponsiveBackgroundImageContainer = props => {
   } = props;
   const Tag = as || 'div';
 
-  const imageEntity = typeof image === 'string' ? createFakeImageEntity(image) : image;
+  let imageEntity = typeof image === 'string' ? createFakeImageEntity(image) : image;
+  imageEntity = null;
   const variants = imageEntity?.attributes?.variants || {};
   const variantNames = Object.keys(variants);
 
   const classes = classNames(rootClassName || css.root, className);
-  const overlayMaybe = useOverlay ? <div className={css.overlay}></div> : null;
+  let overlayMaybe = useOverlay ? <div className={css.overlay}></div> : null;
+  overlayMaybe = null;
   const childrenWrapperClassNameMaybe = childrenWrapperClassName
     ? { className: childrenWrapperClassName }
     : {};
 
   return (
+    
     <Tag className={classes} {...otherProps}>
+      
       <div className={css.backgroundImageWrapper}>
         {imageEntity ? (
           <ResponsiveImage
@@ -88,6 +92,7 @@ const ResponsiveBackgroundImageContainer = props => {
       </div>
       <div {...childrenWrapperClassNameMaybe}>{children}</div>
     </Tag>
+  
   );
 };
 

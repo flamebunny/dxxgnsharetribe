@@ -6,6 +6,7 @@ export const textblurbSectionId = 'new-listing-textblurb';
 export const recommendedSectionId = 'recommended-listings';
 export const heroimgcustomSectionId = 'hero-img-custom';
 export const textlinksSectionId = 'new-listing-textlinks';
+export const columnsTextSectionId = 'new-listing-columnstext';
 
 // ================ Action types ================ //
 
@@ -36,6 +37,11 @@ export default function reducer(state = initialState, action = {}) {
 export const fetchAssetsSuccess = ids => ({
   type: FETCH_ASSETS_SUCCESS,
   payload: { ids },
+});
+
+export const fetchAssetsSuccessAll = () => ({
+  type: FETCH_ASSETS_SUCCESS,
+  payload: { },
 });
 
 export const getRecommendedListingParams = (config, listingIds) => {
@@ -89,5 +95,6 @@ export const loadData = (params, search) => dispatch => {
       const recommendedListingIds = customSection?.blocks.map(b => b.blockName);
       dispatch(fetchAssetsSuccess(recommendedListingIds));
     }
+    dispatch(fetchAssetsSuccessAll());
   });
 };

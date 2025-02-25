@@ -7,6 +7,16 @@
   padding: 0;
 }
 
+
+.permanentMarker {
+  font-family: "Permanent Marker", serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 0.8;
+  word-break: auto-phrase;
+}
+
+
 .primaryButtonRoot {
   composes: buttonPrimary from global;
 

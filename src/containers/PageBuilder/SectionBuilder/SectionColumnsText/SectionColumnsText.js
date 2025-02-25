@@ -4,10 +4,9 @@ import classNames from 'classnames';
 
 import Field, { hasDataInFields } from '../../Field';
 import BlockBuilder from '../../BlockBuilder';
-import MasonaryBlockBuilder from '../../MasonaryBlockBuilder';
 
 import SectionContainer from '../SectionContainer';
-import css from './SectionMasonary.module.css';
+import css from './SectionColumnsText.module.css';
 
 // The number of columns (numColumns) affects styling and responsive images
 const COLUMN_CONFIG = [
@@ -27,7 +26,7 @@ const getResponsiveImageSizes = numColumns => {
 };
 
 // Section component that's able to show blocks in multiple different columns (defined by "numColumns" prop)
-const SectionMasonary = props => {
+const SectionColumnsText = props => {
   const {
     sectionId,
     className,
@@ -61,22 +60,22 @@ const SectionMasonary = props => {
     >
       {hasHeaderFields ? (
         <header className={defaultClasses.sectionDetails}>
-          <Field data={title} className={classNames(css.title, css.fontPermanentMarker)} options={fieldOptions} />
+          <Field data={title} className={classNames(defaultClasses.title)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
       ) : null}
       {hasBlocks ? (
         <div
-          className={classNames(defaultClasses.blockContainer, css.masonary ,getColumnCSS(numColumns), css. noSidePaddings)}
+          className={classNames(defaultClasses.blockContainer, css.noSidePaddings, getColumnCSS(numColumns))}
         >
-          <MasonaryBlockBuilder
+          <BlockBuilder
             ctaButtonClass={defaultClasses.ctaButton}
             blocks={blocks}
             sectionId={sectionId}
             responsiveImageSizes={getResponsiveImageSizes(numColumns)}
             options={options}
-            className={css.box}
+            className={classNames(css.columnsText)}
           />
         </div>
       ) : null}
@@ -88,7 +87,7 @@ const propTypeOption = shape({
   fieldComponents: shape({ component: node, pickValidProps: func }),
 });
 
-SectionMasonary.defaultProps = {
+SectionColumnsText.defaultProps = {
   className: null,
   rootClassName: null,
   defaultClasses: null,
@@ -103,7 +102,7 @@ SectionMasonary.defaultProps = {
   options: null,
 };
 
-SectionMasonary.propTypes = {
+SectionColumnsText.propTypes = {
   sectionId: string.isRequired,
   className: string,
   rootClassName: string,
@@ -123,4 +122,4 @@ SectionMasonary.propTypes = {
   options: propTypeOption,
 };
 
-export default SectionMasonary;
+export default SectionColumnsText;

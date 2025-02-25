@@ -76,7 +76,7 @@ const TabNavHorizontal = props => {
     <nav className={classes}>
       {tabs.map((tab, index) => {
         const key = typeof tab.text === 'string' ? tab.text : index;
-        return <Tab key={key} className={tabClasses} {...tab} isDark={isDark} />;
+        return <Tab key={key} className={classNames(tabClasses, css.ebgaramond)} {...tab} isDark={isDark} />;
       })}
     </nav>
   );

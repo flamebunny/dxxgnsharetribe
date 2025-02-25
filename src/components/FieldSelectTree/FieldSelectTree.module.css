@@ -1,7 +1,7 @@
 @import '../../styles/customMediaQueries.css';
 
 .root {
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .optionList {
@@ -56,10 +56,12 @@
 .optionBtnSelected {
   composes: optionBtn;
   color: var(--marketplaceColor);
+  opacity: 0.7;
 
   &:focus,
   &:hover {
     color: var(--marketplaceColorDark);
+    opacity: 1;
   }
 }
 
@@ -73,4 +75,21 @@
 .longWord {
   word-break: break-word;
   hyphens: auto;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+li ul.optionList button {
+  font-weight: normal !important;
+}
+
+.optionList {
+  margin: 0;
+
+  .optionList {
+    margin: 3px 0;
+    margin-left: 40px;
+  }
 }

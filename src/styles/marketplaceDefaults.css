@@ -18,9 +18,9 @@
 
   /* Colors used for different functions (like error texts) */
 
-  --colorSuccess: #2ecc71;
-  --colorSuccessDark: #239954;
-  --colorSuccessLight: #f0fff6;
+  --colorSuccess: #000;
+  --colorSuccessDark: #333;
+  --colorSuccessLight: #666;
   --colorFail: #ff0000;
   --colorFailLight: #fff0f0;
   --colorAttention: #ffaa00;
@@ -71,7 +71,7 @@
   --colorSecondaryButtonLight: var(--colorWhite);
 
   /* ================ Font ================ */
-  --fontFamily: -apple-system, BlinkMacSystemFont, 'Inter', Helvetica, Arial, sans-serif,
+  --fontFamily: -apple-system, BlinkMacSystemFont, 'Cousine', 'Inter', Helvetica, Arial, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'EB Garamond';
 
   --fontWeightRegular: 400;
@@ -432,20 +432,20 @@ legend {
 }
 
 label {
-  font-weight: var(--fontWeightSemiBold);
-  font-size: 13px;
-  line-height: 18px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 16px;
+  line-height: 16px;
   display: block;
   margin-top: 0;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 
   @media (--viewportMedium) {
-    font-weight: var(--fontWeightSemiBold);
+    font-weight: var(--fontWeightRegular);
     line-height: 16px;
     margin-top: 0;
     margin-bottom: 0;
     padding-top: 3px;
-    padding-bottom: 13px;
+    padding-bottom: 5px;
   }
 }
 
@@ -469,18 +469,18 @@ select {
   margin: 0;
 
   /* 6 + 24 + 4 + borders are divisible by 6 */
-  padding: 6px 12px 4px 12px;
+  padding: 3px 12px 3px 12px;
   background-color: #fff;
 
   /* Borders */
-  border-radius: 6px;
+  border-radius: 0px;
   border: 1px solid #d8dce6;
   outline: none;
 
   /* Transition */
   transition: all ease-in-out 100ms;
 
-  padding: 6px 24px 4px 12px;
+  padding: 3px 24px 3px 12px;
   box-shadow: 0 2px 3px 0 rgba(216, 220, 230, 0.7);
 
   /* Unset user agent styles */
@@ -529,11 +529,11 @@ textarea {
   margin: 0;
 
   /* 6 + 24 + 4 + borders are divisible by 6 */
-  padding: 6px 12px 4px 12px;
+  padding: 3px 12px 3px 12px;
   background-color: #fff;
 
   /* Borders */
-  border-radius: 6px;
+  border-radius: 0px;
   border: 1px solid #d8dce6;
   outline: none;
 
@@ -546,14 +546,14 @@ textarea {
 
   @media (--viewportMedium) {
     /* 7 + 32 + 7 + borders = 48, which is divisible by 8. */
-    padding: 7px 16px 7px 16px;
+    padding: 3px 16px 3px 16px;
     line-height: 32px;
   }
 }
 /* Effects */
 input:hover,
 textarea:hover {
-  border: 1px solid #b8bfd1;
+  border: 1px solid #D8DCE6;
   transition: all ease-in-out 100ms;
 }
 input:focus,
@@ -879,12 +879,12 @@ textarea {
   margin: 0;
 
   /* 6 + 24 + 4 + borders are divisible by 6 */
-  padding: 6px 12px 4px 12px;
+  padding: 3px 12px 3px 12px;
   background-color: #fff;
 
   /* Borders */
-  border-radius: 6px;
-  border: 1px solid #d8dce6;
+  border-radius: 0px;
+  border: 1px solid #D8DCE6;
   outline: none;
 
   /* Transition */
@@ -1047,7 +1047,7 @@ textarea {
   /* Button borders */
   /* Primary button has no borders */
   border: none;
-  border-radius: var(--borderRadiusMedium);
+  border-radius: 0;
 
   /* Button colors */
   /* Primary button uses success color */
@@ -1322,7 +1322,7 @@ textarea {
     padding: var(--modalPaddingMedium);
     margin-top: 12.5vh;
     margin-bottom: 12.5vh;
-    border-bottom: 8px solid var(--marketplaceColor);
+    /* border-bottom: 8px solid var(--marketplaceColor); */
   }
 }
 
@@ -1354,7 +1354,7 @@ textarea {
 /* Modal title */
 .marketplaceModalTitleStyles {
   font-weight: var(--fontWeightBold);
-  font-size: 30px;
+  font-size: 54px;
   line-height: 36px;
   margin: 0;
 

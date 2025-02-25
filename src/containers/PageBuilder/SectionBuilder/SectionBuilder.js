@@ -11,6 +11,8 @@ import SectionFeatures from './SectionFeatures';
 import SectionHero from './SectionHero';
 import SectionTextblurb from './SectionTextblurb';
 import SectionHeroImgCustom from './SectionHeroImgCustom';
+import SectionColumnsText from './SectionColumnsText';
+
 
 // Styles
 // Note: these contain
@@ -45,6 +47,7 @@ const defaultSectionComponents = {
   hero: { component: SectionHero },
   textblurb: { component: SectionTextblurb },
   sectionheroimgcustom: { component: SectionHeroImgCustom },  
+  columnsText: { component: SectionColumnsText },  
 };
 
 //////////////////////

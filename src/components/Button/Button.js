@@ -137,6 +137,12 @@ Button.propTypes = {
 
 export default Button;
 
+export const PrimaryButtonPermanentMarker = props => {
+  const classes = classNames(props.rootClassName || css.primaryButtonRoot, css.primaryButton, css.permanentMarker);
+  return <Button {...props} rootClassName={classes} />;
+};
+PrimaryButtonPermanentMarker.displayName = 'PrimaryButtonPermanentMarker';
+
 export const PrimaryButton = props => {
   const classes = classNames(props.rootClassName || css.primaryButtonRoot, css.primaryButton);
   return <Button {...props} rootClassName={classes} />;

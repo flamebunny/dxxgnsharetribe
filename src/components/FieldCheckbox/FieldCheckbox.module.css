@@ -14,7 +14,8 @@
   &:hover + label .box,
   &:focus + label .box,
   &:checked + label .box {
-    stroke: var(--marketplaceColor);
+    stroke: #5D2BC0;
+    /* stroke: var(--marketplaceColor); */
   }
 
   /* successColor version */
@@ -34,14 +35,16 @@
   /* Display the "check" when checked */
   &:checked + label .checked {
     display: inline;
-    stroke: var(--marketplaceColor);
+    stroke: #5D2BC0;
+    /* stroke: var(--marketplaceColor); */
     stroke-width: 1px;
   }
 
   /* Display the "check" when checked */
   &:checked + label .checkedSuccess {
     display: inline;
-    stroke: var(--colorSuccess);
+    stroke: #5D2BC0;
+    /* stroke: var(--colorSuccess); */
     stroke-width: 1px;
   }
 
@@ -85,7 +88,8 @@
 
 .checked {
   display: none;
-  fill: var(--marketplaceColor);
+  fill: #5D2BC0;
+  /* fill: var(--marketplaceColor); */
 }
 .checkedSuccess {
   display: none;

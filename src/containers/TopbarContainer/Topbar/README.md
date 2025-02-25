@@ -118,11 +118,11 @@ The component uses the following translation keys:
   "TopbarMobileMenu.inboxLink": "Inbox",
   "TopbarMobileMenu.loginLink": "Log in",
   "TopbarMobileMenu.logoutLink": "Log out",
-  "TopbarMobileMenu.newListingLink": "Post a new listing",
+  "TopbarMobileMenu.newListingLink": "Sell",
   "TopbarMobileMenu.profileSettingsLink": "Profile settings",
   "TopbarMobileMenu.signupLink": "Sign up",
   "TopbarMobileMenu.signupOrLogin": "{signup} or {login}",
   "TopbarMobileMenu.unauthorizedGreeting": "Hello there,{lineBreak}would you like to {signupOrLogin}?",
   "TopbarMobileMenu.yourListingsLink": "Your listings",
-  "TopbarSearchForm.placeholder": "Search listings…",
+  "TopbarSearchForm.placeholder": "Search",
 ```
