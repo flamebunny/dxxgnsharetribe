@@ -8,4 +8,10 @@
   display: flex;
   justify-content: right;
   height: 100%;
+  text-transform: uppercase;
+  margin-right: 50px;
+
+  a >  span > span{
+    text-decoration: underline
+  }
 }

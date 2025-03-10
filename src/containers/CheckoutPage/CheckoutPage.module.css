@@ -125,9 +125,17 @@
   margin-top: 0;
   margin-bottom: 7px;
 
+
+  font-family: "EB Garamond", serif;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 54px;
+  line-height: 0.8;
+  word-break: auto-phrase;
+
   @media (--viewportMedium) {
     margin-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 100px;
   }
 }
 
@@ -260,6 +268,10 @@
 .detailsHeadings {
   display: none;
 
+  font-family: 'Inter';
+  font-size: 24px;
+  text-transform: uppercase;
+
   @media (--viewportLarge) {
     display: block;
     margin: 0;
@@ -290,12 +302,19 @@
   letter-spacing: 1px;
   font-weight: var(--fontWeightMedium);
 
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  font-size: 16px;
+  text-transform: none;
+
   /* Layout spacing */
-  margin: 5px 24px 25px 24px;
+  margin: 5px 24px 35px 24px;
+
+  margin-bottom: 20px;
 
   @media (--viewportLarge) {
     padding: 6px 0 2px 0;
-    margin: 16px 0 8px 0;
+    margin: 16px 0 18px 0;
   }
 }
 

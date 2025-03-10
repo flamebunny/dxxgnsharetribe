@@ -124,10 +124,11 @@ export const DesktopReviews = props => {
   const reviewsOfCustomer = reviews.filter(r => r.attributes.type === REVIEW_TYPE_OF_CUSTOMER);
   const isReviewTypeProviderSelected = showReviewsType === REVIEW_TYPE_OF_PROVIDER;
   const isReviewTypeCustomerSelected = showReviewsType === REVIEW_TYPE_OF_CUSTOMER;
+  const classes = classNames(css.desktopReviewsTitle, css.inter);
   const desktopReviewTabs = [
     {
       text: (
-        <Heading as="h3" rootClassName={css.desktopReviewsTitle}>
+        <Heading as="h3" rootClassName={classes}>
           <FormattedMessage
             id="ProfilePage.reviewsFromMyCustomersTitle"
             values={{ count: reviewsOfProvider.length }}
@@ -139,7 +140,7 @@ export const DesktopReviews = props => {
     },
     {
       text: (
-        <Heading as="h3" rootClassName={css.desktopReviewsTitle}>
+        <Heading as="h3" rootClassName={classes}>
           <FormattedMessage
             id="ProfilePage.reviewsAsACustomerTitle"
             values={{ count: reviewsOfCustomer.length }}

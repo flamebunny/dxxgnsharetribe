@@ -42,7 +42,6 @@ const ReviewModal = props => {
       usePortal
       closeButtonMessage={closeButtonMessage}
     >
-      <IconReviewUser className={css.modalIcon} />
       <p className={css.modalTitle}>
         <FormattedMessage id="ReviewModal.title" values={{ revieweeName: reviewee }} />
       </p>

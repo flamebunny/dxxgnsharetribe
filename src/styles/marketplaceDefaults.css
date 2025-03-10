@@ -496,7 +496,7 @@ select {
   }
 
   @media (--viewportMedium) {
-    padding: 7px 32px 7px 16px;
+    padding: 3px 32px 3px 16px;
     line-height: 32px;
     background-position: center right 16px;
     background-size: 10px 16px;
@@ -815,8 +815,8 @@ textarea {
 
 .marketplaceSmallFontStyles {
   font-weight: var(--fontWeightMedium);
-  font-size: 14px;
-  line-height: 24px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 .marketplaceTinyFontStyles {
@@ -1354,21 +1354,22 @@ textarea {
 /* Modal title */
 .marketplaceModalTitleStyles {
   font-weight: var(--fontWeightBold);
-  font-size: 54px;
+  font-size: 40px;
   line-height: 36px;
-  margin: 0;
+  margin: 0;  
 
   @media (--viewportMedium) {
     font-weight: var(--fontWeightBold);
     line-height: 40px;
     margin: 0;
+    margin-bottom: 24px;
   }
 }
 
 /* Modal message */
 .marketplaceModalParagraphStyles {
-  font-size: 20px;
-  line-height: 32px;
+  font-size: 16px;
+  line-height: 24px;
   font-weight: var(--fontWeightMedium);
   margin: 18px 0 0 0;
 

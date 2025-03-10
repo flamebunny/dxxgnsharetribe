@@ -61,6 +61,10 @@
   font-weight: var(--fontWeightBold);
   letter-spacing: -0.2px;
 
+  font-family: 'Inter';
+  font-size: 24px;
+  text-transform: uppercase;
+
   margin: 0;
   padding: 0;
 }

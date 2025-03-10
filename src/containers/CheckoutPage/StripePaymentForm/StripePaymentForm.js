@@ -625,10 +625,7 @@ class StripePaymentForm extends Component {
         ) : null}
         {showInitialMessageInput ? (
           <div>
-            <Heading as="h3" rootClassName={css.heading}>
-              <FormattedMessage id="StripePaymentForm.messageHeading" />
-            </Heading>
-
+            
             <FieldTextInput
               type="textarea"
               id={`${formId}-message`}

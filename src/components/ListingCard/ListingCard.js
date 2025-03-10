@@ -78,6 +78,7 @@ export const ListingCardComponent = props => {
     setActiveListing,
     showAuthorInfo,
   } = props;
+
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureListing(listing);
   const id = currentListing.id.uuid;
@@ -103,6 +104,9 @@ export const ListingCardComponent = props => {
         onMouseLeave: () => setActiveListing(null),
       }
     : null;
+
+    console.log('renderSizes');
+    console.log(renderSizes);
 
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>

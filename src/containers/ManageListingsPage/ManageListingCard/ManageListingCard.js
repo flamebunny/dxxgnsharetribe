@@ -205,13 +205,18 @@ const ShowClosedOverlayMaybe = props => {
 
 const ShowPendingApprovalOverlayMaybe = props => {
   const { isPendingApproval, title, intl } = props;
+  if(isPendingApproval){
+    console.log('ShowPendingApprovalOverlayMaybe');
+  }
 
   return isPendingApproval ? (
     <Overlay
       message={intl.formatMessage(
         { id: 'ManageListingCard.pendingApproval' },
-        { listingTitle: title }
-      )}
+        { listingTitle: title },
+        
+      )} 
+      messageClass='messageClass'
     />
   ) : null;
 };

@@ -68,6 +68,14 @@
 .heading {
   margin: 0 24px 24px 24px;
 
+  font-family: "EB Garamond", serif;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 54px;
+  line-height: 32px;
+  letter-spacing: -1px;
+  word-break: auto-phrase;
+
   @media (--viewportMedium) {
     margin: 0 24px 32px 24px;
   }
@@ -107,7 +115,7 @@
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     padding: 0 36px;
   }
 }
@@ -115,6 +123,12 @@
 .listingCard {
   margin-bottom: 36px;
   width: 100%;
+
+  img {
+    height: auto;
+    top: -25%;
+    position: relative;
+  }
 }
 
 /**
@@ -143,3 +157,5 @@
     margin: auto 36px 0 36px;
   }
 }
+
+

@@ -103,6 +103,11 @@ export const searchListingsError = e => ({
 });
 
 export const searchListings = (searchParams, config) => (dispatch, getState, sdk) => {
+console.log('searchParams');
+console.log(searchParams);
+console.log('config');
+console.log(config);
+
   dispatch(searchListingsRequest(searchParams));
 
   // SearchPage can enforce listing query to only those listings with valid listingType

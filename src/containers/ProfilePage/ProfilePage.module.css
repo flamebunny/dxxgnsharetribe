@@ -73,6 +73,7 @@
 
 .editLinkDesktop {
   display: none;
+  color: #6E308A;
 
   @media (--viewportLarge) {
     display: inline;
@@ -82,10 +83,12 @@
 
 .desktopHeading {
   display: none;
+  text-transform: uppercase;
+  font-family:'Inter';
 
   @media (--viewportLarge) {
     display: block;
-    margin: 0 0 24px 0;
+    margin: 0 0 20px 0;
   }
 }
 
@@ -98,19 +101,19 @@
   /* Preserve newlines, but collapse other whitespace */
   white-space: pre-line;
   margin: 5px 0 24px 0;
+  line-height: 16px;
 
   @media (--viewportMedium) {
-    margin: 4px 0 51px 0;
+    margin: 4px 0 24px 0;
   }
   @media (--viewportLarge) {
-    margin: 0 0 56px 0;
+    margin: 0 0 24px 0;
     max-width: 600px;
   }
 }
 
 .listingsContainer {
   composes: clearfix from global;
-  border-top: 1px solid var(--colorGrey100);
   padding-bottom: 23px;
 
   @media (--viewportMedium) {
@@ -121,13 +124,15 @@
 .listingsTitle {
   color: var(--colorGrey700);
   margin-bottom: 0;
+  font-size: 24px;
+  text-transform: uppercase;
 
   @media (--viewportMedium) {
-    margin-top: 48px;
+    margin-top: 0px;
     margin-bottom: 8px;
   }
   @media (--viewportLarge) {
-    margin-top: 56px;
+    margin-top: 0px;
     margin-bottom: 8px;
   }
 }
@@ -176,6 +181,17 @@
       margin-top: 20px;
     }
   }
+  a > div:first-child {
+    position: relative;
+    overflow: hidden;
+    height: 248px;
+  }
+
+  img {
+    height: auto;
+    top: -25%;
+    position: relative;
+  }
 }
 
 .mobileReviewsTitle {
@@ -183,13 +199,10 @@
 }
 
 .mobileReviews {
-  border-top: 1px solid var(--colorGrey100);
   margin-bottom: 36px;
 }
 
 .desktopReviews {
-  border-top: 1px solid var(--colorGrey100);
-
   @media (--viewportMedium) {
     margin-bottom: 48px;
   }
@@ -322,4 +335,13 @@
   right: 0;
   width: 100%;
   height: 100%;
+}
+
+.inter {
+  font-family: "Inter", serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 24px;
+  word-break: auto-phrase;
+  text-transform: uppercase;
 }

@@ -2,6 +2,7 @@
 
 .sortBy {
   margin-right: 9px;
+  z-index: 0;
 }
 
 .sortByDesktop {
@@ -37,6 +38,11 @@
 
   background-color: var(--colorWhite);
 
+  /* transparent sort */
+  border: 1px solid transparent;
+
+  padding-left: 30px;
+  
   &:focus,
   &:hover {
     outline: none;
@@ -59,10 +65,15 @@
     font-weight: var(--fontWeightMedium);
     font-size: 13px;
     line-height: 20px;
+    padding-left: 30px;
 
     &:hover,
     &:focus {
       border-color: transparent;
     }
+  }
+
+  svg {
+    display: none;
   }
 }

@@ -91,6 +91,17 @@
   }
 }
 
+.ebgaramond {
+  font-family: "EB Garamond", serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 125px;
+  letter-spacing: -3px;
+  line-height: 0.8;
+  word-break: auto-phrase;
+}
+
+
 .bottomWrapper {
   composes: marketplaceModalBottomWrapper from global;
 
