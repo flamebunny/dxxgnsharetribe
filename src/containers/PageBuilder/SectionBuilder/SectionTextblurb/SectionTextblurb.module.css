@@ -1,3 +1,5 @@
+@import '../../../../styles/customMediaQueries.css';
+
 .articleMain {
   /* 720px + (2 * 32px) == 784 */
   max-width: 784px;
@@ -18,9 +20,6 @@
   
 }
 
-
-
-
 .ingress {
   max-width: 65ch;
 }
@@ -34,11 +33,21 @@
 }
 
 .ebgaramond {
-  font-family: "EB Garamond", serif;
-  font-weight: 500;
+  font-family: EB Garamond, serif;
+  font-size: 64px !important;
+  line-height: 64px !important;  
   font-style: italic;
-  font-size: 125px;
-  letter-spacing: -3px;
-  line-height: 0.8;
-  word-break: auto-phrase;
+  font-weight: 500 !important;
+  letter-spacing: -3px !important;
+  
+  word-break: auto-phrase !important;
+
+  @media (--viewportLarge) {
+    font-size: 125px !important;
+    line-height: .8 !important;
+    padding: 0;
+    /* margin-top + n * line-height + margin-bottom => x * 8px */
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
 }
