@@ -9,13 +9,15 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getRecommendedListingParams, masonarySectionId, recommendedSectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getRecommendedListingParams, recommendedSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
 import SectionTextLinks from '../../containers/PageBuilder/SectionBuilder/SectionTextLinks';
 import SectionColumnsText from '../../containers/PageBuilder/SectionBuilder/SectionColumnsText';
+
+import { manageDisableScrolling, isScrollingDisabled } from '../../ducks/ui.duck';
 
 
 
@@ -50,8 +52,8 @@ export const LandingPageComponent = props => {
 
   const config = useConfiguration();
   useEffect(() => {
-    const params = getRecommendedListingParams(config, recommendedListingIds);
-    onFetchRecommendedListings(params, config);
+    //const params = getRecommendedListingParams(config, recommendedListingIds);
+    //onFetchRecommendedListings(params, config);
   }, [recommendedListingIds]);
 
   // Construct custom page data
@@ -211,7 +213,7 @@ LandingPageComponent.propTypes = {
   error: propTypes.error,
 };
 
-const mapStateToProps = state => {
+const mapStateToProps2 = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
   const { recommendedListingIds } = state.LandingPage;
   const { currentPageResultIds } = state.SearchPage;
@@ -220,8 +222,39 @@ const mapStateToProps = state => {
   return { pageAssetsData, listings, inProgress, error, currentUser, recommendedListingIds };
 };
 
-const mapDispatchToProps = dispatch => ({
+const mapStateToProps = state => {
+  const { currentUser } = state.user;
+  const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
+  const {
+    currentPageResultIds,
+    pagination,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
+  } = state.SearchPage;
+  const listings = getListingsById(state, currentPageResultIds);
+
+  return {
+    pageAssetsData,
+    listings,
+    inProgress,
+    error,
+    currentUser,
+    pagination,
+    scrollingDisabled: isScrollingDisabled(state),
+    searchInProgress,
+    searchListingsError,
+    searchParams,
+  };
+};
+
+const mapDispatchToProps2 = dispatch => ({
   onFetchRecommendedListings: (params, config) => dispatch(searchListings(params, config)),
+});
+
+const mapDispatchToProps = dispatch => ({
+  onManageDisableScrolling: (componentId, disableScrolling) =>
+    dispatch(manageDisableScrolling(componentId, disableScrolling)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

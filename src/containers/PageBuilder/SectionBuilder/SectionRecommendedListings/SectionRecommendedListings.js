@@ -24,6 +24,8 @@ const COLUMN_CONFIG = [
 const getIndex = numColumns => numColumns - 1;
 const getColumnCSS = numColumns => {
   const config = COLUMN_CONFIG[getIndex(numColumns)];
+  console.log('config')
+  console.log(config)
   return config ? config.css : COLUMN_CONFIG[0].css;
 };
 
@@ -43,6 +45,10 @@ const SectionRecommendedListings = props => {
     options,
     listings,
   } = props;
+
+  console.log('getColumnCSS(numColumns)')
+  console.log(numColumns)
+  console.log(getColumnCSS(numColumns))
 
   const intl = useIntl();
 
@@ -75,9 +81,11 @@ const SectionRecommendedListings = props => {
             [css.noSidePaddings]: isInsideContainer,
           })}
         >
+
           {listings.map(l => (
             <ListingCard key={l.id.uuid} listing={l} intl={intl} />
           ))}
+              
         </div>
       ) : null}
     </SectionContainer>

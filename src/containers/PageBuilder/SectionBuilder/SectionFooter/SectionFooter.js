@@ -77,32 +77,33 @@ const SectionFooter = props => {
       options={fieldOptions}
     >
       <div className={css.footer}>
-        <div className={classNames(css.content, getContentCss(numberOfColumns))}>
-          <div>
-            <LinkedLogo
-              rootClassName={css.logoLink}
-              logoClassName={css.logoWrapper}
-              logoImageClassName={css.logoImage}
-              linkToExternalSite={linkLogoToExternalSite}
-              layout={logoLayout}
-            />
-          </div>
-          <div className={css.sloganMobile}>
-            <Field data={slogan} className={css.slogan} />
-          </div>
+        <div className={classNames(css.content, css.center, css.cousine)}>
+          
+     
           <div className={css.detailsInfo}>
-            <div className={css.sloganDesktop}>
-              <Field data={slogan} className={css.slogan} />
-            </div>
-            {showSocialMediaLinks ? (
+        
+            {/* 
+            showSocialMediaLinks ? (
               <div className={css.icons}>
                 <BlockBuilder blocks={linksWithBlockId} sectionId={sectionId} options={options} />
               </div>
-            ) : null}
-            <Field data={copyright} className={css.copyright} />
+            ) : null
+             */}
+            
           </div>
-          <div className={classNames(css.grid, getGridCss(numberOfColumns))}>
+          <div className={classNames(css.grid, getGridCss(1))}>
             <BlockBuilder blocks={blocks} sectionId={sectionId} options={options} />
+            <div>
+              <LinkedLogo
+                rootClassName={css.logoLink}
+                logoClassName={css.logoWrapper}
+                logoImageClassName={css.logoImage}
+                linkToExternalSite={linkLogoToExternalSite}
+                layout={logoLayout}
+              />
+            </div>
+            <Field data={copyright} className={css.copyright} />
+            <Field data={slogan} className={css.slogan} />
           </div>
         </div>
       </div>

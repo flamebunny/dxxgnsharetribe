@@ -445,6 +445,9 @@ const mapStateToProps = state => {
   const useCurrentUser =
     isCurrentUser && !(isUserAuthorized(currentUser) && hasPermissionToViewData(currentUser));
 
+
+  
+
   return {
     scrollingDisabled: isScrollingDisabled(state),
     currentUser,

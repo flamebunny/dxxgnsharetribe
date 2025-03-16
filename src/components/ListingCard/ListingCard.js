@@ -105,9 +105,6 @@ export const ListingCardComponent = props => {
       }
     : null;
 
-    console.log('renderSizes');
-    console.log(renderSizes);
-
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
       <AspectRatioWrapper

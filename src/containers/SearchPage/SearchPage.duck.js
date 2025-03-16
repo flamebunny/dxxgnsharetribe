@@ -103,10 +103,11 @@ export const searchListingsError = e => ({
 });
 
 export const searchListings = (searchParams, config) => (dispatch, getState, sdk) => {
-console.log('searchParams');
-console.log(searchParams);
-console.log('config');
-console.log(config);
+
+  console.log('SearchPage searchParams');
+  console.log(searchParams);
+  console.log('-------');
+
 
   dispatch(searchListingsRequest(searchParams));
 
@@ -308,6 +309,10 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     variantPrefix = 'listing-card',
   } = config.layout.listingImage;
   const aspectRatio = aspectHeight / aspectWidth;
+
+
+  console.log('searchconfig')
+  console.log(config)
 
   const searchListingsCall = searchListings(
     {

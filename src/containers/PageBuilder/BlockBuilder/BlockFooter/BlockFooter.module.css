@@ -35,7 +35,8 @@
   }
 
   & li {
-    font-size: 14px;
+    font-size: 16px;
+    line-height: 16px;
     color: var(--colorGrey700);
     padding: 0px;
     list-style-position: inside;

@@ -8,10 +8,6 @@ const Overlay = props => {
   
 
   const { className, rootClassName, message, messageClass, errorMessage, children } = props;
-
-  console.log('props');
-  console.log(props);
-
   const classes = classNames(rootClassName || css.root, className);
   const classes2 = classNames(messageClass ? css.messageClass : '' )
 
