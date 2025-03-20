@@ -105,12 +105,15 @@ export const ListingCardComponent = props => {
       }
     : null;
 
+    
+
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
       <AspectRatioWrapper
         className={css.aspectRatioWrapper}
         width={aspectWidth}
-        height={aspectHeight}
+        /* height={aspectHeight} */
+        height={aspectWidth}
         {...setActivePropsMaybe}
       >
         <LazyImage

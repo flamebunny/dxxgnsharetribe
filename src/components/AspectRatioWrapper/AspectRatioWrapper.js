@@ -8,6 +8,8 @@ const AspectRatioWrapper = props => {
   const { children, className, rootClassName, width, height, ...rest } = props;
   const classes = classNames(rootClassName || css.root, className);
 
+
+  
   const aspectRatio = (height / width) * 100;
   const paddingBottom = `${aspectRatio}%`;
 

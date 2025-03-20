@@ -1,0 +1,143 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.baseColumn {
+  max-width: var(--contentMaxWidthPages);
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 32px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+.oneColumn {
+  composes: baseColumn;
+}
+
+.twoColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(2, calc((100% - 32px) / 2));
+  }
+}
+.threeColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(3, calc((100% - 2 * 32px) / 3));
+  }
+}
+.fourColumns {
+  composes: baseColumn;
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(4, calc((100% - 3 * 32px) / 4));
+  }
+}
+
+.root {
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  position: relative;
+
+  &:nth-of-type(odd) {
+    background-color: var(--colorWhite);
+  }
+
+  &:target {
+    scroll-margin-top: var(--topbarHeight);
+    @media (--viewportMedium) {
+      scroll-margin-top: var(--topbarHeightDesktop);
+    }
+  }
+}
+
+.sectionContent {
+  padding: 32px 0;
+  position: relative;
+  word-break: break-word;
+
+  @media (--viewportMedium) {
+    padding: 64px 0;
+  }
+}
+
+.backgroundImageWrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.listings {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.listingsForGridVariant {
+  composes: listings;
+}
+
+.listingsForMapVariant {
+  composes: listings;
+  padding: 0 24px;
+
+  @media (--viewportLarge) {
+    padding: 0 36px;
+  }
+}
+
+.searchListingsPanel {
+  flex-grow: 1;
+}
+
+.listingCards {
+  padding: 0 0 72px 0;
+
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  width: 100%;
+
+  @media (min-width: 550px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 0 96px 0;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (--viewportXLarge) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.listingCard {
+  width: 100%;
+}
+
+.title {
+
+}
+
+.fontInter {
+  font-family: 'Inter';
+  font-size: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 44px;
+}
+
+.noSidePaddings{
+  padding: 0 !important;
+}

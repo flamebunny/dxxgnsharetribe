@@ -1,6 +1,6 @@
 /**
-*  Duplicate SectionColumns/SectionColumns.module.css into SectionRecommendedListings/SectionRecommendedListings.module.css 
-*  and SectionColumns/index.js into SectionRecommendedListings/index.js
+*  Duplicate SectionColumns/SectionColumns.module.css into SectionFeaturedListings/SectionFeaturedListings.module.css 
+*  and SectionColumns/index.js into SectionFeaturedListings/index.js
 **/
 
 import React from 'react';
@@ -12,7 +12,7 @@ import { ListingCard } from '../../../../components';
 import Field, { hasDataInFields } from '../../Field';
 
 import SectionContainer from '../SectionContainer';
-import css from './SectionRecommendedListings.module.css';
+import css from './SectionFeaturedListings.module.css';
 
 // The number of columns (numColumns) affects styling and responsive images
 const COLUMN_CONFIG = [
@@ -24,13 +24,11 @@ const COLUMN_CONFIG = [
 const getIndex = numColumns => numColumns - 1;
 const getColumnCSS = numColumns => {
   const config = COLUMN_CONFIG[getIndex(numColumns)];
-  console.log('config')
-  console.log(config)
   return config ? config.css : COLUMN_CONFIG[0].css;
 };
 
 // Section component that's able to show blocks in multiple different columns (defined by "numColumns" prop)
-const SectionRecommendedListings = props => {
+const SectionFeaturedListings = props => {
   const {
     sectionId,
     className,
@@ -45,10 +43,6 @@ const SectionRecommendedListings = props => {
     options,
     listings,
   } = props;
-
-  console.log('getColumnCSS(numColumns)')
-  console.log(numColumns)
-  console.log(getColumnCSS(numColumns))
 
   const intl = useIntl();
 
@@ -68,18 +62,18 @@ const SectionRecommendedListings = props => {
       appearance={appearance}
       options={fieldOptions}
     >
+      
       {hasHeaderFields ? (
         <header className={defaultClasses.sectionDetails}>
-          <Field data={title} className={defaultClasses.title} options={fieldOptions} />
+          <Field data={title} className={classNames(css.title, css.fontInter)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
       ) : null}
+  
       {hasListings ? (
         <div
-          className={classNames(defaultClasses.blockContainer, getColumnCSS(numColumns), {
-            [css.noSidePaddings]: isInsideContainer,
-          })}
+          className={classNames(defaultClasses.blockContainer, getColumnCSS(numColumns), css. noSidePaddings)}
         >
 
           {listings.map(l => (
@@ -96,7 +90,7 @@ const propTypeOption = shape({
   fieldComponents: shape({ component: node, pickValidProps: func }),
 });
 
-SectionRecommendedListings.defaultProps = {
+SectionFeaturedListings.defaultProps = {
   className: null,
   rootClassName: null,
   defaultClasses: null,
@@ -111,7 +105,7 @@ SectionRecommendedListings.defaultProps = {
   options: null,
 };
 
-SectionRecommendedListings.propTypes = {
+SectionFeaturedListings.propTypes = {
   sectionId: string.isRequired,
   className: string,
   rootClassName: string,
@@ -131,4 +125,4 @@ SectionRecommendedListings.propTypes = {
   options: propTypeOption,
 };
 
-export default SectionRecommendedListings;
+export default SectionFeaturedListings;

@@ -125,3 +125,19 @@
 .listingCard {
   width: 100%;
 }
+
+.title {
+
+}
+
+.fontInter {
+  font-family: 'Inter';
+  font-size: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  line-height: 44px;
+}
+
+.noSidePaddings{
+  padding: 0 !important;
+}

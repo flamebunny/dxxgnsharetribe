@@ -9,7 +9,7 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getRecommendedListingParams, recommendedSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getNewListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
@@ -28,9 +28,10 @@ const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
 
-import { SectionRecommendedListings } from '../PageBuilder/SectionBuilder';
+import { SectionNewListings, SectionFeaturedListings } from '../PageBuilder/SectionBuilder';
 
-const recommendedSectionType = 'recommended';
+const newSectionType = 'new';
+const featuredSectionType = 'featured';
 const textblurbSectionType = 'textblurb';
 const heroimgcustomSectionType = 'heroimgcustom';
 const masonarySectionType = 'masonary';
@@ -46,29 +47,59 @@ export const LandingPageComponent = props => {
     inProgress,
     error,
     currentUser,
-    recommendedListingIds,
-    onFetchRecommendedListings,
+    newListingIds,
+    featuredListingIds,
+    onFetchNewListings,
+    onFetchFeaturedListings,
   } = props;
 
   const config = useConfiguration();
   useEffect(() => {
-    //const params = getRecommendedListingParams(config, recommendedListingIds);
-    //onFetchRecommendedListings(params, config);
-  }, [recommendedListingIds]);
+    const paramsFeatured = getFeaturedListingParams(config, featuredListingIds);
+    const paramsNew = getNewListingParams(config);
+    onFetchNewListings(paramsNew, config)
+ //   onFetchFeaturedListings(paramsFeatured, config);
+    
+  }, [featuredListingIds]);
 
   // Construct custom page data
   const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
 
-  // Recommended Listing Section
-  const recommendedSectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === recommendedSectionId
-  );
-  const recommendedSection = pageData?.sections[recommendedSectionIdx];
 
-  const customRecommendedSection = {
-    ...recommendedSection,
-    sectionId: recommendedSectionId,
-    sectionType: recommendedSectionType,
+  // Construct custom page data
+  // Featured Listing Section
+  const featuredSectionIdx = pageData?.sections.findIndex(s => s.sectionId === featuredSectionId);
+  const featuredSection = pageData?.sections[featuredSectionIdx];
+
+  // Define the necessary props for the custom section
+  const customFeaturedSection = {
+    ...featuredSection,
+    sectionId: featuredSectionId,
+    sectionType: featuredSectionType,
+    listings: listings,
+  };   
+
+  // // Featured Listing Section
+  // const featuredSectionIdx = pageData?.sections.findIndex(s => s.sectionId === featuredSectionId);
+  // const featuredSection = pageData?.sections[featuredSectionIdx];
+
+  // const customFeaturedSection = {
+  //   ...featuredSection,
+  //   sectionId: featuredSectionId,
+  //   sectionType: featuredSectionType,
+  //   listings: listings,
+  // };
+
+  // New Listing Section
+  const newSectionIdx = pageData?.sections.findIndex(
+    s => s.sectionId === newSectionId
+  );
+  const newSection = pageData?.sections[newSectionIdx];
+
+  const customNewSection = {
+    ...newSection,
+    sectionId: newSectionId,
+    sectionType: newSectionType,
     listings: listings,
   };
 
@@ -144,25 +175,35 @@ export const LandingPageComponent = props => {
     currentUser,
   };
 
+  // Replace the original section with the custom section object
+  // in custom page data
+
   const customSections = pageData
     ? [
         customCurrentUserSection,
         ,
         ...pageData?.sections?.map((section, idx) =>{
           //idx === masonarySectionIdx ? customMasonarySection : section,
-          //idx === recommendedSectionIdx ? customRecommendedSection : section,
-
-
+          //idx === newSectionIdx ? customNewSection : section,
+    
           if (idx === masonarySectionIdx) {
             return customMasonarySection;
-          } else if (idx === recommendedSectionIdx) {
-            return customRecommendedSection;
+
+          } else if (idx === newSectionIdx) {
+            return customNewSection;
+
+          } else if (idx === featuredSectionIdx) {
+            return customFeaturedSection;
+
           } else if (idx === textblurbSectionIdx) {
             return customTextblurbSection;
+
           } else if (idx === heroimgcustomSectionIdx) {
             return customHeroimgcustomSection;
+
           } else if (idx === textlinksSectionIdx) {
             return customTextlinksSection;
+            
           } else if (idx === columnsTextSectionIdx) {
             return customColumnsTextSection;
 
@@ -182,16 +223,14 @@ export const LandingPageComponent = props => {
       }
     : pageData;
 
-  console.log(customPageData);
-
-
   return (
 
     <PageBuilder
       pageAssetsData={customPageData}
       options={{
         sectionComponents: {
-          [recommendedSectionType]: { component: SectionRecommendedListings },
+          [newSectionType]: { component: SectionNewListings },
+          [featuredSectionType]: { component: SectionFeaturedListings },
           [masonarySectionType]: { component: SectionMasonary },
           [textblurbSectionType]: { component: SectionTextblurb },
           [heroimgcustomSectionType]: { component: SectionHeroImgCustom },     
@@ -215,16 +254,18 @@ LandingPageComponent.propTypes = {
 
 const mapStateToProps2 = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
-  const { recommendedListingIds } = state.LandingPage;
+  const { newListingIds } = state.LandingPage;
+  const { featuredListingIds } = state.LandingPage;
   const { currentPageResultIds } = state.SearchPage;
   const { currentUser } = state.user;
   const listings = getListingsById(state, currentPageResultIds);
-  return { pageAssetsData, listings, inProgress, error, currentUser, recommendedListingIds };
+  return { pageAssetsData, listings, inProgress, error, currentUser, newListingIds, featuredListingIds };
 };
 
 const mapStateToProps = state => {
   const { currentUser } = state.user;
-  const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
+  const { pageAssetsData, inProgress, error } = state.hostedAssets || {};  
+  const { featuredListingIds } = state.LandingPage;
   const {
     currentPageResultIds,
     pagination,
@@ -232,13 +273,17 @@ const mapStateToProps = state => {
     searchListingsError,
     searchParams,
   } = state.SearchPage;
+
   const listings = getListingsById(state, currentPageResultIds);
+
+  console.log(listings);
 
   return {
     pageAssetsData,
     listings,
     inProgress,
     error,
+    featuredListingIds,
     currentUser,
     pagination,
     scrollingDisabled: isScrollingDisabled(state),
@@ -248,13 +293,21 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps2 = dispatch => ({
-  onFetchRecommendedListings: (params, config) => dispatch(searchListings(params, config)),
-});
+// const mapDispatchToProps2 = dispatch => ({
+//   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+//   onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
+// });
+
+// const mapDispatchToProps = dispatch => ({
+//   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
+//   // onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
+//   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+// });
 
 const mapDispatchToProps = dispatch => ({
-  onManageDisableScrolling: (componentId, disableScrolling) =>
-    dispatch(manageDisableScrolling(componentId, disableScrolling)),
+  onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
+  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+  onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the
