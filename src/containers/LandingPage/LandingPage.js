@@ -22,6 +22,7 @@ import { manageDisableScrolling, isScrollingDisabled } from '../../ducks/ui.duck
 
 
 import { searchListings } from '../SearchPage/SearchPage.duck';
+import { landingpageFeaturedListings } from '../LandingPage/LandingPage.duck';
 import { useConfiguration } from '../../context/configurationContext';
 
 const PageBuilder = loadable(() =>
@@ -44,6 +45,7 @@ export const LandingPageComponent = props => {
   const {
     pageAssetsData,
     listings,
+    featuredListings,
     inProgress,
     error,
     currentUser,
@@ -57,13 +59,16 @@ export const LandingPageComponent = props => {
   useEffect(() => {
     const paramsFeatured = getFeaturedListingParams(config, featuredListingIds);
     const paramsNew = getNewListingParams(config);
-    onFetchNewListings(paramsNew, config)
- //   onFetchFeaturedListings(paramsFeatured, config);
+    // onFetchNewListings(paramsNew, config)
+    onFetchFeaturedListings(paramsFeatured, config);
+
     
   }, [featuredListingIds]);
 
   // Construct custom page data
   const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
+
+
 
 
   // Construct custom page data
@@ -76,8 +81,14 @@ export const LandingPageComponent = props => {
     ...featuredSection,
     sectionId: featuredSectionId,
     sectionType: featuredSectionType,
-    listings: listings,
+    listings: featuredListings,
   };   
+
+  // console.log('featuredSectionIdfeaturedSectionIdfeaturedSectionIdfeaturedSectionId')
+  // console.log(featuredSectionId)
+  // console.log(listings)
+  // console.log(customFeaturedSection)
+
 
   // // Featured Listing Section
   // const featuredSectionIdx = pageData?.sections.findIndex(s => s.sectionId === featuredSectionId);
@@ -91,9 +102,7 @@ export const LandingPageComponent = props => {
   // };
 
   // New Listing Section
-  const newSectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === newSectionId
-  );
+  const newSectionIdx = pageData?.sections.findIndex(s => s.sectionId === newSectionId);
   const newSection = pageData?.sections[newSectionIdx];
 
   const customNewSection = {
@@ -103,86 +112,73 @@ export const LandingPageComponent = props => {
     listings: listings,
   };
 
+  // console.log('newSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionId')
+  // console.log(newSectionId)
+  // console.log(listings)
+  // console.log(customNewSection)
+  // console.log('newSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionId')
+
   // Masonary Section
-  const masonarySectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === masonarySectionId
-  );
+  const masonarySectionIdx = pageData?.sections.findIndex(s => s.sectionId === masonarySectionId);
   const masonarySection = pageData?.sections[masonarySectionIdx];
 
   const customMasonarySection = {
     ...masonarySection,
     sectionId: masonarySectionId,
     sectionType: masonarySectionType,
-    listings: listings,
+//    listings: listings,
   };
 
   // Textblurb Section
-  const textblurbSectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === textblurbSectionId
-  );
+  const textblurbSectionIdx = pageData?.sections.findIndex(s => s.sectionId === textblurbSectionId);
   const textblurbSection = pageData?.sections[textblurbSectionIdx];
 
   const customTextblurbSection = {
     ...textblurbSection,
     sectionId: textblurbSectionId,
     sectionType: textblurbSectionType,
-    listings: listings,
+ //   listings: listings,
   };
 
   // HeroImgCustom Section
-  const heroimgcustomSectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === heroimgcustomSectionId
-  );
+  const heroimgcustomSectionIdx = pageData?.sections.findIndex(s => s.sectionId === heroimgcustomSectionId);
   const heroimgcustomSection = pageData?.sections[heroimgcustomSectionIdx];
 
   const customHeroimgcustomSection = {
     ...heroimgcustomSection,
     sectionId: heroimgcustomSectionId,
     sectionType: heroimgcustomSectionType,
-    listings: listings,
+ //   listings: listings,
   };
 
     // TextLinks Section
-    const textlinksSectionIdx = pageData?.sections.findIndex(
-      s => s.sectionId === textlinksSectionId
-    );
+    const textlinksSectionIdx = pageData?.sections.findIndex(s => s.sectionId === textlinksSectionId);
     const textlinksSection = pageData?.sections[textlinksSectionIdx];
   
     const customTextlinksSection = {
       ...textlinksSection,
       sectionId: textlinksSectionId,
       sectionType: textlinksSectionType,
-      listings: listings,
+  //    listings: listings,
     };
 
     // ColumnsText Section
-  const columnsTextSectionIdx = pageData?.sections.findIndex(
-    s => s.sectionId === columnsTextSectionId
-  );
+  const columnsTextSectionIdx = pageData?.sections.findIndex(s => s.sectionId === columnsTextSectionId);
   const columnsText = pageData?.sections[columnsTextSectionIdx];
 
   const customColumnsTextSection = {
     ...columnsText,
     sectionId: columnsTextSectionId,
     sectionType: columnsTextType,
-    listings: listings,
+ //   listings: listings,
   };
     
-
-  // Current user Section
-  const customCurrentUserSection = {
-    sectionType: userSectionType,
-    currentUser,
-  };
-
   // Replace the original section with the custom section object
   // in custom page data
 
   const customSections = pageData
     ? [
-        customCurrentUserSection,
-        ,
-        ...pageData?.sections?.map((section, idx) =>{
+        ...pageData.sections.map((section, idx) =>{
           //idx === masonarySectionIdx ? customMasonarySection : section,
           //idx === newSectionIdx ? customNewSection : section,
     
@@ -215,6 +211,9 @@ export const LandingPageComponent = props => {
         }),
       ]
     : null;
+
+  // console.log('LandingPage CustomSections')
+  // console.log(customSections)
 
   const customPageData = pageData
     ? {
@@ -266,21 +265,21 @@ const mapStateToProps = state => {
   const { currentUser } = state.user;
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};  
   const { featuredListingIds } = state.LandingPage;
-  const {
-    currentPageResultIds,
-    pagination,
-    searchInProgress,
-    searchListingsError,
-    searchParams,
-  } = state.SearchPage;
+  const { currentPageResultIds, pagination, searchInProgress, searchListingsError, searchParams } = state.SearchPage;
 
+  const t = (uuid) => ({
+    uuid,
+    _sdkType: "UUID"
+  });
+     
+  const featuredListingObj = featuredListingIds.map(t);
+  const featuredListings = getListingsById(state, featuredListingObj);
   const listings = getListingsById(state, currentPageResultIds);
-
-  console.log(listings);
-
+  
   return {
     pageAssetsData,
     listings,
+    featuredListings,
     inProgress,
     error,
     featuredListingIds,
@@ -306,8 +305,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
-  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
-  onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
+//  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+//  onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
+  onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
 });
 
 // Note: it is important that the withRouter HOC is **outside** the
