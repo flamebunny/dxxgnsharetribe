@@ -59,7 +59,7 @@ export const LandingPageComponent = props => {
   useEffect(() => {
     const paramsFeatured = getFeaturedListingParams(config, featuredListingIds);
     const paramsNew = getNewListingParams(config);
-    // onFetchNewListings(paramsNew, config)
+    onFetchNewListings(paramsNew, config)
     onFetchFeaturedListings(paramsFeatured, config);
 
     
@@ -305,9 +305,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
-//  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+  
 //  onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
   onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
+
+  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+
 });
 
 // Note: it is important that the withRouter HOC is **outside** the
