@@ -652,7 +652,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         const featuredListingIds = section?.blocks.map(b => b.blockName);
       //  dispatch(fetchFeaturedAssetsSuccess(featuredListingIds));        
       } else if (section.sectionId === newSectionId) {
-      //  dispatch(searchListingsCall);
+        dispatch(searchListingsCall);
       }else{
 
 
