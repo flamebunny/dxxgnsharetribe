@@ -650,17 +650,12 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       
       if (section.sectionId === featuredSectionId) {        
         const featuredListingIds = section?.blocks.map(b => b.blockName);
-
-        dispatch(fetchFeaturedAssetsSuccess(featuredListingIds));
-        
+      //  dispatch(fetchFeaturedAssetsSuccess(featuredListingIds));        
       } else if (section.sectionId === newSectionId) {
-        dispatch(searchListingsCall);
-      //  dispatch(fetchNewAssetsSuccess());
-        //dispatch(searchListingsCall);
+      //  dispatch(searchListingsCall);
       }else{
 
-        // dispatch(searchListingsCall);
-        //dispatch(fetchNewAssetsSuccess());
+
       }
     })
   });
