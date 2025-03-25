@@ -230,7 +230,7 @@ export const LandingPageComponent = props => {
         sectionComponents: {
           [newSectionType]: { component: SectionNewListings },
           [featuredSectionType]: { component: SectionFeaturedListings },
-          [masonarySectionType]: { component: SectionMasonary },
+        //  [masonarySectionType]: { component: SectionMasonary },
           [textblurbSectionType]: { component: SectionTextblurb },
           [heroimgcustomSectionType]: { component: SectionHeroImgCustom },     
           [textlinksSectionType]: { component: SectionTextLinks },     

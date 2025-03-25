@@ -105,15 +105,16 @@ export const ListingCardComponent = props => {
       }
     : null;
 
-    
+  const { formattedPrice, priceTitle } = priceData(price, config.currency, intl);
 
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
       <AspectRatioWrapper
         className={css.aspectRatioWrapper}
-        width={aspectWidth}
-        /* height={aspectHeight} */
-        height={aspectWidth}
+        /*width={aspectWidth}
+        height={aspectHeight}*/
+        width={4}
+        height={5}
         {...setActivePropsMaybe}
       >
         <LazyImage
@@ -124,8 +125,16 @@ export const ListingCardComponent = props => {
           sizes={renderSizes}
         />
       </AspectRatioWrapper>
-      <div className={css.info}>
-        <PriceMaybe price={price} publicData={publicData} config={config} intl={intl} />
+      <div className={classNames(css.info2, css.cousine)}>   
+        {richText(title, {
+              longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
+              longWordClass: css.longWord,
+        })} / {authorName} / <b>{formattedPrice}</b>
+        
+      </div>
+{
+/*
+      <div className={css.info}>        
         <div className={css.mainInfo}>
           <div className={css.title}>
             {richText(title, {
@@ -138,8 +147,11 @@ export const ListingCardComponent = props => {
               <FormattedMessage id="ListingCard.author" values={{ authorName }} />
             </div>
           ) : null}
+          <PriceMaybe price={price} publicData={publicData} config={config} intl={intl} />
         </div>
       </div>
+      */
+}
     </NamedLink>
   );
 };

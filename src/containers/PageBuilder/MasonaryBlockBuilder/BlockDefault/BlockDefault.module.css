@@ -24,7 +24,7 @@
 
 .testy > div {
   @media (--viewportLarge) {
-    padding-bottom: 30%   !important;
+    padding-bottom: 125%   !important;
   }
 }
 

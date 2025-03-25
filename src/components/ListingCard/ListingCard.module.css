@@ -14,7 +14,6 @@
 .aspectRatioWrapper {
   transition: var(--transitionStyleButton);
   background: var(--colorGrey100); /* Loading BG color */
-  border-radius: var(--borderRadiusMedium);
   overflow: hidden;
 
   @media (--viewportMedium) {
@@ -27,9 +26,8 @@
 
 .rootForImage {
   border: solid 1px var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
   width: 100%;
-  /* height: 100%; */
+  height: 100%;
 }
 
 .info {
@@ -37,6 +35,19 @@
   display: flex;
   flex-direction: column;
   padding: 14px 0 2px 0;
+}
+
+.info2{
+  position: absolute;
+  bottom: -24px;
+  left: 0;
+  font-size: 10px
+}
+
+.cousine {
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  text-transform: none;
 }
 
 .price {
