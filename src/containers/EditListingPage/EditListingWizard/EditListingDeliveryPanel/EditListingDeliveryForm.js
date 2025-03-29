@@ -110,8 +110,6 @@ export const EditListingDeliveryFormComponent = props => (
       });
       const currencyConfig = appSettings.getCurrencyFormatting(marketplaceCurrency);
 
-      const showAdditionalStockField = false;
-
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           <FieldCheckbox
@@ -228,9 +226,7 @@ export const EditListingDeliveryFormComponent = props => (
               key={shippingEnabled ? 'oneItemValidation' : 'noOneItemValidation'}
             />
 
-            {
-            //hasStockInUse ? (
-              showAdditionalStockField ? (
+            {hasStockInUse ? (
               <FieldCurrencyInput
                 id={
                   formId
