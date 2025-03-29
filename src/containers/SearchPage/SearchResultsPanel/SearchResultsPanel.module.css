@@ -53,6 +53,7 @@
 }
 
 .listingCard {
+  position: relative;
   width: 100%;
 }
 

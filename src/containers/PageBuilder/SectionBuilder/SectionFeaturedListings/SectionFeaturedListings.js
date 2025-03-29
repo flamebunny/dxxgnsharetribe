@@ -64,7 +64,7 @@ const SectionFeaturedListings = props => {
     >
       
       {hasHeaderFields ? (
-        <header className={defaultClasses.sectionDetails}>
+        <header className={classNames(css.center)}>
           <Field data={title} className={classNames(css.title, css.fontPermanentMarker)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
@@ -73,7 +73,7 @@ const SectionFeaturedListings = props => {
   
       {hasListings ? (
         <div
-          className={classNames(defaultClasses.blockContainer, getColumnCSS(numColumns), css.noSidePaddings, css.masonary)}
+          className={classNames(getColumnCSS(numColumns), css.masonary)}
         >
 
           {listings.map(l => (

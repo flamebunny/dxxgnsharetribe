@@ -39,10 +39,39 @@
 
 .info2{
   position: absolute;
-  bottom: -24px;
+  bottom: -32px;
   left: 0;
-  font-size: 10px
+  font-size: 12px;
+  width: 100%;
 }
+
+.infoAuthor {
+   max-width: 28%;
+   display: inline-block;
+}
+
+.infoTitle {
+  max-width: 28%;
+  display: inline-block;
+}
+
+.infoPrice {
+  display: inline-block;
+  overflow: hidden;
+}
+.slash {
+  padding: 0 5px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.elipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
 
 .cousine {
   font-family: "Cousine", serif;

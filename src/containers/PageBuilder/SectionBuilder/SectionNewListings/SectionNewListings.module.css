@@ -1,5 +1,10 @@
 @import '../../../../styles/customMediaQueries.css';
 
+
+
+
+
+
 .baseColumn {
   max-width: var(--contentMaxWidthPages);
   display: grid;
@@ -38,6 +43,9 @@
   background-repeat: no-repeat;
   width: 100%;
   position: relative;
+
+  display: flex;
+  flex-direction: column;
 
   &:nth-of-type(odd) {
     background-color: var(--colorWhite);
@@ -93,7 +101,7 @@
 }
 
 .listingCards {
-  padding: 0 0 72px 0;
+  padding: 0 24px 0 24px;
 
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -101,25 +109,27 @@
   width: 100%;
 
   @media (min-width: 550px) {
+    padding: 0 24px 0 24px;
     grid-template-columns: repeat(2, 1fr);
   }
 
   @media (--viewportMedium) {
-    padding: 0 0 96px 0;
+    padding: 0 24px 0 24px;
     grid-template-columns: repeat(2, 1fr);
+
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(3, 1fr);
+    padding: 0;
+    grid-template-columns: repeat(4, 1fr);
+
   }
 
   @media (min-width: 1440px) {
+    padding: 0;
     grid-template-columns: repeat(4, 1fr);
   }
 
-  @media (--viewportXLarge) {
-    grid-template-columns: repeat(5, 1fr);
-  }
 }
 
 .listingCard {
@@ -138,6 +148,26 @@
   line-height: 44px;
 }
 
+.center {
+  text-align: center;
+}
+
 .noSidePaddings{
-  padding: 0 !important;
+
+
+  @media (--viewportLarge) {
+    padding: 0 !important;
+  }
+}
+
+.box {
+  position: relative;
+  @media (--viewportLarge) {
+      color: #000;
+      background: transparent !important;
+
+      display: grid;
+      font-size: 12px;
+      position: relative;
+  }
 }

@@ -126,11 +126,10 @@ export const ListingCardComponent = props => {
         />
       </AspectRatioWrapper>
       <div className={classNames(css.info2, css.cousine)}>   
-        {richText(title, {
+        <span className={classNames(css.infoTitle, css.elipsis)}>{richText(title, {
               longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
               longWordClass: css.longWord,
-        })} / {authorName} / <b>{formattedPrice}</b>
-        
+        })}</span><span className={classNames(css.slash)}>/</span><span className={classNames(css.infoAuthor, css.elipsis)}>{authorName}</span><span className={classNames(css.slash)}>/</span><span className={classNames(css.infoPrice)}><b>{formattedPrice}</b></span>
       </div>
 {
 /*

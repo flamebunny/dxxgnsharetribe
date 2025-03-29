@@ -9,7 +9,7 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getNewListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getNewListingParams, getFashionListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, fashionSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
@@ -32,6 +32,7 @@ const PageBuilder = loadable(() =>
 import { SectionNewListings, SectionFeaturedListings } from '../PageBuilder/SectionBuilder';
 
 const newSectionType = 'new';
+const fashionSectionType = 'fashion';
 const featuredSectionType = 'featured';
 const textblurbSectionType = 'textblurb';
 const heroimgcustomSectionType = 'heroimgcustom';
@@ -45,6 +46,7 @@ export const LandingPageComponent = props => {
   const {
     pageAssetsData,
     listings,
+    fashionListings,
     featuredListings,
     inProgress,
     error,
@@ -52,6 +54,7 @@ export const LandingPageComponent = props => {
     newListingIds,
     featuredListingIds,
     onFetchNewListings,
+    onFetchCategoryFashionListings,
     onFetchFeaturedListings,
   } = props;
 
@@ -59,8 +62,11 @@ export const LandingPageComponent = props => {
   useEffect(() => {
     const paramsFeatured = getFeaturedListingParams(config, featuredListingIds);
     const paramsNew = getNewListingParams(config);
-    onFetchNewListings(paramsNew, config)
+    const paramsFashion = getFashionListingParams(config);
     onFetchFeaturedListings(paramsFeatured, config);
+    onFetchNewListings(paramsNew, config);
+  //  onFetchCategoryFashionListings(paramsFashion, config);
+    
 
     
   }, [featuredListingIds]);
@@ -84,23 +90,6 @@ export const LandingPageComponent = props => {
     listings: featuredListings,
   };   
 
-  // console.log('featuredSectionIdfeaturedSectionIdfeaturedSectionIdfeaturedSectionId')
-  // console.log(featuredSectionId)
-  // console.log(listings)
-  // console.log(customFeaturedSection)
-
-
-  // // Featured Listing Section
-  // const featuredSectionIdx = pageData?.sections.findIndex(s => s.sectionId === featuredSectionId);
-  // const featuredSection = pageData?.sections[featuredSectionIdx];
-
-  // const customFeaturedSection = {
-  //   ...featuredSection,
-  //   sectionId: featuredSectionId,
-  //   sectionType: featuredSectionType,
-  //   listings: listings,
-  // };
-
   // New Listing Section
   const newSectionIdx = pageData?.sections.findIndex(s => s.sectionId === newSectionId);
   const newSection = pageData?.sections[newSectionIdx];
@@ -112,11 +101,16 @@ export const LandingPageComponent = props => {
     listings: listings,
   };
 
-  // console.log('newSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionId')
-  // console.log(newSectionId)
-  // console.log(listings)
-  // console.log(customNewSection)
-  // console.log('newSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionIdnewSectionId')
+  // Fashion Listing Section
+  const fashionSectionIdx = pageData?.sections.findIndex(s => s.sectionId === fashionSectionId);
+  const fashionSection = pageData?.sections[fashionSectionIdx];
+
+  const customFashionSection = {
+    ...fashionSection,
+    sectionId: fashionSectionId,
+    sectionType: fashionSectionType,
+    listings: listings,
+  };
 
   // Masonary Section
   const masonarySectionIdx = pageData?.sections.findIndex(s => s.sectionId === masonarySectionId);
@@ -188,6 +182,9 @@ export const LandingPageComponent = props => {
           } else if (idx === newSectionIdx) {
             return customNewSection;
 
+          } else if (idx === fashionSectionIdx) {
+            return customFashionSection;
+
           } else if (idx === featuredSectionIdx) {
             return customFeaturedSection;
 
@@ -229,6 +226,7 @@ export const LandingPageComponent = props => {
       options={{
         sectionComponents: {
           [newSectionType]: { component: SectionNewListings },
+       //   [fashionSectionType]: { component: SectionNewListings },
           [featuredSectionType]: { component: SectionFeaturedListings },
         //  [masonarySectionType]: { component: SectionMasonary },
           [textblurbSectionType]: { component: SectionTextblurb },
@@ -251,21 +249,16 @@ LandingPageComponent.propTypes = {
   error: propTypes.error,
 };
 
-const mapStateToProps2 = state => {
-  const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
-  const { newListingIds } = state.LandingPage;
-  const { featuredListingIds } = state.LandingPage;
-  const { currentPageResultIds } = state.SearchPage;
-  const { currentUser } = state.user;
-  const listings = getListingsById(state, currentPageResultIds);
-  return { pageAssetsData, listings, inProgress, error, currentUser, newListingIds, featuredListingIds };
-};
-
 const mapStateToProps = state => {
   const { currentUser } = state.user;
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};  
   const { featuredListingIds } = state.LandingPage;
-  const { currentPageResultIds, pagination, searchInProgress, searchListingsError, searchParams } = state.SearchPage;
+  const { currentPageResultIds ,  pagination,  searchInProgress,  searchListingsError,  searchParams } = state.SearchPage;
+  const newCurrentPageResultIds = currentPageResultIds;
+  const newPagination = pagination;
+  const newSearchInProgress = searchInProgress;
+  const newSearchListingsError = searchListingsError;
+  const newSearchParams = searchParams;
 
   const t = (uuid) => ({
     uuid,
@@ -274,7 +267,7 @@ const mapStateToProps = state => {
      
   const featuredListingObj = featuredListingIds.map(t);
   const featuredListings = getListingsById(state, featuredListingObj);
-  const listings = getListingsById(state, currentPageResultIds);
+  const listings = getListingsById(state, newCurrentPageResultIds);
   
   return {
     pageAssetsData,
@@ -283,33 +276,22 @@ const mapStateToProps = state => {
     inProgress,
     error,
     featuredListingIds,
-    currentUser,
-    pagination,
+    currentUser,    
     scrollingDisabled: isScrollingDisabled(state),
-    searchInProgress,
-    searchListingsError,
-    searchParams,
+    newPagination,
+    newSearchInProgress,
+    newSearchListingsError,
+    newSearchParams,
   };
 };
 
-// const mapDispatchToProps2 = dispatch => ({
-//   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
-//   onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
-// });
-
-// const mapDispatchToProps = dispatch => ({
-//   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
-//   // onFetchFeaturedListings: (params, config) => dispatch(searchListings(params, config)),
-//   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
-// });
-
 const mapDispatchToProps = dispatch => ({
   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
-  
-//  onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
+
   onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
 
   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+  onFetchCategoryFashionListings: (params, config) => dispatch(searchListings(params, config)),
 
 });
 

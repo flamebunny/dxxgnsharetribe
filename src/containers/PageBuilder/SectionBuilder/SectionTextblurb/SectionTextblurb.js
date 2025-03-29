@@ -45,7 +45,7 @@ const SectionTextblurb = props => {
         <header 
           className={classNames(css.textwide, defaultClasses.sectionDetails)}
         >
-          <Field data={title} className={classNames(defaultClasses.title, css.textwidthunset, css.text, css.ebgaramond)} options={fieldOptions} />
+          <Field data={title} className={classNames(defaultClasses.title, css.textwidthunset, css.center, css.ebgaramond)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>

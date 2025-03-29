@@ -64,7 +64,7 @@ const SectionNewListings = props => {
     >
       
       {hasHeaderFields ? (
-        <header className={defaultClasses.sectionDetails}>
+        <header className={classNames(css.center)}>
           <Field data={title} className={classNames(css.title, css.fontInter)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
@@ -73,11 +73,11 @@ const SectionNewListings = props => {
   
       {hasListings ? (
         <div
-          className={classNames(defaultClasses.blockContainer, getColumnCSS(numColumns), css. noSidePaddings)}
+          className={classNames(getColumnCSS(numColumns), css.listingCards)}
         >
 
           {listings.map(l => (
-            <ListingCard key={l.id.uuid} listing={l} intl={intl} />
+            <ListingCard key={l.id.uuid} listing={l} intl={intl} className={css.box} />
           ))}
               
         </div>

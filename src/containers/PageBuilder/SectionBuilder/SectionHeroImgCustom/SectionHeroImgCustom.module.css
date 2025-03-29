@@ -13,13 +13,24 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 460px;
 
+  min-height: 15vh;
 
-  @media (--viewportLarge) {
-    min-height: 45vh;
+  @media (min-width: 550px) {
+    min-height: 20vh;
   }
 
+  @media (--viewportMedium) {
+    min-height: 20vh;
+  }
+
+  @media (--viewportLarge) {
+    min-height: 30vh;
+  }
+
+  @media (min-width: 1440px) {
+    min-height: 45vh;
+  }
 
 }
 
