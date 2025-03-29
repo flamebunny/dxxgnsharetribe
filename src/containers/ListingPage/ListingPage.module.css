@@ -174,7 +174,7 @@
 .addPayoutDetails,
 .editListingLink {
   composes: h5 from global;
-  margin: 23px 24px 11px 0px;
+  margin: 0px 24px 18px 0px;
   color: var(--colorGrey100);
 
   transition: var(--transitionStyleButton);
@@ -185,11 +185,11 @@
   }
 
   @media (--viewportMedium) {
-    margin: 24px 0 0 0;
+    margin: 18px 0 0 0;
   }
 
   &.CTAEnabled {
-    margin: 24px 0 0 0;
+    margin: 18px 0 0 0;
   }
 }
 
@@ -350,6 +350,22 @@
     top: 108px;
   }
 }
+
+.breadcrumbs {
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  font-size: 14px;  
+}
+
+.breadcrumbLink {
+  color: var(--colorGrey700);
+  text-transform: uppercase;
+}
+
+.spacer{
+  margin: 0 7px;
+}
+
 
 .productOrderPanel {
   @media (--viewportLarge) {

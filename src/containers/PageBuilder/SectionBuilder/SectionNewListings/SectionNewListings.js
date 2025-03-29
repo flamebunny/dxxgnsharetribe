@@ -77,7 +77,7 @@ const SectionNewListings = props => {
         >
 
           {listings.map(l => (
-            <ListingCard key={l.id.uuid} listing={l} intl={intl} className={css.box} />
+            <ListingCard key={'new'+l.id.uuid} listing={l} intl={intl} className={css.box} />
           ))}
               
         </div>

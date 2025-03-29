@@ -154,6 +154,7 @@
 
 .listing {
   width: 100%;
+  position: relative;
 
   /* Single column in mobile */
   margin-top: 34px;

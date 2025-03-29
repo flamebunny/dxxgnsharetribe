@@ -205,6 +205,7 @@ export const ListingPageComponent = props => {
       <ErrorPage topbar={topbar} scrollingDisabled={scrollingDisabled} intl={intl} invalidListing />
     );
   }
+
   const processName = resolveLatestProcessName(transactionProcessAlias.split('/')[0]);
   const isBooking = isBookingProcess(processName);
   const isPurchase = isPurchaseProcess(processName);
@@ -346,13 +347,7 @@ export const ListingPageComponent = props => {
             </div>
             <SectionTextMaybe text={description} showAsIngress />
 
-            <CustomListingFields
-              publicData={publicData}
-              metadata={metadata}
-              listingFieldConfigs={listingConfig.listingFields}
-              categoryConfiguration={config.categoryConfiguration}
-              intl={intl}
-            />
+
 
             <SectionMapMaybe
               geolocation={geolocation}
@@ -375,7 +370,13 @@ export const ListingPageComponent = props => {
               onManageDisableScrolling={onManageDisableScrolling}
             />
           </div>
+
           <div className={css.orderColumnForProductLayout}>
+            <div className={css.breadcrumbs}>
+              <a className={css.breadcrumbLink} href="/s/">All</a>
+              <span className={css.spacer}>·</span>
+              <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
+            </div>
             <OrderPanel
               className={css.productOrderPanel}
               listing={currentListing}

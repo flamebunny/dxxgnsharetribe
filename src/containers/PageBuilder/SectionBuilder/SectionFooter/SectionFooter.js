@@ -77,8 +77,7 @@ const SectionFooter = props => {
       options={fieldOptions}
     >
       <div className={css.footer}>
-        <div className={classNames(css.content, css.center, css.cousine)}>
-          
+        <div className={classNames(css.content, css.center, css.cousine)}>         
      
           <div className={css.detailsInfo}>
         
