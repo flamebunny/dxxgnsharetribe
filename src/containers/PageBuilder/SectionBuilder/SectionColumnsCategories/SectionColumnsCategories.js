@@ -1,19 +1,12 @@
-/**
-*  Duplicate SectionColumns/SectionColumns.module.css into SectionNewListings/SectionNewListings.module.css 
-*  and SectionColumns/index.js into SectionNewListings/index.js
-**/
-
 import React from 'react';
-import { useIntl } from '../../../../util/reactIntl';
 import { arrayOf, bool, func, node, number, object, shape, string } from 'prop-types';
 import classNames from 'classnames';
-import { ListingCard } from '../../../../components';
 
 import Field, { hasDataInFields } from '../../Field';
+import BlockBuilderCustom from '../../BlockBuilderCustom';
 
 import SectionContainer from '../SectionContainer';
-import css from './SectionNewListings.module.css';
-import { H3 } from '../../Primitives/Heading';
+import css from './SectionColumnsCategories.module.css';
 
 // The number of columns (numColumns) affects styling and responsive images
 const COLUMN_CONFIG = [
@@ -27,9 +20,13 @@ const getColumnCSS = numColumns => {
   const config = COLUMN_CONFIG[getIndex(numColumns)];
   return config ? config.css : COLUMN_CONFIG[0].css;
 };
+const getResponsiveImageSizes = numColumns => {
+  const config = COLUMN_CONFIG[getIndex(numColumns)];
+  return config ? config.responsiveImageSizes : COLUMN_CONFIG[0].responsiveImageSizes;
+};
 
 // Section component that's able to show blocks in multiple different columns (defined by "numColumns" prop)
-const SectionNewListings = props => {
+const SectionColumnsCategories = props => {
   const {
     sectionId,
     className,
@@ -40,12 +37,10 @@ const SectionNewListings = props => {
     description,
     appearance,
     callToAction,
+    blocks,
     isInsideContainer,
     options,
-    listings,
   } = props;
-
-  const intl = useIntl();
 
   // If external mapping has been included for fields
   // E.g. { h1: { component: MyAwesomeHeader } }
@@ -53,7 +48,7 @@ const SectionNewListings = props => {
   const fieldOptions = { fieldComponents };
 
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
-  const hasListings = listings.length > 0;
+  const hasBlocks = blocks?.length > 0;
 
   return (
     <SectionContainer
@@ -63,24 +58,24 @@ const SectionNewListings = props => {
       appearance={appearance}
       options={fieldOptions}
     >
-      
       {hasHeaderFields ? (
-        <header className={classNames(css.center)}>
-          <h2 className={classNames(css.title, css.fontInter)}><a href="/s">{title.content}</a></h2> 
+        <header className={defaultClasses.sectionDetails}>
+          <Field data={title} className={defaultClasses.title} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
       ) : null}
-  
-      {hasListings ? (
+      {hasBlocks ? (
         <div
-          className={classNames(getColumnCSS(numColumns), css.listingCards)}
+          className={classNames(css.blockDefaultCustom, getColumnCSS(numColumns))}
         >
-
-          {listings.map(l => (
-            <ListingCard key={'new'+l.id.uuid} listing={l} intl={intl} className={css.box} />
-          ))}
-              
+          <BlockBuilderCustom
+            ctaButtonClass={defaultClasses.ctaButton}
+            blocks={blocks}
+            sectionId={sectionId}
+            responsiveImageSizes={getResponsiveImageSizes(numColumns)}
+            options={options}
+          />
         </div>
       ) : null}
     </SectionContainer>
@@ -91,7 +86,7 @@ const propTypeOption = shape({
   fieldComponents: shape({ component: node, pickValidProps: func }),
 });
 
-SectionNewListings.defaultProps = {
+SectionColumnsCategories.defaultProps = {
   className: null,
   rootClassName: null,
   defaultClasses: null,
@@ -106,7 +101,7 @@ SectionNewListings.defaultProps = {
   options: null,
 };
 
-SectionNewListings.propTypes = {
+SectionColumnsCategories.propTypes = {
   sectionId: string.isRequired,
   className: string,
   rootClassName: string,
@@ -126,4 +121,4 @@ SectionNewListings.propTypes = {
   options: propTypeOption,
 };
 
-export default SectionNewListings;
+export default SectionColumnsCategories;

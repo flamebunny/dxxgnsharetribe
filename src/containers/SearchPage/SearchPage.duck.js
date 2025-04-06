@@ -305,10 +305,6 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   } = config.layout.listingImage;
   const aspectRatio = aspectHeight / aspectWidth;
 
-
-  console.log('searchconfig')
-  console.log(config)
-
   const searchListingsCall = searchListings(
     {
       ...rest,

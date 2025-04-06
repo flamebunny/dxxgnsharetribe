@@ -105,7 +105,7 @@ export const ListingCardComponent = props => {
       }
     : null;
 
-  const { formattedPrice, priceTitle } = priceData(price, config.currency, intl);
+  const { formattedPrice = 0, priceTitle } = priceData(price, config.currency, intl);
 
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>

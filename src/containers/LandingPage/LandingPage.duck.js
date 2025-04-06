@@ -17,7 +17,9 @@ export const fashionSectionId = 'fashion-listings';
 export const featuredSectionId = 'featured-listings';
 export const heroimgcustomSectionId = 'hero-img-custom';
 export const textlinksSectionId = 'new-listing-textlinks';
-export const columnsTextSectionId = 'new-listing-columnstext';
+export const columnsTextSectionId = 'landingpage-columnstext';
+export const categoriesSectionId = 'landingpage-categories';
+
 import { constructQueryParamName, isOriginInUse, isStockInUse } from '../../util/search';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
 import { parse } from '../../util/urlHelpers';

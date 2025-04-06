@@ -9,17 +9,18 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getNewListingParams, getFashionListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, fashionSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getNewListingParams, getFashionListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, fashionSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId, categoriesSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
 import SectionTextLinks from '../../containers/PageBuilder/SectionBuilder/SectionTextLinks';
 import SectionColumnsText from '../../containers/PageBuilder/SectionBuilder/SectionColumnsText';
+import SectionNewListings from '../../containers/PageBuilder/SectionBuilder/SectionNewListings';
+import SectionFeaturedListings from '../../containers/PageBuilder/SectionBuilder/SectionFeaturedListings';
+import SectionColumnsCategories from '../PageBuilder/SectionBuilder/SectionColumnsCategories';
 
 import { manageDisableScrolling, isScrollingDisabled } from '../../ducks/ui.duck';
-
-
 
 import { searchListings } from '../SearchPage/SearchPage.duck';
 import { landingpageFeaturedListings } from '../LandingPage/LandingPage.duck';
@@ -28,8 +29,6 @@ import { useConfiguration } from '../../context/configurationContext';
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
-
-import { SectionNewListings, SectionFeaturedListings } from '../PageBuilder/SectionBuilder';
 
 const newSectionType = 'new';
 const fashionSectionType = 'fashion';
@@ -41,6 +40,7 @@ const textlinksSectionType = 'textlinks';
 const columns = 'columns';
 const userSectionType = 'user';
 const columnsTextType = 'columnstext';
+const categoriesSectionType = 'categories';
 
 export const LandingPageComponent = props => {
   const {
@@ -58,7 +58,8 @@ export const LandingPageComponent = props => {
     onFetchFeaturedListings,
   } = props;
 
-  const config = useConfiguration();
+  const config = useConfiguration();  
+
   useEffect(() => {
     const paramsFeatured = getFeaturedListingParams(config, featuredListingIds);
     const paramsNew = getNewListingParams(config);
@@ -66,16 +67,11 @@ export const LandingPageComponent = props => {
     onFetchFeaturedListings(paramsFeatured, config);
     onFetchNewListings(paramsNew, config);
   //  onFetchCategoryFashionListings(paramsFashion, config);
-    
-
-    
+      
   }, [featuredListingIds]);
 
   // Construct custom page data
   const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
-
-
-
 
   // Construct custom page data
   // Featured Listing Section
@@ -166,6 +162,18 @@ export const LandingPageComponent = props => {
     sectionType: columnsTextType,
  //   listings: listings,
   };
+
+  // LandingPage Categories Section
+  const categoriesSectionIdx = pageData?.sections.findIndex(s => s.sectionId === categoriesSectionId);
+  const categoriesSection = pageData?.sections[categoriesSectionIdx];
+
+  const customCategoriesSection = {
+    ...categoriesSection,
+    sectionId: categoriesSectionId,
+    sectionType: categoriesSectionType,
+    allCategories: config.categoryConfiguration.categories,
+  //  listings: listings,
+  };
     
   // Replace the original section with the custom section object
   // in custom page data
@@ -200,6 +208,8 @@ export const LandingPageComponent = props => {
           } else if (idx === columnsTextSectionIdx) {
             return customColumnsTextSection;
 
+          } else if (idx === categoriesSectionIdx) {
+            return customCategoriesSection;
             
           } else {
             return section;
@@ -233,6 +243,7 @@ export const LandingPageComponent = props => {
           [heroimgcustomSectionType]: { component: SectionHeroImgCustom },     
           [textlinksSectionType]: { component: SectionTextLinks },     
           [columnsTextType]: { component: SectionColumnsText },     
+          [categoriesSectionType]: { component: SectionColumnsCategories },     
                
         },
       }}

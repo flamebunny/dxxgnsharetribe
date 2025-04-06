@@ -72,13 +72,17 @@ const SectionFeaturedListings = props => {
       ) : null}
   
       {hasListings ? (
-        <div
-          className={classNames(getColumnCSS(numColumns), css.masonary)}
-        >
+        <div className={classNames(getColumnCSS(numColumns), css.masonary)}>
 
-          {listings.map(l => (
-            <ListingCard key={'featured'+l.id.uuid} listing={l} intl={intl} className={css.box} />
-          ))}
+          {listings.map((l, index) => {
+
+      //      if (index < 1){
+              return (
+                <ListingCard key={'featured'+l.id.uuid} listing={l} intl={intl} className={css.box} />
+              )              
+      //      }
+            
+          })}  
               
         </div>
       ) : null}
