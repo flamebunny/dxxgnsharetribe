@@ -1,10 +1,6 @@
 @import '../../../../styles/customMediaQueries.css';
 
 
-
-
-
-
 .baseColumn {
   max-width: var(--contentMaxWidthPages);
   display: grid;
@@ -136,10 +132,15 @@
   width: 100%;
 }
 
-.title {
+.title a {
   color: var(--marketplaceColor);
   margin: 5px 0px;
   text-decoration: line-through;
+}
+
+.title a:hover {
+  background: none;
+  text-decoration: none;
 }
 
 .fontInter {
@@ -155,7 +156,6 @@
 }
 
 .noSidePaddings{
-
 
   @media (--viewportLarge) {
     padding: 0 !important;

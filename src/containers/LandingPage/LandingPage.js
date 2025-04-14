@@ -66,7 +66,6 @@ export const LandingPageComponent = props => {
     const paramsFashion = getFashionListingParams(config);
     onFetchFeaturedListings(paramsFeatured, config);
     onFetchNewListings(paramsNew, config);
-  //  onFetchCategoryFashionListings(paramsFashion, config);
       
   }, [featuredListingIds]);
 
@@ -219,9 +218,6 @@ export const LandingPageComponent = props => {
       ]
     : null;
 
-  // console.log('LandingPage CustomSections')
-  // console.log(customSections)
-
   const customPageData = pageData
     ? {
         ...pageData,
@@ -300,9 +296,7 @@ const mapDispatchToProps = dispatch => ({
   onManageDisableScrolling: (componentId, disableScrolling) => dispatch(manageDisableScrolling(componentId, disableScrolling)),
 
   onFetchFeaturedListings: (params, config) => dispatch(landingpageFeaturedListings(params, config)),
-
   onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
-  onFetchCategoryFashionListings: (params, config) => dispatch(searchListings(params, config)),
 
 });
 

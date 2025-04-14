@@ -50,7 +50,10 @@ const resultIds = data => {
 };
 
 const listingPageReducer = (state = initialState, action = {}) => {
+ 
+
   const { type, payload } = action;
+
   switch (type) {
     case SEARCH_LISTINGS_REQUEST:
       return {
