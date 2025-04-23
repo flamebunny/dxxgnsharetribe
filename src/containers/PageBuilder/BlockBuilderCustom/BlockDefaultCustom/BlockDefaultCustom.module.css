@@ -10,10 +10,17 @@
 .text {
   width: 100%;
   margin-top: 20px;
-  text-decoration: line-through;
+  
 
   &:first-child {
     margin-top: 0;
+  }
+
+  a{
+    text-decoration: line-through;
+  }
+  a:hover{
+    text-decoration: none;
   }
 }
 
