@@ -319,6 +319,16 @@ export class SearchPageComponent extends Component {
       >
         <TopbarContainer rootClassName={topbarClasses} currentSearchParams={validQueryParams} />
         <div className={css.layoutWrapperContainer}>
+          <MainPanelHeader
+            className={css.mainPanel}
+            sortByComponent={sortBy('desktop')}
+            isSortByActive={sortConfig.active}
+            listingsAreLoaded={listingsAreLoaded}
+            resultsCount={totalItems}
+            searchInProgress={searchInProgress}
+            searchListingsError={searchListingsError}
+            noResultsInfo={noResultsInfo}
+          />
           <aside className={css.layoutWrapperFilterColumn} data-testid="filterColumnAside">
             <div className={css.filterColumnContent}>
               {availableFilters.map(filterConfig => {
@@ -390,16 +400,7 @@ export class SearchPageComponent extends Component {
                   );
                 })}
               </SearchFiltersMobile>
-              <MainPanelHeader
-                className={css.mainPanel}
-                sortByComponent={sortBy('desktop')}
-                isSortByActive={sortConfig.active}
-                listingsAreLoaded={listingsAreLoaded}
-                resultsCount={totalItems}
-                searchInProgress={searchInProgress}
-                searchListingsError={searchListingsError}
-                noResultsInfo={noResultsInfo}
-              />
+              
               <div
                 className={classNames(css.listingsForGridVariant, {
                   [css.newSearchInProgress]: !(listingsAreLoaded || searchListingsError),

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { array, arrayOf, bool, func, shape, string, oneOf, object } from 'prop-types';
+import classNames from 'classnames';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -217,7 +218,7 @@ export const ListingPageComponent = props => {
     isOwnListing && (processType !== 'inquiry' && !currentUser?.attributes?.stripeConnected);
   const payoutDetailsWarning = noPayoutDetailsSetWithOwnListing ? (
     <span className={css.payoutDetailsWarning}>
-      <FormattedMessage id="ListingPage.payoutDetailsWarning" values={{ processType }} />
+      <FormattedMessage id="ListingPage.payoutDetailsWarning" values='{{ processType }}' />
       <NamedLink name="StripePayoutPage">
         <FormattedMessage id="ListingPage.payoutDetailsWarningLink" />
       </NamedLink>
@@ -288,6 +289,17 @@ export const ListingPageComponent = props => {
 
   const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
 
+  const authorLink2 =
+    <NamedLink
+      className={css.authorNameLink}
+      name="ListingPage"
+      params={params}
+      to={{ hash: '#author' }}
+    >
+      {authorDisplayName}
+    </NamedLink>
+  
+
   return (
     <Page
       title={schemaTitle}
@@ -340,35 +352,8 @@ export const ListingPageComponent = props => {
               listing={currentListing}
               variantPrefix={config.layout.listingImage.variantPrefix}
             />
-            <div className={css.mobileHeading}>
-              <H4 as="h1" className={css.orderPanelTitle}>
-                <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-              </H4>
-            </div>
-            <SectionTextMaybe text={description} showAsIngress />
-
-
-
-            <SectionMapMaybe
-              geolocation={geolocation}
-              publicData={publicData}
-              listingId={currentListing.id}
-              mapsConfig={config.maps}
-            />
-            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
-            <SectionAuthorMaybe
-              title={title}
-              listing={currentListing}
-              authorDisplayName={authorDisplayName}
-              onContactUser={onContactUser}
-              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
-              onCloseInquiryModal={() => setInquiryModalOpen(false)}
-              sendInquiryError={sendInquiryError}
-              sendInquiryInProgress={sendInquiryInProgress}
-              onSubmitInquiry={onSubmitInquiry}
-              currentUser={currentUser}
-              onManageDisableScrolling={onManageDisableScrolling}
-            />
+            
+            
           </div>
 
           <div className={css.orderColumnForProductLayout}>
@@ -376,6 +361,16 @@ export const ListingPageComponent = props => {
               <a className={css.breadcrumbLink} href="/s/">All</a>
               <span className={css.spacer}>·</span>
               <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
+            </div>
+            <div className={css.mobileHeading}>
+              <H4 as="h1" className={css.orderPanelTitle}>
+                <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
+              </H4>
+            </div>
+            <div className={classNames(css.mobileAuthor)}>                
+              <span className={css.providerNameLinked}>
+                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink2 }} />
+              </span>             
             </div>
             <OrderPanel
               className={css.productOrderPanel}
@@ -413,6 +408,15 @@ export const ListingPageComponent = props => {
               dayCountAvailableForBooking={config.stripe.dayCountAvailableForBooking}
               marketplaceName={config.marketplaceName}
             />
+            <SectionTextMaybe text={description} showAsIngress />
+            <SectionMapMaybe
+              geolocation={geolocation}
+              publicData={publicData}
+              listingId={currentListing.id}
+              mapsConfig={config.maps}
+            />
+            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+           
           </div>
         </div>
       </LayoutSingleColumn>

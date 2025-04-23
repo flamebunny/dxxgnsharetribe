@@ -67,13 +67,14 @@
 
   @media (--viewportMedium) {
     padding: 0;
-    margin-top: 72px;
+    margin-top: 42px;
   }
 }
 
 .finePrint {
   composes: marketplaceTinyFontStyles from global;
   text-align: center;
+  text-transform: uppercase;
 }
 
 .error {

@@ -351,11 +351,23 @@
   }
 }
 
+
 .breadcrumbs {
+  padding: 0 24px;
+  margin-bottom: 0;
+  margin-top: 0;
+
   font-family: "Cousine", serif;
   font-weight: 400;
   font-size: 14px;  
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
 }
+
 
 .breadcrumbLink {
   color: var(--colorGrey700);
@@ -374,14 +386,20 @@
   }
   /* Note: panel height might be too much on small viewport - hence min-height */
   @media (--viewportLarge) and (min-height: 950px) {
+    /*
     position: sticky;
     top: 108px;
+    */
   }
 }
 
 .orderPanelTitle {
   /* Font */
-  font-weight: var(--fontWeightBold);
+  font-weight: var(--fontWeightMedium);
+  font-family: 'Inter';
+  font-size: 36px;
+  line-height: 44px;
+  text-transform: uppercase;
 
   /* Layout */
   width: 100%;
@@ -502,6 +520,40 @@
 .authorNameLink {
   composes: textSmall from global;
   color: var(--colorGrey700);
+
+  /* Font */
+  font-weight: var(--fontWeightMedium);
+  font-family: 'Inter';
+  font-size: 36px;
+  line-height: 44px;
+  text-transform: uppercase;
+}
+
+.providerNameLinked {
+  display: inline;
+  padding: 0 24px;
+  margin-bottom: 0;
+  margin-top: 0;
+
+  /* Font */
+  font-weight: var(--fontWeightMedium);
+  font-family: 'Inter';
+  font-size: 36px;
+  line-height: 44px;
+  text-transform: uppercase;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  @media (--viewportLarge) {
+    display: none;
+    padding: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
 }
 
 .contactWrapper {
@@ -549,10 +601,12 @@
 .sectionText {
   padding: 0 24px;
   margin-bottom: 36px;
+  margin-top: 42px;
 
   @media (--viewportMedium) {
     padding: 0;
     margin-bottom: 40px;
+    margin-top: 40px;
   }
 }
 
@@ -744,10 +798,10 @@
 }
 
 .mobileHeading {
-  margin: 0 24px 24px 24px;
+  margin: 24px 0px 0px 24px;
 
   @media (--viewportMedium) {
-    margin: 0 0 24px 0;
+    margin: 24px 0px 0px 0;
   }
 
   @media (--viewportLarge) {

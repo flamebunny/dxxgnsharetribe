@@ -93,9 +93,17 @@
   flex-direction: row;
   align-items: center;
 
+  /* Font */
+  font-weight: var(--fontWeightMedium);
+  font-family: 'Inter';
+  font-size: 36px;
+  line-height: 44px;
+  text-transform: uppercase;
+
   @media (--viewportMedium) {
     width: 100%;
-    margin: 12px 0 36px 0;
+    margin: 0 0 5px 0;
+    padding: 0;
     color: var(--colorGrey700);
   }
 }
@@ -127,6 +135,7 @@
 
 .orderHeading {
   display: none;
+  font-weight: var(--fontWeightBold);
 
   @media (--viewportLarge) {
     display: block;

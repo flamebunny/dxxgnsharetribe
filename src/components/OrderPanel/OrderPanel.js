@@ -277,12 +277,21 @@ const OrderPanel = props => {
         usePortal
       >
         <div className={css.modalHeading}>
-          <H1 className={css.heading}>{title}</H1>
-        </div>
+          <H1 className={css.heading}>{title} by</H1>
+        </div>        
 
         <div className={css.orderHeading}>
           {titleDesktop ? titleDesktop : <H2 className={titleClasses}>{title}</H2>}
           {subTitleText ? <div className={css.orderHelp}>{subTitleText}</div> : null}
+        </div>
+
+        <div className={css.author}>         
+          <span className={css.providerNameLinked}>
+            By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
+          </span>
+          <span className={css.providerNamePlain}>
+            By <FormattedMessage id="OrderPanel.author" values={{ name: authorDisplayName }} />
+          </span>
         </div>
 
         <PriceMaybe
@@ -293,15 +302,6 @@ const OrderPanel = props => {
           marketplaceCurrency={marketplaceCurrency}
         />
 
-        <div className={css.author}>
-          <AvatarSmall user={author} className={css.providerAvatar} />
-          <span className={css.providerNameLinked}>
-            <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
-          </span>
-          <span className={css.providerNamePlain}>
-            <FormattedMessage id="OrderPanel.author" values={{ name: authorDisplayName }} />
-          </span>
-        </div>
 
         {showPriceMissing ? (
           <PriceMissing />

@@ -39,12 +39,17 @@ const getFirstImageAspectRatio = (firstImage, scaledVariant) => {
   const hasDimensions = !!w && !!h;
   const aspectRatio = w / h;
 
+
+  console.log('firstImage?.attributes?.variants?.[scaledVariant]');
+  console.log(w, h);
+  console.log(aspectRatio);
+
   // We keep the fractions separated as these are given to AspectRatioWrapper
   // which expects separate width and height
   return hasDimensions && aspectRatio >= MAX_LANDSCAPE_ASPECT_RATIO
     ? { aspectWidth: 2, aspectHeight: 1 }
     : hasDimensions && aspectRatio <= MAX_PORTRAIT_ASPECT_RATIO
-    ? { aspectWidth: 4, aspectHeight: 3 }
+    ? { aspectWidth: 4, aspectHeight: 5 }
     : hasDimensions
     ? { aspectWidth: w, aspectHeight: h }
     : { aspectWidth: 1, aspectHeight: 1 };
@@ -56,6 +61,11 @@ const ListingImageGallery = props => {
   const thumbVariants = thumbnailVariants || imageVariants;
   // imageVariants are scaled variants.
   const { aspectWidth, aspectHeight } = getFirstImageAspectRatio(images?.[0], imageVariants[0]);
+
+  console.log('aspectWidth, aspectHeight');
+  console.log(aspectWidth, aspectHeight);
+  console.log(images?.[0]);
+
   const items = images.map((img, i) => {
     return {
       // We will only use the image resource, but react-image-gallery

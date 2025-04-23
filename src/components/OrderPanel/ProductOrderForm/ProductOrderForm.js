@@ -274,15 +274,6 @@ const renderForm = formRenderProps => {
         </div>
       ) : null}
 
-      <div className={css.submitButton}>
-        <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
-          {hasStock ? (
-            <FormattedMessage id="ProductOrderForm.ctaButton" />
-          ) : (
-            <FormattedMessage id="ProductOrderForm.ctaButtonNoStock" />
-          )}
-        </PrimaryButton>
-      </div>
       <p className={css.finePrint}>
         {payoutDetailsWarning ? (
           payoutDetailsWarning
@@ -294,6 +285,17 @@ const renderForm = formRenderProps => {
           <FormattedMessage id="ProductOrderForm.finePrintNoStock" values={{ contactSellerLink }} />
         ) : null}
       </p>
+
+      <div className={css.submitButton}>
+        <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
+          {hasStock ? (
+            <FormattedMessage id="ProductOrderForm.ctaButton" />
+          ) : (
+            <FormattedMessage id="ProductOrderForm.ctaButtonNoStock" />
+          )}
+        </PrimaryButton>
+      </div>
+      
     </Form>
   );
 };
