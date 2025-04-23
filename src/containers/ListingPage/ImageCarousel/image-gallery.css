@@ -262,7 +262,7 @@
     border: 2px solid #337ab7; }
     @media (max-width: 768px) {
       .image-gallery-thumbnail.active, .image-gallery-thumbnail:hover, .image-gallery-thumbnail:focus {
-        border: 3px solid #337ab7; } }
+        border: 2px solid #337ab7; } }
 
 .image-gallery-thumbnail-label {
   box-sizing: border-box;
