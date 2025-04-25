@@ -267,6 +267,7 @@
 
 .mainColumnForProductLayout {
   @media (--viewportMedium) {
+    
   }
   @media (--viewportLarge) {
     /* contentContainer's full width - (orderColumn + paddings + margin) */
@@ -275,17 +276,31 @@
     flex-shrink: 0;
     flex-grow: 1;
   }
+  @media (--viewportXLarge) {
+    /* contentContainer's full width - (orderColumn + paddings + margin) */
+    max-width: calc(100% - 550px);
+    flex-basis: calc(100% - 550px);
+    flex-shrink: 0;
+    flex-grow: 1;
+  }
 }
 
 .orderColumnForProductLayout {
   @media (--viewportMedium) {
+    
   }
   @media (--viewportLarge) {
     display: block;
-    margin-left: 48px;
-    flex-basis: 312px;
+    margin-left: 36px;
+    flex-basis: 322px;
     flex-shrink: 0;
   }
+  @media (--viewportXLarge) {
+    display: block;
+    margin-left: 36px;
+    flex-basis: 512px;
+    flex-shrink: 0;
+  }  
 }
 
 .contentWrapperForProductLayout {
@@ -293,7 +308,8 @@
 
   @media (--viewportMedium) {
     width: 100%;
-    max-width: var(--contentMaxWidth);
+    /*max-width: var(--contentMaxWidth);*/
+    max-width: 100%;
     padding: 0 24px 0 24px;
     margin: 0 auto 56px auto;
   }
@@ -301,8 +317,10 @@
   @media (--viewportLarge) {
     display: flex;
     flex-direction: row;
-    max-width: unset;
-    width: min(calc(var(--contentMaxWidth) + 72px), 100vw);
+    /*max-width: unset;*/
+    /*width: min(calc(var(--contentMaxWidth) + 72px), 100vw);*/
+    width: 100%;
+    max-width: 100%;
     padding: 64px 36px 0 36px;
     margin: 0 auto 117px auto;
   }
