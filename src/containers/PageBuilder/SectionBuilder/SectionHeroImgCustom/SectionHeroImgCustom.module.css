@@ -35,7 +35,8 @@
 }
 
 .imgwidthunset {
-  max-width: 1500px !important;
+  /* max-width: 1500px !important; */
+  position: relative;
   margin: 0 auto;
 }
 

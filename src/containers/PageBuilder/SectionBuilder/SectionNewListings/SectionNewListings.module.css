@@ -2,7 +2,8 @@
 
 
 .baseColumn {
-  max-width: var(--contentMaxWidthPages);
+  /*max-width: var(--contentMaxWidthPages);*/
+  max-width: 100%;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 32px;
@@ -116,13 +117,13 @@
   }
 
   @media (--viewportLarge) {
-    padding: 0;
+    padding: 0 24px 0 24px;
     grid-template-columns: repeat(4, 1fr);
 
   }
 
   @media (min-width: 1440px) {
-    padding: 0;
+    padding: 0 24px 0 24px;
     grid-template-columns: repeat(4, 1fr);
   }
 
