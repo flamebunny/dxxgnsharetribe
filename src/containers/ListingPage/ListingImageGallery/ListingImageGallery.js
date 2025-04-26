@@ -39,11 +39,6 @@ const getFirstImageAspectRatio = (firstImage, scaledVariant) => {
   const hasDimensions = !!w && !!h;
   const aspectRatio = w / h;
 
-
-  console.log('firstImage?.attributes?.variants?.[scaledVariant]');
-  console.log(w, h);
-  console.log(aspectRatio);
-
   // We keep the fractions separated as these are given to AspectRatioWrapper
   // which expects separate width and height
   return hasDimensions && aspectRatio >= MAX_LANDSCAPE_ASPECT_RATIO
@@ -61,10 +56,6 @@ const ListingImageGallery = props => {
   const thumbVariants = thumbnailVariants || imageVariants;
   // imageVariants are scaled variants.
   const { aspectWidth, aspectHeight } = getFirstImageAspectRatio(images?.[0], imageVariants[0]);
-
-  console.log('aspectWidth, aspectHeight');
-  console.log(aspectWidth, aspectHeight);
-  console.log(images?.[0]);
 
   const items = images.map((img, i) => {
     return {
