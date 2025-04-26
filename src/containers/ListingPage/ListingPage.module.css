@@ -271,15 +271,15 @@
   }
   @media (--viewportLarge) {
     /* contentContainer's full width - (orderColumn + paddings + margin) */
-    max-width: calc(100% - 360px);
-    flex-basis: calc(100% - 360px);
+    max-width: calc(58%);
+    flex-basis: calc(58%);
     flex-shrink: 0;
     flex-grow: 1;
   }
   @media (--viewportXLarge) {
     /* contentContainer's full width - (orderColumn + paddings + margin) */
-    max-width: calc(100% - 550px);
-    flex-basis: calc(100% - 550px);
+    max-width: calc(58%);
+    flex-basis: calc(58%);
     flex-shrink: 0;
     flex-grow: 1;
   }
@@ -292,7 +292,7 @@
   @media (--viewportLarge) {
     display: block;
     margin-left: 36px;
-    flex-basis: 322px;
+    flex-basis: 40%;
     flex-shrink: 0;
   }
   @media (--viewportXLarge) {

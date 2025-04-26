@@ -121,7 +121,7 @@
 .itemWrapperFullscreen {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;  
 }
 
 .itemWrapper {
@@ -133,7 +133,12 @@
 }
 
 .itemWrapperFullscreen {
-  height: calc(100vh - 130px);
+  height: calc(100vh);
+
+  .item {
+    max-width: unset;
+    width: unset;
+  }
 }
 
 .itemCentering {
