@@ -1,10 +1,8 @@
 @import '../../../styles/customMediaQueries.css';
 
 :global(.image-gallery-thumbnails-container) {
-  text-align: left !important;
-  
+  text-align: left !important;  
   padding: 0 0 72px 0;
-
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
@@ -63,9 +61,9 @@
   width: auto;
   border-radius: 0;
   text-align: left !important;
+  cursor: pointer;
 
-  &:first-child {
-    
+  &:first-child {    
 
     @media (--viewportMedium) {
       
@@ -85,8 +83,8 @@
   }
 }
 
-:global(.image-gallery-thumbnail + .image-gallery-thumbnail) {
-  margin-left: 0;
+:global(.image-gallery-thumbnails .image-gallery-thumbnails-container){
+  cursor: auto;
 }
 
 :global(.image-gallery-slide-wrapper) {
