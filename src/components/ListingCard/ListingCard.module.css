@@ -15,8 +15,14 @@
   transition: var(--transitionStyleButton);
   background: var(--colorGrey100); /* Loading BG color */
   overflow: hidden;
+  margin-bottom: 14px;
+
+  @media (--viewportSmall) {
+    margin-bottom: 14px;
+  }
 
   @media (--viewportMedium) {
+    margin-bottom: 0;
     &:hover {
       transform: scale(1.02);
       box-shadow: var(--boxShadowListingCard);
@@ -39,10 +45,19 @@
 
 .info2{
   position: absolute;
-  bottom: -32px;
+  bottom: -18px;
   left: 0;
   font-size: 12px;
   width: 100%;
+
+  @media (--viewportSmall) {
+    bottom: -18px;
+  }
+
+  @media (--viewportMedium) {
+    bottom: -32px;
+  }
+
 }
 
 .infoAuthor {

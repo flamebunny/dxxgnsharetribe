@@ -27,15 +27,17 @@
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 10px;
   width: 100%;
 
   @media (min-width: 550px) {
     grid-template-columns: repeat(2, 1fr);
-  }
+    gap: 10px;
+  } 
 
   @media (--viewportMedium) {
     padding: 0 0 96px 0;
+    gap: 24px;
     grid-template-columns: repeat(2, 1fr);
   }
 
