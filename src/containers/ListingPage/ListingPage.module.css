@@ -67,7 +67,6 @@
 
   @media (--viewportMedium) {
     flex-direction: row;
-    border-radius: var(--borderRadiusMedium);
   }
 }
 

@@ -189,7 +189,7 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   padding: 18px 24px 18px 24px;
   background-color: var(--colorWhite);
   box-shadow: var(--boxShadowTop);
