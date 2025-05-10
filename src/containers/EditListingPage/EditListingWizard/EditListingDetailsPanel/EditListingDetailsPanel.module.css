@@ -10,4 +10,12 @@
 
 .form {
   flex-grow: 1;
+  width: unset;
+
+  @media (--viewportMedium) {
+    width: unset;
+  }
+  @media (--viewportLarge) {
+    width: 600px;
+  }
 }

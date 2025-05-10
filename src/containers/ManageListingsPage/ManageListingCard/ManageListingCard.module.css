@@ -78,7 +78,6 @@
   > div:first-child {
     position: relative;
     overflow: hidden;
-    height: 248px;
   }
 }
 

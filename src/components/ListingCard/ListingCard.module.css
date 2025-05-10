@@ -61,8 +61,18 @@
 }
 
 .infoAuthor {
-   max-width: 28%;
-   display: inline-block;
+  max-width: 28%;
+  display: inline-block;
+
+  
+  @media (max-width: 500px) {
+    max-width: 20%;
+    display: none !important;
+
+    + .slash {
+      display: none !important;
+    }
+  }
 }
 
 .infoTitle {

@@ -6,6 +6,7 @@
   flex-shrink: 0;
   padding: 0;
   height: 100%;
+  width: 277px;
 
   &:hover {
     text-decoration: none;
