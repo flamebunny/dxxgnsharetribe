@@ -41,7 +41,7 @@
   font-family: "EB Garamond", serif;
   font-weight: 700;
   font-style: italic;
-  font-size: 54px;
+  font-size: 44px;
   color: #4A4A4A;
   letter-spacing: -1px;
   line-height: 32px;
@@ -51,6 +51,10 @@
   display: flex;
   justify-content: center;
   align-items: center; 
+
+  @media (--viewportMedium) {
+    font-size: 54px;
+  }
 }
 
 .columnsText p {
@@ -65,5 +69,9 @@
 }
 
 .noSidePaddings{
-  padding: 0 !important;
+  padding: 0 10px !important;
+
+  @media (--viewportMedium) {
+    padding: 0 !important;
+  }
 }
