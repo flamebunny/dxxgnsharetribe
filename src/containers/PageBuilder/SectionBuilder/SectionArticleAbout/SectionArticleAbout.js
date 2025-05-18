@@ -1,5 +1,5 @@
 import React from 'react';
-import { arrayOf, bool, func, node, object, shape, string } from 'prop-types';
+import { arrayOf, bool, func, node, number, object, shape, string } from 'prop-types';
 import classNames from 'classnames';
 
 import Field, { hasDataInFields } from '../../Field';
@@ -8,14 +8,31 @@ import BlockBuilder from '../../BlockBuilder';
 import SectionContainer from '../SectionContainer';
 import css from './SectionArticleAbout.module.css';
 
-// Section component that's able to show article content
-// The article content is mainly supposed to be inside a block
+// The number of columns (numColumns) affects styling and responsive images
+const COLUMN_CONFIG = [
+  { css: css.oneColumn, responsiveImageSizes: '(max-width: 767px) 100vw, 1200px' },
+  { css: css.twoColumns, responsiveImageSizes: '(max-width: 767px) 100vw, 600px' },
+  { css: css.threeColumns, responsiveImageSizes: '(max-width: 767px) 100vw, 400px' },
+  { css: css.fourColumns, responsiveImageSizes: '(max-width: 767px) 100vw, 265px' },
+];
+const getIndex = numColumns => numColumns - 1;
+const getColumnCSS = numColumns => {
+  const config = COLUMN_CONFIG[getIndex(numColumns)];
+  return config ? config.css : COLUMN_CONFIG[0].css;
+};
+const getResponsiveImageSizes = numColumns => {
+  const config = COLUMN_CONFIG[getIndex(numColumns)];
+  return config ? config.responsiveImageSizes : COLUMN_CONFIG[0].responsiveImageSizes;
+};
+
+// Section component that's able to show blocks in multiple different columns (defined by "numColumns" prop)
 const SectionArticleAbout = props => {
   const {
     sectionId,
     className,
     rootClassName,
     defaultClasses,
+    numColumns,
     title,
     description,
     appearance,
@@ -33,10 +50,14 @@ const SectionArticleAbout = props => {
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
   const hasBlocks = blocks?.length > 0;
 
+  const textSmall = sectionId ==='article-about3' ? css.textSmall : '';
+  console.log('sectionId');
+  console.log(sectionId);
+
   return (
     <SectionContainer
       id={sectionId}
-      className={classNames(className, css.root)}
+      className={classNames(className, css.root, textSmall)}
       rootClassName={rootClassName}
       appearance={appearance}
       options={fieldOptions}
@@ -50,19 +71,20 @@ const SectionArticleAbout = props => {
       ) : null}
       {hasBlocks ? (
         <div
-          className={classNames(defaultClasses.blockContainer, css.articleMain, {
+          className={classNames(defaultClasses.blockContainer, css.paragraph, getColumnCSS(numColumns), {
             [css.noSidePaddings]: isInsideContainer,
           })}
         >
           <BlockBuilder
+            ctaButtonClass={defaultClasses.ctaButton}              
             blocks={blocks}
             sectionId={sectionId}
-            ctaButtonClass={defaultClasses.ctaButton}
+            responsiveImageSizes={getResponsiveImageSizes(numColumns)}
             options={options}
-          />
+          />      
         </div>
       ) : null}
-    </SectionContainer>
+    </SectionContainer>   
   );
 };
 
@@ -75,6 +97,7 @@ SectionArticleAbout.defaultProps = {
   rootClassName: null,
   defaultClasses: null,
   textClassName: null,
+  numColumns: 1,
   title: null,
   description: null,
   appearance: null,
@@ -94,6 +117,7 @@ SectionArticleAbout.propTypes = {
     description: string,
     ctaButton: string,
   }),
+  numColumns: number,
   title: object,
   description: object,
   appearance: object,

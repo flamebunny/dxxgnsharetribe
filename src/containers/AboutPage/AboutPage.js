@@ -10,7 +10,7 @@ import { propTypes } from '../../util/types';
 
 import { H1 } from '../PageBuilder/Primitives/Heading';
 import FallbackPage, { fallbackSections } from './FallbackPage';
-import { ASSET_NAME, heroimgcustomSectionId, articleaboutSectionId } from './AboutPage.duck';
+import { ASSET_NAME, heroimgcustomSectionId, articleaboutSectionId, articleaboutSection2Id, articleaboutSection3Id, articleaboutSection4Id } from './AboutPage.duck';
 
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
 import SectionArticleAbout from '../PageBuilder/SectionBuilder/SectionArticleAbout';
@@ -21,6 +21,9 @@ const PageBuilder = loadable(() =>
 
 const heroimgcustomSectionType = 'heroimgcustom';
 const articleaboutSectionType = 'articleabout';
+const articleaboutSectionType2 = 'articleabout2';
+const articleaboutSectionType3 = 'articleabout3';
+const articleaboutSectionType4 = 'articleabout4';
 
 
 
@@ -93,6 +96,39 @@ const AboutPageComponent = props => {
   //   listings: listings,
   };
 
+    // ArticleAbout2 Section
+  const articleaboutSection2Idx = pageData?.sections.findIndex(s => s.sectionId === articleaboutSection2Id);
+  const articleaboutSection2 = pageData?.sections[articleaboutSection2Idx];
+
+  const customArticleaboutSection2 = {
+    ...articleaboutSection2,
+    sectionId: articleaboutSection2Id,
+    sectionType: articleaboutSectionType2,
+  //   listings: listings,
+  };
+
+     // ArticleAbout3 Section
+  const articleaboutSection3Idx = pageData?.sections.findIndex(s => s.sectionId === articleaboutSection3Id);
+  const articleaboutSection3 = pageData?.sections[articleaboutSection3Idx];
+
+  const customArticleaboutSection3 = {
+    ...articleaboutSection3,
+    sectionId: articleaboutSection3Id,
+    sectionType: articleaboutSectionType3,
+  //   listings: listings,
+  };
+
+     // ArticleAbout2 Section
+  const articleaboutSection4Idx = pageData?.sections.findIndex(s => s.sectionId === articleaboutSection4Id);
+  const articleaboutSection4 = pageData?.sections[articleaboutSection4Idx];
+
+  const customArticleaboutSection4 = {
+    ...articleaboutSection4,
+    sectionId: articleaboutSection4Id,
+    sectionType: articleaboutSectionType4,
+  //   listings: listings,
+  };
+
   const customSections = pageData
     ? [
         ...pageData.sections.map((section, idx) =>{
@@ -104,6 +140,15 @@ const AboutPageComponent = props => {
 
           } else if  (idx === articleaboutSectionIdx) {
               return customArticleaboutSection;   
+
+          } else if  (idx === articleaboutSection2Idx) {
+              return customArticleaboutSection2;   
+
+          } else if  (idx === articleaboutSection3Idx) {
+              return customArticleaboutSection3;  
+
+          } else if  (idx === articleaboutSection4Idx) {
+              return customArticleaboutSection4;  
 
           } else {
             return section;
@@ -127,6 +172,9 @@ const AboutPageComponent = props => {
         sectionComponents: {       
           [heroimgcustomSectionType]: { component: SectionHeroImgCustom },
           [articleaboutSectionType]: { component: SectionArticleAbout }, 
+          [articleaboutSectionType2]: { component: SectionArticleAbout }, 
+          [articleaboutSectionType3]: { component: SectionArticleAbout }, 
+          [articleaboutSectionType4]: { component: SectionArticleAbout }, 
         },
       }}
       inProgress={inProgress}
