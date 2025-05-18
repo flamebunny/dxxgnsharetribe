@@ -51,8 +51,6 @@ const SectionArticleAbout = props => {
   const hasBlocks = blocks?.length > 0;
 
   const textSmall = sectionId ==='article-about3' ? css.textSmall : '';
-  console.log('sectionId');
-  console.log(sectionId);
 
   return (
     <SectionContainer
