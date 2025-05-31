@@ -5,6 +5,7 @@
   align-items: center;
   height: 60px;
   max-width: 370px;
+  min-width: 204px;
   margin: 0;
 
   @media (--viewportMedium) {

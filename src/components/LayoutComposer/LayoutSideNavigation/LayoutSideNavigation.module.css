@@ -58,8 +58,66 @@
   }
 }
 
-.sideNav {
+
+
+.tabs {
   /* Layout */
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  flex-shrink: 0;
+  background-color: var(--colorWhite);
+  box-shadow: var(--boxShadowLight);
+  border-top: 1px solid var(--colorGrey100);
+  overflow-x: scroll;
+
+  @media (--viewportLarge) {
+    padding: 72px 0 82px 36px;
+    flex-direction: column;
+    overflow-x: auto;
+    background-color: var(--colorGrey50);
+    box-shadow: none;
+    border-top: none;
+  }
+
+  @media (--viewportLargeWithPaddings) {
+    padding: 72px 0 82px 36px;
+  }
+}
+
+.tab {
+  margin-left: 16px;
+  white-space: nowrap;
+
+  &:first-child {
+    margin-left: 0;
+
+    /* Padding added to tab so that it will be visible after call to scrollToTab */
+    padding-left: 24px;
+  }
+
+  &:last-child {
+    /* Padding added to tab so that it will be visible after call to scrollToTab */
+    padding-right: 24px;
+  }
+
+  @media (--viewportLarge) {
+    margin-left: 0;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+
+/*
+
+.sideNav {
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
@@ -120,3 +178,4 @@
     margin-left: 0;
   }
 }
+*/
