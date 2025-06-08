@@ -412,7 +412,7 @@
 
 .orderPanelTitle {
   /* Font */
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightBold);
   font-family: 'Inter';
   font-size: 36px;
   line-height: 44px;
@@ -539,11 +539,16 @@
   color: var(--colorGrey700);
 
   /* Font */
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightBold);
   font-family: 'Inter';
   font-size: 36px;
   line-height: 44px;
   text-transform: uppercase;
+  text-decoration: line-through;
+
+  &:hover {
+    text-decoration: none;
+  }
 }
 
 .providerNameLinked {
@@ -710,6 +715,15 @@
   }
   @media (--viewportLarge) {
     padding: 8px 0;
+  }
+}
+
+.sectionReviews {
+  h2 {
+    font-weight: var(--fontWeightBold);
+    font-family: 'Inter', serif;
+    text-transform: uppercase;
+    
   }
 }
 

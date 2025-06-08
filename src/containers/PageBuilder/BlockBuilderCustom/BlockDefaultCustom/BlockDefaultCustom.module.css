@@ -18,6 +18,10 @@
 
   a{
     text-decoration: line-through;
+    text-transform: uppercase;
+    font-family: "Inter", serif;
+
+    text-transform: uppercase;
   }
   a:hover{
     text-decoration: none;

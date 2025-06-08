@@ -19,6 +19,7 @@ export const heroimgcustomSectionId = 'hero-img-custom';
 export const textlinksSectionId = 'new-listing-textlinks';
 export const columnsTextSectionId = 'landingpage-columnstext';
 export const categoriesSectionId = 'landingpage-categories';
+export const carouselNewSectionId = 'carousel-new-listings';
 
 import { searchListings } from '../SearchPage/SearchPage.duck';
 

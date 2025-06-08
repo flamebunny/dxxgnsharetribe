@@ -94,7 +94,7 @@
   align-items: center;
 
   /* Font */
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightBold);
   font-family: 'Inter';
   font-size: 36px;
   line-height: 44px;

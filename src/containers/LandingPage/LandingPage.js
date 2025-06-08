@@ -9,16 +9,17 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME, getNewListingParams, getFashionListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, fashionSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId, categoriesSectionId } from './LandingPage.duck';
+import { ASSET_NAME, getNewListingParams, getFashionListingParams, getFeaturedListingParams, featuredSectionId, newSectionId, fashionSectionId, masonarySectionId, textblurbSectionId, heroimgcustomSectionId, textlinksSectionId, columnsTextSectionId, categoriesSectionId, carouselNewSectionId } from './LandingPage.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import SectionMasonary from '../../containers/PageBuilder/SectionBuilder/SectionMasonary';
 import SectionTextblurb from '../../containers/PageBuilder/SectionBuilder/SectionTextblurb';
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
 import SectionTextLinks from '../../containers/PageBuilder/SectionBuilder/SectionTextLinks';
 import SectionColumnsText from '../../containers/PageBuilder/SectionBuilder/SectionColumnsText';
-import SectionNewListings from '../../containers/PageBuilder/SectionBuilder/SectionNewListings';
+import SectionNewListings from '../../containers/PageBuilder/SectionBuilder/SectionNewListings'
 import SectionFeaturedListings from '../../containers/PageBuilder/SectionBuilder/SectionFeaturedListings';
 import SectionColumnsCategories from '../PageBuilder/SectionBuilder/SectionColumnsCategories';
+import SectionCarouselNew from '../../containers/PageBuilder/SectionBuilder/SectionCarouselNew';
 
 import { manageDisableScrolling, isScrollingDisabled } from '../../ducks/ui.duck';
 
@@ -41,6 +42,8 @@ const columns = 'columns';
 const userSectionType = 'user';
 const columnsTextType = 'columnstext';
 const categoriesSectionType = 'categories';
+const carouselNewSectionType = 'carouselsnew';
+
 
 export const LandingPageComponent = props => {
   const {
@@ -84,6 +87,17 @@ export const LandingPageComponent = props => {
     sectionType: featuredSectionType,
     listings: featuredListings,
   };   
+
+    // Carousel New Listing Section
+  const carouselNewSectionIdx = pageData?.sections.findIndex(s => s.sectionId === carouselNewSectionId);
+  const carouselNewSection = pageData?.sections[carouselNewSectionIdx];
+
+  const customCarouselNewSection = {
+    ...carouselNewSection,
+    sectionId: carouselNewSectionId,
+    sectionType: carouselNewSectionType,
+    listings: listings,
+  };
 
   // New Listing Section
   const newSectionIdx = pageData?.sections.findIndex(s => s.sectionId === newSectionId);
@@ -209,6 +223,9 @@ export const LandingPageComponent = props => {
 
           } else if (idx === categoriesSectionIdx) {
             return customCategoriesSection;
+          
+          } else if (idx === carouselNewSectionIdx) {
+            return customCarouselNewSection;
             
           } else {
             return section;
@@ -231,7 +248,7 @@ export const LandingPageComponent = props => {
       pageAssetsData={customPageData}
       options={{
         sectionComponents: {
-          [newSectionType]: { component: SectionNewListings },
+          [newSectionType]: { component: SectionNewListings },          
        //   [fashionSectionType]: { component: SectionNewListings },
           [featuredSectionType]: { component: SectionFeaturedListings },
         //  [masonarySectionType]: { component: SectionMasonary },
@@ -240,6 +257,7 @@ export const LandingPageComponent = props => {
           [textlinksSectionType]: { component: SectionTextLinks },     
           [columnsTextType]: { component: SectionColumnsText },     
           [categoriesSectionType]: { component: SectionColumnsCategories },     
+          [carouselNewSectionType]: { component: SectionCarouselNew },
                
         },
       }}
