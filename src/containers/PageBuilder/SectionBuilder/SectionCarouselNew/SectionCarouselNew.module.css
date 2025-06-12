@@ -14,8 +14,7 @@
   /* smartphones, touchscreens: we don't need to show arrows */
   @media (any-hover: none) and (pointer: coarse) {
     &:hover .carouselArrows {
-      opacity: 0;
-      display: none;
+
     }
   }
 }
@@ -324,6 +323,7 @@
   padding: 0;
   z-index: 1;
   margin-top: -12px;
+  pointer-events: none;
 
   /* center content */
   display: flex;
@@ -337,26 +337,56 @@
       background-color: rgba(255, 255, 255, 1);
     }
   }
+  
+  
+  @media (min-width: 550px) {
+    
+  }
+
+  @media (--viewportMedium) {
+    
+  }
+
+  @media (--viewportLarge) {
+    pointer-events: initial;
+  }
+
+  @media (min-width: 1440px) {
+    
+  }
+
 }
 
 .navLeft {
-  left: 25px;
+  left: 10px;
 
   & .navArrowWrapper {
     padding-right: 2px;
   }
+
+  @media (--viewportMedium) {
+    left: 24px;
+  }
 }
 
 .navRight {
-  right: 25px;
+  right: 10px;
 
   & .navArrowWrapper {
     padding-left: 2px;
   }
+
+  @media (--viewportMedium) {
+    right: 24px;
+  }
 }
 
 .navArrowWrapper {
-  display: none;
+  /* display: none; */
+
+  display: flex;
+    align-items: center;
+    justify-content: center;
 
   width: 40px;
   height: 40px;
@@ -370,4 +400,5 @@
     align-items: center;
     justify-content: center;
   }
+  
 }
