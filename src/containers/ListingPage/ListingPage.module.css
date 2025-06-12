@@ -285,11 +285,14 @@
 }
 
 .orderColumnForProductLayout {
+  margin: 0 16px;
+
   @media (--viewportMedium) {
-    
+    margin: 0;
   }
   @media (--viewportLarge) {
     display: block;
+    margin: 0;
     margin-left: 36px;
     flex-basis: 40%;
     flex-shrink: 0;
@@ -370,15 +373,15 @@
 
 
 .breadcrumbs {
-  padding: 0 24px;
-  margin-bottom: 0;
+  padding: 0;
+  margin-bottom: 10px;
   margin-top: 0;
 
   font-family: "Cousine", serif;
   font-weight: 400;
   font-size: 14px;  
 
-  @media (--viewportMedium) {
+  @media (--viewportSmall) {
     padding: 0;
     margin-bottom: 0;
     margin-top: 0;
@@ -414,14 +417,19 @@
   /* Font */
   font-weight: var(--fontWeightBold);
   font-family: 'Inter';
-  font-size: 36px;
-  line-height: 44px;
+  font-size: 30px;
+  line-height: 26px;
   text-transform: uppercase;
 
   /* Layout */
   width: 100%;
   margin-top: 0;
   margin-bottom: 0;
+
+  @media (--viewportSmall) {
+    font-size: 36px;
+    line-height: 44px;
+  }
 }
 
 .sectionAvatar {
@@ -541,40 +549,41 @@
   /* Font */
   font-weight: var(--fontWeightBold);
   font-family: 'Inter';
-  font-size: 36px;
-  line-height: 44px;
+  font-size: 30px;
+  line-height: 36px;
   text-transform: uppercase;
   text-decoration: line-through;
 
   &:hover {
     text-decoration: none;
   }
+
+  @media (--viewportSmall) {
+    font-size: 36px;
+    line-height: 44px;
+  }
 }
 
 .providerNameLinked {
   display: inline;
-  padding: 0 24px;
+  padding: 0;
   margin-bottom: 0;
   margin-top: 0;
 
   /* Font */
   font-weight: var(--fontWeightMedium);
   font-family: 'Inter';
-  font-size: 36px;
-  line-height: 44px;
+  font-size: 30px;
+  line-height: 36px;
   text-transform: uppercase;
 
-  @media (--viewportMedium) {
-    padding: 0;
-    margin-bottom: 0;
-    margin-top: 0;
+  @media (--viewportSmall) {
+    font-size: 36px;
+    line-height: 44px;
   }
-
+ 
   @media (--viewportLarge) {
-    display: none;
-    padding: 0;
-    margin-bottom: 0;
-    margin-top: 0;
+    display: none;    
   }
 }
 
@@ -621,7 +630,7 @@
 }
 
 .sectionText {
-  padding: 0 24px;
+  padding: 0;
   margin-bottom: 36px;
   margin-top: 42px;
 
@@ -704,7 +713,7 @@
 
 .sectionReviews,
 .sectionAuthor {
-  padding: 0 24px;
+  padding: 0;
   margin-top: 42px;
   scroll-margin-top: calc(var(--topbarHeight) + 24px);
 
@@ -829,10 +838,10 @@
 }
 
 .mobileHeading {
-  margin: 24px 0px 0px 24px;
+  margin: 0;
 
   @media (--viewportMedium) {
-    margin: 24px 0px 0px 0;
+    margin: 0;
   }
 
   @media (--viewportLarge) {
