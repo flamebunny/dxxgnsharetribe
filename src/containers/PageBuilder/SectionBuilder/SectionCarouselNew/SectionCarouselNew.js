@@ -18,6 +18,8 @@ import css from './SectionCarouselNew.module.css';
 
 import BlockContainer from '../../BlockBuilder/BlockContainer';
 
+import { IconArrowHead } from '../../../../components';
+
 const KEY_CODE_ARROW_LEFT = 37;
 const KEY_CODE_ARROW_RIGHT = 39;
 
@@ -28,9 +30,6 @@ const COLUMN_CONFIG = [
   { css: css.threeColumns, responsiveImageSizes: '(max-width: 767px) 100vw, 400px' },
   { css: css.fourColumns, responsiveImageSizes: '(max-width: 767px) 100vw, 290px' },
 ];
-
-
-
 
 const getIndex = numColumns => numColumns - 1;
 
@@ -63,9 +62,6 @@ const SectionCarouselNew = props => {
   const intl = useIntl();
 
   const imgSize = getResponsiveImageSizes(numColumns);
-  console.log('imgSize');
-  console.log(imgSize);
-
   const sliderContainerId = `${props.sectionId}-container`;
   const sliderId = `${props.sectionId}-slider`;
   const numberOfListings = listings?.length;
@@ -96,6 +92,26 @@ const SectionCarouselNew = props => {
   const fieldOptions = { fieldComponents };
 
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
+
+  const RenderLeftNav = (onClick, onKeyDown) => {
+    return (
+      <button className={css.navLeft} onClick={onSlideLeft} onKeyDown={onKeyDown}>
+        <div className={css.navArrowWrapper}>
+          <IconArrowHead direction="left" size="big" />
+        </div>
+      </button>
+    );
+  };
+  const RenderRightNav = (onClick, onKeyDown) => {
+    return (
+      <button className={css.navRight} onClick={onSlideRight} onKeyDown={onKeyDown}>
+        <div className={css.navArrowWrapper}>
+          <IconArrowHead direction="right" size="big" />
+        </div>
+      </button>
+    );
+  };
+
 
   const onSlideLeft = e => {
     var slider = window.document.getElementById(sliderId);
@@ -147,13 +163,11 @@ const SectionCarouselNew = props => {
             className={classNames(css.carouselArrows, {
               [css.notEnoughBlocks]: numberOfListings <= numColumns,
             })}
-          >
-            <button className={css.carouselArrowPrev} onClick={onSlideLeft} onKeyDown={onKeyDown}>
-              ‹
-            </button>
-            <button className={css.carouselArrowNext} onClick={onSlideRight} onKeyDown={onKeyDown}>
-              ›
-            </button>
+          >            
+            <RenderLeftNav onClick={onSlideLeft} onKeyDown={onKeyDown} />
+            <RenderRightNav onClick={onSlideRight} onKeyDown={onKeyDown}/>
+
+     
           </div>        
           <div
             className={classNames(getColumnCSS(numColumns), css.baseCarousel, css.listingCards)} id={sliderId}

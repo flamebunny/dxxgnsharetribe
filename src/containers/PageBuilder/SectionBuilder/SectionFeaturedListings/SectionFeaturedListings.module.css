@@ -107,11 +107,12 @@
 
 .title {
   color: var(--marketplaceColor);
+  font-size: 36px;
   margin: 5px 0px;
 }
 
 .fontPermanentMarker {
-  font-family: "Permanent Marker", serif;
+  font-family: "Permanent Marker", serif;  
 }
 
 .center {

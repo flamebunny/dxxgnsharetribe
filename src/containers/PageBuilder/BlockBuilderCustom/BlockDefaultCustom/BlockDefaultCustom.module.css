@@ -16,12 +16,16 @@
     margin-top: 0;
   }
 
-  a{
-    text-decoration: line-through;
+  h3{
     text-transform: uppercase;
     font-family: "Inter", serif;
-
+    font-size: 36px;
     text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  a{
+    text-decoration: line-through;    
   }
   a:hover{
     text-decoration: none;
