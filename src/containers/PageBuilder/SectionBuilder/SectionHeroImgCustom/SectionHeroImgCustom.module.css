@@ -36,6 +36,7 @@
 
 .imgwidthunset {
   /* max-width: 1500px !important; */
+  max-width: var(--contentMaxUltraWidthPages);
   position: relative;
   margin: 0 auto;
 }

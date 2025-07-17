@@ -29,7 +29,7 @@ const CustomListingFields = props => {
   const categoriesObj = pickCategoryFields(publicData, categoryPrefix, 1, listingCategoriesConfig);
   const currentCategories = Object.values(categoriesObj);
 
-  const isFieldForSelectedCategories = fieldConfig => {
+  const isFieldForSelectedCategories = fieldConfig => {    
     const isTargetCategory = isFieldForCategory(currentCategories, fieldConfig);
     return isTargetCategory;
   };
@@ -47,6 +47,9 @@ const CustomListingFields = props => {
       <SectionDetailsMaybe {...props} isFieldForCategory={isFieldForSelectedCategories} />
       {propsForCustomFields.map(customFieldProps => {
         const { schemaType, ...fieldProps } = customFieldProps;
+
+        
+
         return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
           <SectionMultiEnumMaybe {...fieldProps} />
         ) : schemaType === SCHEMA_TYPE_TEXT ? (

@@ -25,12 +25,14 @@
 }
 
 .textwide {
-  max-width: 100% !important;
+  /* max-width: 100% !important; */
+  max-width: var(--contentMaxUltraWidthPages)  !important;
 }
 
 .textwidthunset {
   /* max-width: 1680px !important; */
-  max-width: 100%;
+  /* max-width: 100%; */
+  max-width: var(--contentMaxUltraWidthPages);
 }
 
 .ebgaramond {

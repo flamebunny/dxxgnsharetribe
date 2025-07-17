@@ -90,6 +90,7 @@
    */
   --contentMaxWidth: 1056px;
   --contentMaxWidthPages: 1120px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
+  --contentMaxUltraWidthPages: 1760px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
 
   /* Multiples of mobile and desktop spacing units should be used with margins and paddings. */
   --spacingUnit: 6px;

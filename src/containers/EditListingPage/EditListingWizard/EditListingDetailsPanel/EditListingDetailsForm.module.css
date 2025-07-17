@@ -75,3 +75,21 @@
     margin-top: 100px;
   }
 }
+
+
+.customfields {
+
+}
+
+.customfields div:nth-child(1) {
+  display: table-cell;
+}
+.customfields div:nth-child(2) {
+  display: table-cell;
+}
+.customfields div:nth-child(3) {
+  display: table-cell;
+}
+.customfields div:nth-child(4) {
+  margin-top: 24px;
+}

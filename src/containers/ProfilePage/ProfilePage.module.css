@@ -15,29 +15,68 @@
   color: var(--colorFail);
 }
 
+.layoutWrapperMain {
+  /* Expand to the full remaining width of the viewport */
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px;
+
+  @media (--viewportSmall) {
+    padding: 0 10px;
+  }
+
+  @media (--viewportMedium) {
+    /**
+     * Calculate right padding to match Footer right border
+     * and left padding together with border should be 60px.
+     */
+    padding: 24px 24px 0 24px;
+    background-color: var(--colorWhite);
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: var(--colorGrey100);
+  }
+
+  @media (--viewportLarge) {
+    /**
+     * Calculate right padding to match Footer right border
+     * and left padding together with border should be 60px.
+     */
+    /* padding: 40px 36px 0 36px; */
+    padding: 40px 24px;
+  }
+
+  @media (min-width: 1440px) {
+    /* padding: 40px calc((100vw - 1368px) / 2) 0 59px; */
+    padding: 40px 24px;
+  }
+  @media (--viewportXLarge) {
+    /* padding: 40px calc((100vw - 1800px) / 2) 0 59px; */
+    padding: 40px 24px;
+  }
+}
+
 .aside {
   box-shadow: none;
 }
 
 .asideContent {
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--colorGrey100);
-
-  @media (--viewportLarge) {
-    flex-direction: column;
-    border-bottom: none;
-  }
+  max-width: var(--contentMaxUltraWidthPages);
+  display: block;  
+  text-align: center;
+  margin: 0 auto;
 }
 
+
+
 .avatar {
-  margin: 30px 26px 29px 0;
+  margin: 30px auto;
   flex-shrink: 0;
 
   @media (--viewportLarge) {
-    margin: 0 96px 48px 0;
+    margin: 30px auto;
   }
 }
 .avatarPlaceholder {
@@ -47,24 +86,31 @@
 
 .mobileHeading {
   flex-shrink: 0;
-  margin: 60px 0 0 0;
+  margin: 0 0 20px 0;
+  text-transform: uppercase;
+  font-family:'Inter';
+
+  font-size: 24px;
+  line-height: 30px;
+  padding: 5px 0 3px 0;
 
   @media (--viewportMedium) {
-    margin: 49px 0 0 0;
+    margin: 0 0 20px 0;
   }
   @media (--viewportLarge) {
-    display: none;
+    font-size: 40px;
+    line-height: 56px;
   }
 }
 
 .editLinkMobile {
-  margin-top: 17px;
-
   /* Pull the link to the end of the container */
-  margin-left: auto;
+  margin: 0 auto;
+  display: inline;
+  padding: 6px 0 2px 0;
 
   @media (--viewportMedium) {
-    margin-top: 20px;
+
   }
   @media (--viewportLarge) {
     display: none;
@@ -72,8 +118,8 @@
 }
 
 .editLinkDesktop {
-  display: none;
   color: #6E308A;
+  margin: 0 auto;
 
   @media (--viewportLarge) {
     display: inline;
@@ -83,32 +129,48 @@
 
 .desktopHeading {
   display: none;
+  flex-shrink: 0;
+  margin: 0 0 20px 0;
   text-transform: uppercase;
   font-family:'Inter';
+
+  font-size: 24px;
+  line-height: 30px;
+  padding: 5px 0 3px 0;
 
   @media (--viewportLarge) {
     display: block;
     margin: 0 0 20px 0;
+    font-size: 24px;
+    line-height: 30px;
   }
 }
+
 
 .longWord {
   word-break: break-word;
   hyphens: auto;
 }
 
+.profileUser{
+  padding: 0 0 30px 0;
+  width: 100%;
+  border-bottom: 1px solid var(--colorGrey100); 
+}
+
 .bio {
   /* Preserve newlines, but collapse other whitespace */
   white-space: pre-line;
-  margin: 5px 0 24px 0;
-  line-height: 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 20px;
+
+  font-size: 12px;
+  line-height: 18px;
 
   @media (--viewportMedium) {
-    margin: 4px 0 24px 0;
-  }
-  @media (--viewportLarge) {
-    margin: 0 0 24px 0;
-    max-width: 600px;
+    font-size: 14px;
+    line-height: 24px;
   }
 }
 
@@ -140,59 +202,43 @@
 .withBioMissingAbove {
   /* Avoid extra borders in mobile when bio is missing */
   border-top: none;
-
-  @media (--viewportLarge) {
-    border-top: 1px solid var(--colorGrey100);
-  }
 }
 
 .listings {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
+  padding: 0 0 72px 0;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  width: 100%;
+
+  @media (min-width: 550px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  } 
+
+  @media (--viewportMedium) {
+    padding: 0 0 96px 0;
+    gap: 24px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (--viewportLarge) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (--viewportXLarge) {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .listing {
-  width: 100%;
   position: relative;
-
-  /* Single column in mobile */
-  margin-top: 34px;
-  &:first-of-type {
-    margin-top: 18px;
-  }
-
-  @media (--viewportMedium) {
-    /* Two columns in desktop */
-    width: calc(50% - 12px);
-    margin-bottom: 36px;
-
-    /* Horizontal space */
-    &:nth-of-type(odd) {
-      margin-right: 12px;
-    }
-    &:nth-of-type(even) {
-      margin-left: 12px;
-    }
-
-    /* Vertical space */
-    margin-top: 0;
-    &:nth-of-type(1),
-    &:nth-of-type(2) {
-      margin-top: 20px;
-    }
-  }
-  a > div:first-child {
-    position: relative;
-    overflow: hidden;
-    height: 248px;
-  }
-
-  img {
-    height: auto;
-    top: -25%;
-    position: relative;
-  }
+  width: 100%;
 }
 
 .mobileReviewsTitle {

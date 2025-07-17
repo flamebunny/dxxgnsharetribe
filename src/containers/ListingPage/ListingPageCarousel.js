@@ -84,6 +84,7 @@ import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
 import CustomListingFields from './CustomListingFields';
+import CustomListingFields2 from './CustomListingFields2';
 
 import css from './ListingPage.module.css';
 
@@ -289,16 +290,33 @@ export const ListingPageComponent = props => {
 
   const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
 
-  const authorLink2 =
-    <NamedLink
-      className={css.authorNameLink}
-      name="ListingPage"
-      params={params}
-      to={{ hash: '#author' }}
-    >
+  const authorLink =  
+    <NamedLink className={css.authorNameLink} name="ProfilePage" params={{ id: currentListing.author.id.uuid }}>
       {authorDisplayName}
     </NamedLink>
-  
+
+ // console.log('publicData');
+ // console.log(publicData);
+
+  const parseListingConfig = props => {
+    const { listingFieldConfigs } = props;
+    
+    return (
+    <>
+      <SectionDetailsMaybe {...props} isFieldForCategory={isFieldForSelectedCategories} />
+      {propsForCustomFields.map(customFieldProps => {
+        const { schemaType, ...fieldProps } = customFieldProps;
+        return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
+          <SectionMultiEnumMaybe {...fieldProps} />
+        ) : schemaType === SCHEMA_TYPE_TEXT ? (
+          <SectionTextMaybe {...fieldProps} />
+        ) : schemaType === SCHEMA_TYPE_YOUTUBE ? (
+          <SectionYoutubeVideoMaybe {...fieldProps} />
+        ) : null;
+      })}
+    </>
+  );
+  };
 
   return (
     <Page
@@ -369,24 +387,16 @@ export const ListingPageComponent = props => {
             </div>
             <div className={classNames(css.mobileAuthor)}>                
               <span className={css.providerNameLinked}>
-                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink2 }} />
+                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
               </span>             
             </div>
+
             <OrderPanel
               className={css.productOrderPanel}
               listing={currentListing}
               isOwnListing={isOwnListing}
               onSubmit={handleOrderSubmit}
-              authorLink={
-                <NamedLink
-                  className={css.authorNameLink}
-                  name="ListingPage"
-                  params={params}
-                  to={{ hash: '#author' }}
-                >
-                  {authorDisplayName}
-                </NamedLink>
-              }
+              authorLink={authorLink}
               title={<FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />}
               titleDesktop={
                 <H4 as="h1" className={css.orderPanelTitle}>
@@ -409,13 +419,23 @@ export const ListingPageComponent = props => {
               marketplaceName={config.marketplaceName}
             />
             <SectionTextMaybe text={description} showAsIngress />
+
             <SectionMapMaybe
               geolocation={geolocation}
               publicData={publicData}
               listingId={currentListing.id}
               mapsConfig={config.maps}
             />
-            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+
+            <CustomListingFields2
+              publicData={publicData}
+              metadata={metadata}
+              listingFieldConfigs={listingConfig.listingFields}
+              categoryConfiguration={config.categoryConfiguration}
+              intl={intl}
+            />
+
+            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />            
            
           </div>
         </div>

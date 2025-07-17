@@ -701,6 +701,11 @@
   }
 }
 
+sectionDetails {
+  padding: 0;
+  margin: 0
+}
+
 .sectionMap {
   padding: 0 24px;
   margin-bottom: 35px;
@@ -745,17 +750,17 @@
   display: inline-flex;
   justify-content: space-between;
   width: 100%;
-  padding: 1px 0 4px 0;
-  line-height: 36px;
+  padding: 0;
+  line-height: 32px;
   list-style: none;
   font-weight: var(--fontWeightRegular);
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--colorGrey100);
+    
   }
 
   @media (--viewportMedium) {
-    padding: 5px 0 2px 0;
+    padding: 0;
     line-height: 32px;
   }
 }
@@ -764,6 +769,22 @@
   font-weight: var(--fontWeightSemiBold);
   letter-spacing: -0.09px;
 }
+
+.dimensions {
+  padding: 0;
+  line-height: 32px;
+}
+
+.detailstext {
+  padding: 0;
+  line-height: 32px;
+}
+
+.details {
+  padding: 0;
+}
+
+
 
 .inquiryModalContent {
   flex-grow: 1;

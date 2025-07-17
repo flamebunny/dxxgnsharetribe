@@ -42,6 +42,7 @@ import {
   Reviews,
   ButtonTabNavHorizontal,
   LayoutSideNavigation,
+  LayoutSingleColumn,
   NamedRedirect,
 } from '../../components';
 
@@ -59,25 +60,31 @@ const MAX_MOBILE_SCREEN_WIDTH = 768;
 const MIN_LENGTH_FOR_LONG_WORDS = 20;
 
 export const AsideContent = props => {
-  const { user, displayName, showLinkToProfileSettingsPage } = props;
+  const { user, displayName, showLinkToProfileSettingsPage, bio } = props;
+
+  const hasBio = !!bio;
+  const bioWithLinks = richText(bio, {
+    linkify: true,
+    longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
+    longWordClass: css.longWord,
+  });
+  
   return (
     <div className={css.asideContent}>
       <AvatarLarge className={css.avatar} user={user} disableProfileLink />
-      <H2 as="h1" className={css.mobileHeading}>
-        {displayName ? (
-          <FormattedMessage id="ProfilePage.mobileHeading" values={{ name: displayName }} />
-        ) : null}
-      </H2>
       {showLinkToProfileSettingsPage ? (
         <>
-          <NamedLink className={css.editLinkMobile} name="ProfileSettingsPage">
-            <FormattedMessage id="ProfilePage.editProfileLinkMobile" />
-          </NamedLink>
           <NamedLink className={css.editLinkDesktop} name="ProfileSettingsPage">
             <FormattedMessage id="ProfilePage.editProfileLinkDesktop" />
           </NamedLink>
         </>
-      ) : null}
+      ) : null}     
+      <H2 as="h1" className={css.mobileHeading}>
+        <FormattedMessage id="ProfilePage.mobileHeading" values={{ name: displayName }} />
+      </H2>
+              
+      {hasBio ? <p className={css.bio}>{bioWithLinks}</p> : null}
+      
     </div>
   );
 };
@@ -235,11 +242,7 @@ export const MainContent = props => {
     );
   }
   return (
-    <div>
-      <H2 as="h1" className={css.desktopHeading}>
-        <FormattedMessage id="ProfilePage.desktopHeading" values={{ name: displayName }} />
-      </H2>
-      {hasBio ? <p className={css.bio}>{bioWithLinks}</p> : null}
+    <div className={css.layoutWrapperMain}>     
 
       {displayName ? (
         <CustomUserFields
@@ -326,6 +329,16 @@ export const ProfilePageComponent = props => {
   const schemaTitleVars = { name: displayName, marketplaceName: config.marketplaceName };
   const schemaTitle = intl.formatMessage({ id: 'ProfilePage.schemaTitle' }, schemaTitleVars);
 
+  const topbar = <TopbarContainer />;
+
+  const hasBio = !!bio;
+  const bioWithLinks = richText(bio, {
+    linkify: true,
+    longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
+    longWordClass: css.longWord,
+  });
+
+
   if (!isDataLoaded) {
     return null;
   } else if (!isPreview && isNotFoundError(userShowError)) {
@@ -369,6 +382,7 @@ export const ProfilePageComponent = props => {
   }
   // This is rendering normal profile page (not preview for pending-approval)
   return (
+
     <Page
       scrollingDisabled={scrollingDisabled}
       title={schemaTitle}
@@ -378,20 +392,20 @@ export const ProfilePageComponent = props => {
         name: schemaTitle,
       }}
     >
-      <LayoutSideNavigation
-        sideNavClassName={css.aside}
-        topbar={<TopbarContainer />}
-        sideNav={
-          <AsideContent
-            user={profileUser}
-            showLinkToProfileSettingsPage={mounted && isCurrentUser}
-            displayName={displayName}
-          />
-        }
-        footer={<FooterContainer />}
-      >
-        <MainContent
+      <LayoutSingleColumn className={css.pageRoot} topbar={topbar} footer={<FooterContainer />}>
+
+
+      <div className={css.profileUser}>
+        <AsideContent
+          user={profileUser}
+          showLinkToProfileSettingsPage={mounted && isCurrentUser}
+          displayName={displayName}
           bio={bio}
+        />
+
+        
+     </div> 
+      <MainContent
           displayName={displayName}
           userShowError={userShowError}
           publicData={publicData}
@@ -401,8 +415,12 @@ export const ProfilePageComponent = props => {
           intl={intl}
           {...rest}
         />
-      </LayoutSideNavigation>
+      
+      </LayoutSingleColumn>
+
     </Page>
+
+   
   );
 };
 
