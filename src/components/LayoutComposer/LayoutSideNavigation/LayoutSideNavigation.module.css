@@ -75,7 +75,6 @@
     padding: 72px 0 82px 36px;
     flex-direction: column;
     overflow-x: auto;
-    background-color: var(--colorGrey50);
     box-shadow: none;
     border-top: none;
   }

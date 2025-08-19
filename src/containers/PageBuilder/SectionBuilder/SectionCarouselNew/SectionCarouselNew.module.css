@@ -317,7 +317,7 @@
 .navLeft,
 .navRight {
   position: absolute;
-  width: 60px;
+  width: 120px;
   height: 100%;
   border: 0;
   padding: 0;
@@ -358,26 +358,26 @@
 }
 
 .navLeft {
-  left: 10px;
+  left: 0;
 
   & .navArrowWrapper {
     padding-right: 2px;
   }
 
   @media (--viewportMedium) {
-    left: 24px;
+    left: 0px;
   }
 }
 
 .navRight {
-  right: 10px;
+  right: 0;
 
   & .navArrowWrapper {
     padding-left: 2px;
   }
 
   @media (--viewportMedium) {
-    right: 24px;
+    right: 0px;
   }
 }
 

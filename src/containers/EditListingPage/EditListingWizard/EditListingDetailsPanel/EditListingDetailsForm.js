@@ -332,15 +332,6 @@ const EditListingDetailsFormComponent = props => (
       const submitDisabled =
         invalid || disabled || submitInProgress || !hasMandatoryListingTypeData;
 
-      console.log('listingfields');
-      console.log(values);
-      console.log('listingType', listingType);
-      console.log('listingFieldsConfig', listingFieldsConfig);
-      console.log('pickSelectedCategories(values)', pickSelectedCategories(values));
-      console.log('formId(values)', formId);
-      console.log('intl', intl);
-
-
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           <ErrorMessage fetchErrors={fetchErrors} />

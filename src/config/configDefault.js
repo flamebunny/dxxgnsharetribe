@@ -107,8 +107,12 @@ const defaultConfig = {
     // You could still rely on built-in variables and comment these out.
     localization: '/general/localization.json',
     accessControl: '/general/access-control.json',
+    // added commission configuration
+    // commission: ' /transactions/commission.json',    
     // NOTE: we don't fetch commission configuration here but on the server-side
   },
+
+ 
 
   // Optional
   // Online presence of the same organization:

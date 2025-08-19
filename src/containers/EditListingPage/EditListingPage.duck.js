@@ -24,6 +24,7 @@ import {
   fetchStripeAccount,
 } from '../../ducks/stripeConnectAccount.duck';
 import { fetchCurrentUser } from '../../ducks/user.duck';
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 
 const { UUID } = sdkTypes;
 
@@ -921,9 +922,15 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     updateNotifications: false,
   };
 
+  // Get Provider and Customer commission values for use in Listing Wizard
+  const pageAsset = { commission: `transactions/commission.json` };
+
   if (type === 'new') {
     // No need to listing data when creating a new listing
-    return Promise.all([dispatch(fetchCurrentUser(fetchCurrentUserOptions))])
+    return Promise.all([
+      dispatch(fetchCurrentUser(fetchCurrentUserOptions)),
+      dispatch(fetchPageAssets(pageAsset, true)),
+    ])
       .then(response => {
         const currentUser = getState().user.currentUser;
         if (currentUser && currentUser.stripeAccount) {
@@ -940,6 +947,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   return Promise.all([
     dispatch(requestShowListing(payload, config)),
     dispatch(fetchCurrentUser(fetchCurrentUserOptions)),
+    dispatch(fetchPageAssets(pageAsset, true)),
   ])
     .then(response => {
       const currentUser = getState().user.currentUser;

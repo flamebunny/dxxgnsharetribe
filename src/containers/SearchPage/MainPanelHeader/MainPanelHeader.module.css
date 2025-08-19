@@ -38,6 +38,7 @@
 
 .resultsFound {
   white-space: nowrap;
+  text-transform: uppercase;
 }
 
 .sortyByWrapper {

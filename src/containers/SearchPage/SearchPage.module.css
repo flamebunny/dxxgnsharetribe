@@ -356,3 +356,32 @@
     width: 37.5vw;
   }
 }
+
+
+.locationSearchHeader {
+  color: var(--colorGrey700);
+  margin-bottom: 0;
+  font-size: 24px;
+  text-transform: uppercase;
+
+
+  padding: 0 0 0 40px;
+  margin-bottom: -40px;
+
+  @media (--viewportMedium) {
+    padding: 40px 10px 0 40px;
+  } 
+  
+  @media (--viewportMedium) {
+    padding: 40px 10px 0 40px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 40px 22px 0 40px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 40px 40px 0 40px;
+  }
+
+}

@@ -95,7 +95,7 @@ const SectionCarouselNew = props => {
 
   const RenderLeftNav = (onClick, onKeyDown) => {
     return (
-      <button className={css.navLeft} onClick={onSlideLeft} onKeyDown={onKeyDown}>
+      <button className={css.navLeft} onClick={onSlideLeft} onKeyDown={ onKeyDown}>
         <div className={css.navArrowWrapper}>
           <IconArrowHead direction="left" size="big" />
         </div>
@@ -164,8 +164,16 @@ const SectionCarouselNew = props => {
               [css.notEnoughBlocks]: numberOfListings <= numColumns,
             })}
           >            
-            <RenderLeftNav onClick={onSlideLeft} onKeyDown={onKeyDown} />
-            <RenderRightNav onClick={onSlideRight} onKeyDown={onKeyDown}/>
+            <button className={css.navLeft} onClick={onSlideLeft} onKeyDown={ onKeyDown}>
+              <div className={css.navArrowWrapper}>
+                <IconArrowHead direction="left" size="big" />
+              </div>
+            </button>
+            <button className={css.navRight} onClick={onSlideRight} onKeyDown={onKeyDown}>
+              <div className={css.navArrowWrapper}>
+                <IconArrowHead direction="right" size="big" />
+              </div>
+            </button>
 
      
           </div>        

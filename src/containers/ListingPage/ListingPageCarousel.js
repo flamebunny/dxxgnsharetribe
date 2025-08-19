@@ -295,9 +295,6 @@ export const ListingPageComponent = props => {
       {authorDisplayName}
     </NamedLink>
 
- // console.log('publicData');
- // console.log(publicData);
-
   const parseListingConfig = props => {
     const { listingFieldConfigs } = props;
     

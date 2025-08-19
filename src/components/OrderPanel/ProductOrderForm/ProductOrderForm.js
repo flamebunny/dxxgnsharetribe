@@ -82,7 +82,7 @@ const DeliveryMethodMaybe = props => {
       </option>
     </FieldSelect>
   ) : showSingleDeliveryMethod ? (
-    <div className={css.deliveryField}>
+    /* <div className={css.deliveryField}>
       <H3 rootClassName={css.singleDeliveryMethodLabel}>
         {intl.formatMessage({ id: 'ProductOrderForm.deliveryMethodLabel' })}
       </H3>
@@ -98,6 +98,8 @@ const DeliveryMethodMaybe = props => {
         type="hidden"
       />
     </div>
+    */
+   <div></div>
   ) : (
     <FieldTextInput
       id={`${formId}.deliveryMethod`}

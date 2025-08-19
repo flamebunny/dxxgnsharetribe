@@ -93,6 +93,8 @@
   border: none;
   cursor: pointer;
 
+  display: none;
+
   &:focus,
   &:hover {
     color: var(--colorGrey700);

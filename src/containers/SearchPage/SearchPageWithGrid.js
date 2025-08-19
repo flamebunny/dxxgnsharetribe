@@ -286,6 +286,9 @@ export class SearchPageComponent extends Component {
       ) : null;
     };
     const noResultsInfo = (
+      <div></div>        
+    );
+    const noResultsInfo2 = (
       <NoSearchResultsMaybe
         listingsAreLoaded={listingsAreLoaded}
         totalItems={totalItems}
@@ -301,6 +304,41 @@ export class SearchPageComponent extends Component {
       routeConfiguration,
       config
     );
+
+
+    function isNumericRegex(str) {
+        // Matches integers, decimals, and optional sign
+        return /^-?\d+(\.\d+)?$/.test(str);
+    }
+
+    // check if no search filter selected, default to New+
+    let locationParams = Object.values(parse(location.search));
+    if(locationParams.length === 0)
+      locationParams = ['createdAt'];    
+
+    // check if price range is selected, default to New+
+    const testnum = isNumericRegex(locationParams?.[0].replace(/,/g, ""));
+    if(testnum)
+      locationParams = ['createdAt'];
+
+    const searchOptions = [
+      { key: 'createdAt', labelTranslationKey: 'New+' },
+      { key: '-createdAt', labelTranslationKey: 'New+' },
+      { key: '-price', labelTranslationKey: 'New+' },
+      { key: 'price', labelTranslationKey: 'New+' },
+      { key: 'relevance', labelTranslationKey: 'New+' },
+    ];
+
+    const targetType = "createdAt";
+    let firstMatchingObject = searchOptions.find(obj => obj.key === locationParams?.[0]);
+
+    if(!firstMatchingObject) {
+      firstMatchingObject = searchOptions[0];
+    }
+ 
+
+    const labelHeading = searchOptions.find(obj => obj.key === locationParams[0]) ? firstMatchingObject.labelTranslationKey : locationParams[0].charAt(0).toUpperCase() + locationParams[0].slice(1)
+
 
     // Set topbar class based on if a modal is open in
     // a child component
@@ -319,6 +357,10 @@ export class SearchPageComponent extends Component {
       >
         <TopbarContainer rootClassName={topbarClasses} currentSearchParams={validQueryParams} />
         <div className={css.layoutWrapperContainer}>
+          
+          <h2 className={css.locationSearchHeader}>{labelHeading}</h2>
+          
+          
           <MainPanelHeader
             className={css.mainPanel}
             sortByComponent={sortBy('desktop')}
