@@ -42,3 +42,32 @@
     margin-top: 100px;
   }
 }
+
+.priceContainer {
+
+}
+.priceTable{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 600px;
+  column-gap: 10px;
+
+}
+.priceInput, .priceEarning {
+
+}
+.priceEarningValue{
+  border: 1px solid #D8DCE6;
+  color: #AAA;
+  background: #EEE;
+  padding: 3px 16px 3px 16px;
+  line-height: 32px;
+}
+.priceBuyerFee {
+  margin-bottom: 20px;
+}
+.priceEarningInfo{
+  padding: 20px;
+  background: #EEE;
+  display: none;
+}

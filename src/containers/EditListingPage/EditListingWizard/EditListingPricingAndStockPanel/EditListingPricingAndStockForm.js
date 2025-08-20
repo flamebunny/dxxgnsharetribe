@@ -1,6 +1,7 @@
 import React from 'react';
 import { bool, func, number, shape, string } from 'prop-types';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { Field, Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import classNames from 'classnames';
@@ -93,7 +94,7 @@ const UpdateStockToInfinityCheckboxMaybe = ({ hasInfiniteStock, currentStock, fo
   ) : null;
 };
 
-export const EditListingPricingAndStockFormComponent = props => (
+export const EditListingPricingAndStockFormComponentPage = props => (
   <FinalForm
     {...props}
     mutators={{ ...arrayMutators }}
@@ -117,7 +118,12 @@ export const EditListingPricingAndStockFormComponent = props => (
         updateInProgress,
         fetchErrors,
         values,
+        commission,
       } = formRenderProps;
+
+
+      console.log('commission');
+      console.log(commission);
 
       const priceValidators = getPriceValidators(
         listingMinimumPriceSubUnits,
@@ -156,21 +162,40 @@ export const EditListingPricingAndStockFormComponent = props => (
               <FormattedMessage id="EditListingPricingAndStockForm.showListingFailed" />
             </p>
           ) : null}
-          <FieldCurrencyInput
-            id={`${formId}.price`}
-            name="price"
-            className={css.input}
-            autoFocus={autoFocus}
-            label={intl.formatMessage(
-              { id: 'EditListingPricingAndStockForm.pricePerProduct' },
-              { unitType }
-            )}
-            placeholder={intl.formatMessage({
-              id: 'EditListingPricingAndStockForm.priceInputPlaceholder',
-            })}
-            currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
-            validate={priceValidators}
-          />
+
+          <div className={css.priceContainer}>
+            <div className={css.priceTable}>
+              <FieldCurrencyInput
+                id={`${formId}.price`}
+                name="price"
+                className={classNames(css.input, css.priceInput)}
+                autoFocus={autoFocus}
+                label={intl.formatMessage(
+                  { id: 'EditListingPricingAndStockForm.pricePerProduct' },
+                  { unitType }
+                )}
+                placeholder={intl.formatMessage({
+                  id: 'EditListingPricingAndStockForm.priceInputPlaceholder',
+                })}
+                currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
+                validate={priceValidators}
+              />
+              <div className={classNames(css.priceEarning)}>
+                <label for="EditListingPricingAndStockForm.price">You earn</label>
+                <div className={css.priceEarningValue}>$0</div>          
+              </div>
+            </div>
+            <div>
+              <div className={css.priceBuyerFee}>
+                The buyer will also pay <span className='css.priceBuyerFeeValue'>$8</span> service fee <a href='#'>Learn more</a>
+              </div>
+
+              <div className={classNames(css.priceEarningInfo)}>
+                <div className={classNames(css.priceEarningInfoHeader)}>Set your own price</div>
+                <div className={classNames(css.priceEarningInfoContent)}>We dont have enough sales data yet for an accurate price recommendation.</div>
+              </div>
+            </div>            
+          </div>
 
           <UpdateStockToInfinityCheckboxMaybe
             formId={formId}
@@ -214,13 +239,13 @@ export const EditListingPricingAndStockFormComponent = props => (
   />
 );
 
-EditListingPricingAndStockFormComponent.defaultProps = {
+EditListingPricingAndStockFormComponentPage.defaultProps = {
   fetchErrors: null,
   listingMinimumPriceSubUnits: 0,
   formId: 'EditListingPricingAndStockForm',
 };
 
-EditListingPricingAndStockFormComponent.propTypes = {
+EditListingPricingAndStockFormComponentPage.propTypes = {
   formId: string,
   intl: intlShape.isRequired,
   onSubmit: func.isRequired,
@@ -239,4 +264,14 @@ EditListingPricingAndStockFormComponent.propTypes = {
   }),
 };
 
-export default compose(injectIntl)(EditListingPricingAndStockFormComponent);
+const mapStateToProps = state => {
+  const { commission } = state.hostedAssets.pageAssetsData;
+  return { commission };
+};
+
+const EditListingPricingAndStockFormComponent = compose(
+  connect(mapStateToProps),
+  injectIntl
+)(EditListingPricingAndStockFormComponentPage);
+
+export default EditListingPricingAndStockFormComponent;
