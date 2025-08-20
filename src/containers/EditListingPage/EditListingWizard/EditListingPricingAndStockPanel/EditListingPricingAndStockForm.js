@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { bool, func, number, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -14,6 +14,7 @@ import { isOldTotalMismatchStockError } from '../../../../util/errors';
 import * as validators from '../../../../util/validators';
 import { formatMoney } from '../../../../util/currency';
 import { types as sdkTypes } from '../../../../util/sdkLoader';
+import * as log from '../../../../util/log';
 
 // Import shared components
 import {
@@ -121,9 +122,14 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         commission,
       } = formRenderProps;
 
+      const providerCommissionPercentage = commission.data.providerCommission.percentage;
+      const providerCommissionMinimum = commission.data.providerCommission.minimum_amount
 
+      const customerCommissionPercentage = commission.data.customerCommission.percentage;
+      const customerCommissionMinimum = commission.data.customerCommission.minimum_amount
+;
       console.log('commission');
-      console.log(commission);
+      console.log(providerCommissionPercentage, providerCommissionMinimum, customerCommissionPercentage, customerCommissionMinimum);
 
       const priceValidators = getPriceValidators(
         listingMinimumPriceSubUnits,
@@ -150,6 +156,23 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         ? intl.formatMessage({ id: 'EditListingPricingAndStockForm.oldStockTotalWasOutOfSync' })
         : intl.formatMessage({ id: 'EditListingPricingAndStockForm.stockUpdateFailed' });
 
+
+      const [priceEarningValue, setPriceEarningValue] = useState(0); 
+
+      const handleChildChange = (newValue) => {
+        if(newValue) {
+          setPriceEarningValue(Math.ceil((newValue.amount/100) * ((100-providerCommissionPercentage)/100)));
+          console.log('new Value ', newValue);
+        } else {
+          setPriceEarningValue(0);
+        }   
+      };
+
+      console.log('marketplaceCurrency');
+      console.log(appSettings.getCurrencyFormatting(marketplaceCurrency));
+      console.log(appSettings.getCurrencyFormatting(marketplaceCurrency).currencyDisplay);
+      console.log(marketplaceCurrency);
+    
       return (
         <Form onSubmit={handleSubmit} className={classes}>
           {updateListingError ? (
@@ -179,10 +202,11 @@ export const EditListingPricingAndStockFormComponentPage = props => (
                 })}
                 currencyConfig={appSettings.getCurrencyFormatting(marketplaceCurrency)}
                 validate={priceValidators}
+                onChange={handleChildChange}
               />
               <div className={classNames(css.priceEarning)}>
-                <label for="EditListingPricingAndStockForm.price">You earn</label>
-                <div className={css.priceEarningValue}>$0</div>          
+                <label>You earn</label>
+                <div id='priceEarning' className={css.priceEarningValue}>${priceEarningValue}</div>          
               </div>
             </div>
             <div>

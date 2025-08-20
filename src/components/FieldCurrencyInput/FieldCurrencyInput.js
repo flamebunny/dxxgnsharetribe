@@ -103,6 +103,14 @@ class CurrencyInputComponent extends Component {
     this.updateValues = this.updateValues.bind(this);
   }
 
+  componentDidMount() {
+    // This code will run after the component has been mounted to the DOM
+    console.log('MyComponent has loaded!');
+    console.log(this.state.unformattedValue);
+    this.props.onChange({amount: this.state.unformattedValue});
+    // Perform any "onload" actions here, e.g., data fetching, DOM manipulation
+  }
+
   onInputChange(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -111,6 +119,8 @@ class CurrencyInputComponent extends Component {
     // Notify parent component about current price change
     const price = getPrice(ensureDotSeparator(unformattedValue), this.props.currencyConfig);
     this.props.input.onChange(price);
+    // Notify EditListingPricingAndStockForm about current price change
+    this.props.onChange(price);
   }
 
   onInputBlur(event) {
@@ -185,7 +195,11 @@ class CurrencyInputComponent extends Component {
         unformattedValue,
       });
 
+      // Notify EditListingPricingAndStockForm about current price change
+      this.props.onChange(this.state.value);
+
       return { formattedValue, value: unformattedValue, unformattedValue };
+
     } catch (e) {
       // eslint-disable-next-line no-console
       console.warn('Not a valid value.', e);
@@ -200,6 +214,7 @@ class CurrencyInputComponent extends Component {
   render() {
     const { className, currencyConfig, defaultValue, placeholder, intl } = this.props;
     const placeholderText = placeholder || intl.formatNumber(defaultValue, currencyConfig);
+
     return (
       <input
         className={className}
