@@ -28,6 +28,20 @@ import {
 // Import modules from this directory
 import css from './EditListingPricingAndStockForm.module.css';
 
+import {
+  isSafeNumber,
+  unitDivisor,
+  convertUnitToSubUnit,
+  convertMoneyToNumber,
+  ensureDotSeparator,
+  ensureSeparator,
+  truncateToSubUnitPrecision,
+} from '../../../../util/currency';
+
+
+
+
+
 const { Money } = sdkTypes;
 const MILLION = 1000000;
 
@@ -123,14 +137,13 @@ export const EditListingPricingAndStockFormComponentPage = props => (
       } = formRenderProps;
 
       const providerCommissionPercentage = commission.data.providerCommission.percentage;
-      const providerCommissionMinimum = commission.data.providerCommission.minimum_amount
+      // providerCommissionMinimum in cents
+      const providerCommissionMinimum = commission.data.providerCommission.minimum_amount;
 
       const customerCommissionPercentage = commission.data.customerCommission.percentage;
-      const customerCommissionMinimum = commission.data.customerCommission.minimum_amount
+      // customerCommissionMinimum in cents
+      const customerCommissionMinimum = commission.data.customerCommission.minimum_amount;
 ;
-      console.log('commission');
-      console.log(providerCommissionPercentage, providerCommissionMinimum, customerCommissionPercentage, customerCommissionMinimum);
-
       const priceValidators = getPriceValidators(
         listingMinimumPriceSubUnits,
         marketplaceCurrency,
@@ -157,22 +170,68 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         : intl.formatMessage({ id: 'EditListingPricingAndStockForm.stockUpdateFailed' });
 
 
-      const [priceEarningValue, setPriceEarningValue] = useState(0); 
+      const [earningFormatted, setEarningFormatted] = useState(0); 
+      const [earningUnformatted, setEarningUnformatted] = useState(0); 
+      const [customerCommission, setCustomerCommissionFormatted] = useState(0); 
+      const [customerCommissionUnformatted, setCustomerCommissionUnformatted] = useState(0); 
+
+      const currencyConfig = appSettings.getCurrencyFormatting(marketplaceCurrency);
+
+      const currencConvert = (initialValue, currencyConfig, percentage, minimumValue, modifier) =>{
+        if (Number.isNaN(initialValue)) {
+          initialValue = 0;
+        }
+
+        let commissionValue;
+        if(modifier === 'deducted') {
+          commissionValue = Math.ceil((initialValue) * ((100-percentage)/100));
+          
+        }else if(modifier === 'added') {
+          commissionValue = Math.ceil((initialValue) * ((percentage)/100));
+        }
+
+        commissionValue = ((minimumValue/100) > commissionValue) ? (minimumValue/100) : commissionValue;
+
+        const hasInitialValue = typeof commissionValue === 'number' && !isNaN(commissionValue);
+
+        const testSubUnitFormat = intl.formatNumber('1.1', currencyConfig);
+        const usesComma = testSubUnitFormat.indexOf(',') >= 0;
+
+        try {
+          // whatever is passed as a default value, will be converted to currency string
+          // Unformatted value is digits + localized sub unit separator ("9,99")
+          const unformattedValue = hasInitialValue
+            ? truncateToSubUnitPrecision(
+                ensureSeparator(commissionValue.toString(), usesComma),
+                unitDivisor(currencyConfig.currency),
+                usesComma
+              )
+            : '';
+          // Formatted value fully localized currency string ("$1,000.99")
+          const formattedValue = hasInitialValue
+            ? intl.formatNumber(ensureDotSeparator(unformattedValue), currencyConfig)
+            : '';
+    
+          return ({formattedValue: formattedValue, unformattedValue: unformattedValue})
+
+        } catch (e) {
+          log.error(e, 'currency-input-init-failed', { currencyConfig, commissionValue });
+          throw e;
+        }
+      }
+
+      let providerValueObj;
+      let customerValueObj;
 
       const handleChildChange = (newValue) => {
-        if(newValue) {
-          setPriceEarningValue(Math.ceil((newValue.amount/100) * ((100-providerCommissionPercentage)/100)));
-          console.log('new Value ', newValue);
-        } else {
-          setPriceEarningValue(0);
-        }   
+        providerValueObj = currencConvert(newValue, currencyConfig, providerCommissionPercentage, providerCommissionMinimum, 'deducted');     
+        setEarningFormatted(providerValueObj.formattedValue);          
+        setEarningUnformatted(providerValueObj.unformattedValue);
+        customerValueObj = currencConvert(newValue, currencyConfig, customerCommissionPercentage, customerCommissionMinimum, 'added');  
+        setCustomerCommissionFormatted(customerValueObj.formattedValue);          
+        setCustomerCommissionUnformatted(customerValueObj.unformattedValue); 
       };
 
-      console.log('marketplaceCurrency');
-      console.log(appSettings.getCurrencyFormatting(marketplaceCurrency));
-      console.log(appSettings.getCurrencyFormatting(marketplaceCurrency).currencyDisplay);
-      console.log(marketplaceCurrency);
-    
       return (
         <Form onSubmit={handleSubmit} className={classes}>
           {updateListingError ? (
@@ -206,12 +265,12 @@ export const EditListingPricingAndStockFormComponentPage = props => (
               />
               <div className={classNames(css.priceEarning)}>
                 <label>You earn</label>
-                <div id='priceEarning' className={css.priceEarningValue}>${priceEarningValue}</div>          
+                <div id='priceEarning' className={css.priceEarningValue}>{earningFormatted}</div>          
               </div>
             </div>
             <div>
               <div className={css.priceBuyerFee}>
-                The buyer will also pay <span className='css.priceBuyerFeeValue'>$8</span> service fee <a href='#'>Learn more</a>
+                The buyer will also pay <span className='css.priceBuyerFeeValue'>{customerCommission}</span> service fee <a href='#'>Learn more</a>
               </div>
 
               <div className={classNames(css.priceEarningInfo)}>
