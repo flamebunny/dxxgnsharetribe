@@ -38,6 +38,7 @@ import {
   IconSpinner,
   TimeRange,
   UserDisplayName,
+  UserNav,
   LayoutSideNavigation,
 } from '../../components';
 
@@ -294,10 +295,13 @@ export const InboxPageComponent = props => {
       <LayoutSideNavigation
         sideNavClassName={css.navigation}
         topbar={
-          <TopbarContainer
-            mobileRootClassName={css.mobileTopbar}
-            desktopClassName={css.desktopTopbar}
-          />
+          <>
+            <TopbarContainer
+              mobileRootClassName={css.mobileTopbar}
+              desktopClassName={css.desktopTopbar}
+            />
+            <UserNav currentPage="InboxPage" />
+          </>
         }
         sideNav={
           <>

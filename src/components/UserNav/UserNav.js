@@ -28,6 +28,14 @@ const UserNav = props => {
       },
     },
     {
+      text: <FormattedMessage id="UserNav.inbox" />,
+      selected: currentPage === 'InboxPage',
+      disabled: false,
+      linkProps: {
+        name: 'InboxBasePage',
+      },
+    },
+    {
       text: <FormattedMessage id="UserNav.accountSettings" />,
       selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
       disabled: false,

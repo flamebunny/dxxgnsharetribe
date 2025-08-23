@@ -234,6 +234,14 @@
   }
 }
 
+.menuLinkLabel {
+  composes: textSmall from global;
+  display: inline-block;
+  margin: 0;
+  text-decoration: inherit;
+  position: relative;
+}
+
 .logoutButton {
   display: inline;
 

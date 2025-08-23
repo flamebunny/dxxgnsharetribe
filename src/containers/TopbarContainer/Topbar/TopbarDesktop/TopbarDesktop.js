@@ -57,7 +57,8 @@ const InboxLink = ({ notificationCount, currentUserHasListings }) => {
   );
 };
 
-const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
+const ProfileMenu = ({ currentPage, currentUser, onLogout, notificationCount, currentUserHasListings }) => {
+  const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
   const currentPageClass = page => {
     const isAccountSettingsPage =
       page === 'AccountSettingsPage' && ACCOUNT_SETTINGS_PAGES.includes(currentPage);
@@ -86,6 +87,19 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout }) => {
           >
             <span className={css.menuItemBorder} />
             <FormattedMessage id="TopbarDesktop.profileSettingsLink" />
+          </NamedLink>
+        </MenuItem>
+        <MenuItem key="InboxPage">
+          <NamedLink
+            className={classNames(css.menuLink, currentPageClass('InboxPage'))}
+            name="InboxPage"
+            params={{ tab: currentUserHasListings ? 'sales' : 'orders' }}
+          >
+            <span className={css.menuItemBorder} />
+            <span className={css.menuLinkLabel}>
+              <FormattedMessage id="TopbarDesktop.inbox" />
+              {notificationDot}
+            </span>
           </NamedLink>
         </MenuItem>
         <MenuItem key="AccountSettingsPage">
@@ -145,7 +159,8 @@ const TopbarDesktop = props => {
   ) : null;
 
   const profileMenuMaybe = authenticatedOnClientSide ? (
-    <ProfileMenu currentPage={currentPage} currentUser={currentUser} onLogout={onLogout} />
+    <ProfileMenu currentPage={currentPage} currentUser={currentUser} onLogout={onLogout} notificationCount={notificationCount}
+      currentUserHasListings={currentUserHasListings} />
   ) : null;
 
   const signupLinkMaybe = isAuthenticatedOrJustHydrated ? null : <SignupLink />;
@@ -174,7 +189,6 @@ const TopbarDesktop = props => {
         hasClientSideContentReady={authenticatedOnClientSide || !isAuthenticatedOrJustHydrated}
       />
 
-      {inboxLinkMaybe}
       {profileMenuMaybe}
       {signupLinkMaybe}
       {loginLinkMaybe}
