@@ -121,9 +121,9 @@ export const LandingPageComponent = props => {
       listing.attributes.price.priceCommission = calculatePriceCommission;
       listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
       //overwite amount including shipping and commission
-      listing.attributes.price.amount = listing.attributes.price.priceCommissionShipping;
+      listing.attributes.price.amount = listing.attributes.price.priceCommission;
 
-      return listing
+      return listing;
     })
 
   } 
