@@ -1,3 +1,4 @@
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { createImageVariantConfig } from '../../util/sdkLoader';
 import { isErrorUserPendingApproval, isForbiddenError, storableError } from '../../util/errors';
 import { convertUnitToSubUnit, unitDivisor } from '../../util/currency';
@@ -281,6 +282,10 @@ export const setActiveListing = listingId => ({
 });
 
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
+    // Get Provider and Customer commission values for use in Listing Wizard
+  const pageAsset = { commission: `transactions/commission.json` };
+
+
   // In private marketplace mode, this page won't fetch data if the user is unauthorized
   const state = getState();
   const currentUser = state.user?.currentUser;
@@ -328,6 +333,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         // when transitioning from search page to listing page
         'publicData.pickupEnabled',
         'publicData.shippingEnabled',
+        'publicData.shippingPriceInSubunitsOneItem',
       ],
       'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
       'fields.image': [
@@ -342,5 +348,16 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     },
     config
   );
-  return dispatch(searchListingsCall);
+
+  return Promise.all([
+    dispatch(fetchPageAssets(pageAsset, true)),
+    dispatch(searchListingsCall),
+  ])
+  .then(response => {
+    return response;
+  })
+  .catch(e => {
+    throw e;
+  });
+
 };

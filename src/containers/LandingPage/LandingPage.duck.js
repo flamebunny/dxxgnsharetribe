@@ -367,6 +367,7 @@ export const getNewListingParams = (config) => {
       // when transitioning from search page to listing page
       'publicData.pickupEnabled',
       'publicData.shippingEnabled',
+      'publicData.shippingPriceInSubunitsOneItem',
     ],
     'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
     'fields.image': [
@@ -441,6 +442,7 @@ export const getFeaturedListingParams = (config, listingIds) => {
       // when transitioning from search page to listing page
       'publicData.pickupEnabled',
       'publicData.shippingEnabled',
+      'publicData.shippingPriceInSubunitsOneItem',
     ],
     'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
     'fields.image': [
@@ -629,8 +631,10 @@ export const searchListings2 = (searchParams, config) => (dispatch, getState, sd
 
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
 
-
-  const pageAsset = { landingPage: `content/pages/${ASSET_NAME}.json` };
+  const pageAsset = { 
+    landingPage: `content/pages/${ASSET_NAME}.json`,
+    commission: `transactions/commission.json`,
+  };
 
   const queryParams = parse(search, {
     latlng: ['origin'],
@@ -669,6 +673,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         // when transitioning from search page to listing page
         'publicData.pickupEnabled',
         'publicData.shippingEnabled',
+        'publicData.shippingPriceInSubunitsOneItem',
       ],
       'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
       'fields.image': [

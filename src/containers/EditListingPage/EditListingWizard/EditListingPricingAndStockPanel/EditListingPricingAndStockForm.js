@@ -143,7 +143,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
       const customerCommissionPercentage = commission.data.customerCommission.percentage;
       // customerCommissionMinimum in cents
       const customerCommissionMinimum = commission.data.customerCommission.minimum_amount;
-;
+
       const priceValidators = getPriceValidators(
         listingMinimumPriceSubUnits,
         marketplaceCurrency,
@@ -348,9 +348,9 @@ EditListingPricingAndStockFormComponentPage.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { commission } = state.hostedAssets.pageAssetsData;
+  const commission = state.hostedAssets.pageAssetsData?.commission;
   return { commission };
-};
+}
 
 const EditListingPricingAndStockFormComponent = compose(
   connect(mapStateToProps),

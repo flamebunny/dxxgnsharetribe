@@ -106,7 +106,9 @@ class CurrencyInputComponent extends Component {
 
   componentDidMount() {
     // This code will run after the component has been mounted to the DOM
-    this.props.onChange(parseInt(this.state.unformattedValue));
+    if(this.props.onChange) {
+      this.props.onChange(parseInt(this.state.unformattedValue));
+    }
     // Perform any "onload" actions here, e.g., data fetching, DOM manipulation
   }
 
@@ -119,7 +121,10 @@ class CurrencyInputComponent extends Component {
     const price = getPrice(ensureDotSeparator(unformattedValue), this.props.currencyConfig);
     this.props.input.onChange(price);
     // Notify EditListingPricingAndStockForm about current price change
-    this.props.onChange(parseInt(unformattedValue));    
+    if(this.props.onChange) {
+      this.props.onChange(parseInt(unformattedValue)); 
+    }
+       
   }
 
   onInputBlur(event) {
@@ -195,7 +200,9 @@ class CurrencyInputComponent extends Component {
       });
 
       // Notify EditListingPricingAndStockForm about current price change
-      this.props.onChange(parseInt(this.state.unformattedValue));
+      if(this.props.onChange) {
+        this.props.onChange(parseInt(this.state.unformattedValue));
+      }
 
       return { formattedValue, value: unformattedValue, unformattedValue };
 

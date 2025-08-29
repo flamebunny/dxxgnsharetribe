@@ -1,3 +1,4 @@
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { updatedEntities, denormalisedEntities } from '../../util/data';
 import { storableError } from '../../util/errors';
 import { createImageVariantConfig } from '../../util/sdkLoader';
@@ -349,6 +350,9 @@ export const discardDraft = listingId => (dispatch, getState, sdk) => {
 };
 
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
+  // Get Provider and Customer commission values for use in Listing Wizard
+  const pageAsset = { commission: `transactions/commission.json` };
+
   const queryParams = parse(search);
   const page = queryParams.page || 1;
   dispatch(clearOpenListingError());
@@ -361,6 +365,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   const aspectRatio = aspectHeight / aspectWidth;
 
   return Promise.all([
+    dispatch(fetchPageAssets(pageAsset, true)),
     dispatch(fetchCurrentUser()),
     dispatch(
       queryOwnListings({
