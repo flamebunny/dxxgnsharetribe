@@ -39,6 +39,4 @@ const Overlay = props => {
   );
 };
 
-  messageClass: null,
-  messageClass: string,
 export default Overlay;

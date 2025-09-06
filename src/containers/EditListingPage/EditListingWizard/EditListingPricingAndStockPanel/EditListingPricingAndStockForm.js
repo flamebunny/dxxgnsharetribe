@@ -162,7 +162,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         values,
         commission,
       } = formRenderProps;
-      const intl = useIntl();
+      //const intl = useIntl();
       const providerCommissionPercentage = commission.data.providerCommission.percentage;
       
       // providerCommissionMinimum in cents
@@ -362,6 +362,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
   />
 );
 
+const mapStateToProps = state => {
   const commission = state.hostedAssets.pageAssetsData?.commission;
   return { commission };
 }

@@ -39,10 +39,14 @@ const LoginLink = () => {
   );
 };
 
-const InboxLink = ({ notificationCount, inboxTab }) => {
+const InboxLink = ({ notificationCount, currentUserHasListings }) => {
   const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
   return (
-    <NamedLink className={css.topbarLink} name="InboxPage" params={{ tab: inboxTab }}>
+    <NamedLink
+      className={css.topbarLink}
+      name="InboxPage"
+      params={{ tab: currentUserHasListings ? 'sales' : 'orders' }}
+    >
       <span className={css.topbarLinkLabel}>
         <FormattedMessage id="TopbarDesktop.inbox" />
         {notificationDot}
@@ -147,6 +151,7 @@ const TopbarDesktop = props => {
     currentUser,
     currentPage,
     rootClassName,
+    currentUserHasListings,
     notificationCount = 0,
     intl,
     isAuthenticated,
@@ -176,11 +181,7 @@ const TopbarDesktop = props => {
 
   const profileMenuMaybe = authenticatedOnClientSide ? (
     <ProfileMenu currentPage={currentPage} currentUser={currentUser} onLogout={onLogout} notificationCount={notificationCount}
-      currentUserHasListings={currentUserHasListings} showManageListingsLink={showCreateListingsLink} />
-      currentUser={currentUser}
-      onLogout={onLogout}
-      showManageListingsLink={showCreateListingsLink}
-    />
+      currentUserHasListings={currentUserHasListings} showManageListingsLink={showCreateListingsLink} />      
   ) : null;
 
   const signupLinkMaybe = isAuthenticatedOrJustHydrated ? null : <SignupLink />;

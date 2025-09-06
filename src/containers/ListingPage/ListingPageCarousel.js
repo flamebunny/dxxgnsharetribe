@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
-import classNames from 'classnames';
+
 
 // Contexts
 import { useConfiguration } from '../../context/configurationContext';
@@ -375,18 +375,22 @@ export const ListingPageComponent = props => {
                 variantPrefix={config.layout.listingImage.variantPrefix}
               />
             )}
-            <div
+            </div>
+            <div className={css.orderColumnForProductLayout}>
+              <div
               className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
             >
               {showListingImage ? (
-            <div className={css.breadcrumbs}>
-              <a className={css.breadcrumbLink} href="/s/">All</a>
-              <span className={css.spacer}>·</span>
-              <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
-            </div>
+                <div>
+                <div className={css.breadcrumbs}>
+                  <a className={css.breadcrumbLink} href="/s/">All</a>
+                  <span className={css.spacer}>·</span>
+                  <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
+                </div>
                 <H4 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
                 </H4>
+                </div>
               ) : (
                 <H3 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
