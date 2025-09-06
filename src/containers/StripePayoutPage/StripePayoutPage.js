@@ -1,14 +1,14 @@
 import React from 'react';
-import { bool, func, oneOf, shape } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { useConfiguration } from '../../context/configurationContext';
 import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 import { createResourceLocatorString } from '../../util/routes';
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { ensureCurrentUser } from '../../util/data';
 import { propTypes } from '../../util/types';
+import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import {
   stripeAccountClearError,
@@ -76,9 +76,33 @@ const handleGetStripeConnectAccountLinkFn = (getLinkFn, commonParams) => type =>
     .catch(err => console.error(err));
 };
 
+/**
+ * StripePayoutPage component
+ *
+ * @component
+ * @param {Object} props
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {boolean} props.scrollingDisabled - Whether scrolling is disabled
+ * @param {boolean} props.getAccountLinkInProgress - Whether the account link is in progress
+ * @param {boolean} props.payoutDetailsSaveInProgress - Whether the payout details are in progress
+ * @param {propTypes.error} props.createStripeAccountError - The create stripe account error
+ * @param {propTypes.error} props.getAccountLinkError - The get account link error
+ * @param {propTypes.error} props.updateStripeAccountError - The update stripe account error
+ * @param {propTypes.error} props.fetchStripeAccountError - The fetch stripe account error
+ * @param {Object} props.stripeAccount - The stripe account
+ * @param {boolean} props.stripeAccountFetched - Whether the stripe account is fetched
+ * @param {boolean} props.payoutDetailsSaved - Whether the payout details are saved
+ * @param {Function} props.onPayoutDetailsChange - The function to handle the payout details change
+ * @param {Function} props.onPayoutDetailsSubmit - The function to handle the payout details submit
+ * @param {Function} props.onGetStripeConnectAccountLink - The function to handle the get stripe connect account link
+ * @param {Object} props.params - The path params
+ * @param {STRIPE_ONBOARDING_RETURN_URL_SUCCESS | STRIPE_ONBOARDING_RETURN_URL_FAILURE} props.params.returnURLType - The return URL type (success or failure)
+ * @returns {JSX.Element}
+ */
 export const StripePayoutPageComponent = props => {
   const config = useConfiguration();
   const routes = useRouteConfiguration();
+  const intl = useIntl();
   const {
     currentUser,
     scrollingDisabled,
@@ -95,10 +119,10 @@ export const StripePayoutPageComponent = props => {
     payoutDetailsSaveInProgress,
     payoutDetailsSaved,
     params,
-    intl,
+    authScopes,
   } = props;
 
-  const { returnURLType } = params;
+  const { returnURLType } = params || {};
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const currentUserLoaded = !!ensuredCurrentUser.id;
   const stripeConnected = currentUserLoaded && !!stripeAccount && !!stripeAccount.id;
@@ -119,6 +143,7 @@ export const StripePayoutPageComponent = props => {
       hasRequirements(stripeAccountData, 'currently_due'));
 
   const savedCountry = stripeAccountData ? stripeAccountData.country : null;
+  const savedAccountType = stripeAccountData ? stripeAccountData.business_type : null;
 
   const handleGetStripeConnectAccountLink = handleGetStripeConnectAccountLinkFn(
     onGetStripeConnectAccountLink,
@@ -133,6 +158,12 @@ export const StripePayoutPageComponent = props => {
   const returnedAbnormallyFromStripe = returnURLType === STRIPE_ONBOARDING_RETURN_URL_FAILURE;
   const showVerificationNeeded = stripeConnected && requirementsMissing;
 
+  // Check if user has limited rights and set button titles accordingly
+  const limitedRights = authScopes?.indexOf('user:limited') >= 0;
+  const stripeButtonTitle = limitedRights
+    ? intl.formatMessage({ id: 'StripePayoutPage.submitButtonText' })
+    : null;
+
   // Redirect from success URL to basic path for StripePayoutPage
   if (returnedNormallyFromStripe && stripeConnected && !requirementsMissing) {
     return <NamedRedirect name="StripePayoutPage" />;
@@ -144,6 +175,14 @@ export const StripePayoutPageComponent = props => {
     handleGetStripeConnectAccountLink('custom_account_verification')();
   }
 
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+  const { showPayoutDetails, showPaymentMethods } = showPaymentDetailsForUser(config, currentUser);
+  const accountSettingsNavProps = {
+    currentPage: 'StripePayoutPage',
+    showPaymentMethods,
+    showPayoutDetails,
+  };
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
@@ -153,12 +192,15 @@ export const StripePayoutPageComponent = props => {
               desktopClassName={css.desktopTopbar}
               mobileClassName={css.mobileTopbar}
             />
-            <UserNav currentPage="StripePayoutPage" />
+            <UserNav
+              currentPage="StripePayoutPage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         sideNav={null}
         useAccountSettingsNav
-        currentPage="StripePayoutPage"
+        accountSettingsNavProps={accountSettingsNavProps}
         footer={<FooterContainer />}
       >
         <div className={css.content}>
@@ -178,6 +220,7 @@ export const StripePayoutPageComponent = props => {
               currentUser={ensuredCurrentUser}
               stripeBankAccountLastDigits={getBankAccountLast4Digits(stripeAccountData)}
               savedCountry={savedCountry}
+              savedAccountType={savedAccountType}
               submitButtonText={intl.formatMessage({
                 id: 'StripePayoutPage.submitButtonText',
               })}
@@ -190,6 +233,7 @@ export const StripePayoutPageComponent = props => {
               onSubmit={onPayoutDetailsSubmit}
               onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink}
               stripeConnected={stripeConnected}
+              authScopes={authScopes}
             >
               {stripeConnected && !returnedAbnormallyFromStripe && showVerificationNeeded ? (
                 <StripeConnectAccountStatusBox
@@ -198,15 +242,18 @@ export const StripePayoutPageComponent = props => {
                   onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
                     'custom_account_verification'
                   )}
+                  disabled={limitedRights}
+                  title={stripeButtonTitle}
                 />
               ) : stripeConnected && savedCountry && !returnedAbnormallyFromStripe ? (
                 <StripeConnectAccountStatusBox
                   type="verificationSuccess"
                   inProgress={getAccountLinkInProgress}
-                  disabled={payoutDetailsSaveInProgress}
+                  disabled={payoutDetailsSaveInProgress || limitedRights}
                   onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
                     'custom_account_update'
                   )}
+                  title={stripeButtonTitle}
                 />
               ) : null}
             </StripeConnectAccountForm>
@@ -215,42 +262,6 @@ export const StripePayoutPageComponent = props => {
       </LayoutSideNavigation>
     </Page>
   );
-};
-
-StripePayoutPageComponent.defaultProps = {
-  currentUser: null,
-  createStripeAccountError: null,
-  updateStripeAccountError: null,
-  fetchStripeAccountError: null,
-  getAccountLinkError: null,
-  stripeAccount: null,
-  params: {
-    returnURLType: null,
-  },
-};
-
-StripePayoutPageComponent.propTypes = {
-  currentUser: propTypes.currentUser,
-  scrollingDisabled: bool.isRequired,
-  getAccountLinkInProgress: bool.isRequired,
-  payoutDetailsSaveInProgress: bool.isRequired,
-  createStripeAccountError: propTypes.error,
-  getAccountLinkError: propTypes.error,
-  updateStripeAccountError: propTypes.error,
-  fetchStripeAccountError: propTypes.error,
-  stripeAccount: propTypes.stripeAccount,
-  stripeAccountFetched: bool.isRequired,
-  payoutDetailsSaved: bool.isRequired,
-
-  onPayoutDetailsChange: func.isRequired,
-  onPayoutDetailsSubmit: func.isRequired,
-  onGetStripeConnectAccountLink: func.isRequired,
-  params: shape({
-    returnURLType: oneOf(STRIPE_ONBOARDING_RETURN_URL_TYPES),
-  }),
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -265,6 +276,7 @@ const mapStateToProps = state => {
   } = state.stripeConnectAccount;
   const { currentUser } = state.user;
   const { payoutDetailsSaveInProgress, payoutDetailsSaved } = state.StripePayoutPage;
+  const { authScopes } = state.auth;
   return {
     currentUser,
     getAccountLinkInProgress,
@@ -277,6 +289,7 @@ const mapStateToProps = state => {
     payoutDetailsSaveInProgress,
     payoutDetailsSaved,
     scrollingDisabled: isScrollingDisabled(state),
+    authScopes,
   };
 };
 
@@ -291,8 +304,7 @@ const StripePayoutPage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(StripePayoutPageComponent);
 
 export default StripePayoutPage;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { node, object, string } from 'prop-types';
+import classNames from 'classnames';
 
 import { FormattedMessage } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
@@ -17,10 +17,27 @@ import {
 
 import css from './CheckoutPage.module.css';
 
+/**
+ * A card that displays the listing and booking details on the checkout page.
+ *
+ * @component
+ * @param {Object} props
+ * @param {propTypes.listing} props.listing - The listing
+ * @param {string} props.listingTitle - The listing title
+ * @param {propTypes.user} props.author - The author
+ * @param {propTypes.image} props.firstImage - The first image
+ * @param {Object} props.layoutListingImageConfig - The layout listing image config
+ * @param {ReactNode} props.speculateTransactionErrorMessage - The speculate transaction error message
+ * @param {boolean} props.showPrice - Whether to show the price
+ * @param {string} props.processName - The process name
+ * @param {ReactNode} props.breakdown - The breakdown
+ * @param {intlShape} props.intl - The intl object
+ */
 const DetailsSideCard = props => {
   const {
     listing,
     listingTitle,
+    priceVariantName,
     author,
     firstImage,
     layoutListingImageConfig,
@@ -28,6 +45,7 @@ const DetailsSideCard = props => {
     showPrice,
     processName,
     breakdown,
+    showListingImage,
     intl,
   } = props;
 
@@ -42,23 +60,27 @@ const DetailsSideCard = props => {
 
   return (
     <div className={css.detailsContainerDesktop}>
-      <AspectRatioWrapper
-        width={aspectWidth}
-        height={aspectHeight}
-        className={css.detailsAspectWrapper}
-      >
-        <ResponsiveImage
-          rootClassName={css.rootForImage}
-          alt={listingTitle}
-          image={firstImage}
-          variants={variants}
-        />
-      </AspectRatioWrapper>
+      {showListingImage && (
+        <AspectRatioWrapper
+          width={aspectWidth}
+          height={aspectHeight}
+          className={css.detailsAspectWrapper}
+        >
+          <ResponsiveImage
+            rootClassName={css.rootForImage}
+            alt={listingTitle}
+            image={firstImage}
+            variants={variants}
+          />
+        </AspectRatioWrapper>
+      )}
       <div className={css.listingDetailsWrapper}>
-        <div className={css.avatarWrapper}>
+        <div className={classNames(css.avatarWrapper, { [css.noListingImage]: !showListingImage })}>
           <AvatarMedium user={author} disableProfileLink />
         </div>
-        <div className={css.detailsHeadings}>
+        <div
+          className={classNames(css.detailsHeadings, { [css.noListingImage]: !showListingImage })}
+        >
           <H4 as="h2">
             <NamedLink
               name="ListingPage"
@@ -84,6 +106,12 @@ const DetailsSideCard = props => {
 
       {!!breakdown ? (
         <div className={css.orderBreakdownHeader}>
+          {priceVariantName ? (
+            <div className={css.bookingPriceVariant}>
+              <p>{priceVariantName}</p>
+            </div>
+          ) : null}
+
           <H6 as="h3" className={css.orderBreakdownTitle}>
             <FormattedMessage id={`CheckoutPage.${processName}.orderBreakdown`} />
           </H6>
@@ -93,22 +121,6 @@ const DetailsSideCard = props => {
       {breakdown}
     </div>
   );
-};
-
-DetailsSideCard.defaultProps = {
-  speculateTransactionErrorMessage: null,
-  breakdown: null,
-};
-
-DetailsSideCard.propTypes = {
-  listing: propTypes.listing.isRequired,
-  listingTitle: string.isRequired,
-  author: propTypes.user.isRequired,
-  firstImage: propTypes.image.isRequired,
-  layoutListingImageConfig: object.isRequired,
-  speculateTransactionErrorMessage: node,
-  processName: string.isRequired,
-  breakdown: node,
 };
 
 export default DetailsSideCard;

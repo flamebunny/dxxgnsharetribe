@@ -1,20 +1,27 @@
 import React from 'react';
-import { string, func, bool, oneOfType } from 'prop-types';
 import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
 
-import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
-import { displayPrice } from '../../util/configHelpers';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
+import {
+  displayPrice,
+  isPriceVariationsEnabled,
+  requireListingImage,
+} from '../../util/configHelpers';
 import { lazyLoadWithDimensions } from '../../util/uiHelpers';
-import { propTypes } from '../../util/types';
 import { formatMoney } from '../../util/currency';
 import { ensureListing, ensureUser } from '../../util/data';
 import { richText } from '../../util/richText';
 import { createSlug } from '../../util/urlHelpers';
 import { isBookingProcessAlias } from '../../transactions/transaction';
 
-import { AspectRatioWrapper, NamedLink, ResponsiveImage } from '../../components';
+import {
+  AspectRatioWrapper,
+  NamedLink,
+  ResponsiveImage,
+  ListingCardThumbnail,
+} from '../../components';
 
 import css from './ListingCard.module.css';
 
@@ -42,62 +49,155 @@ const priceData = (price, currency, intl) => {
 const LazyImage = lazyLoadWithDimensions(ResponsiveImage, { loadAfterInitialRendering: 3000 });
 
 const PriceMaybe = props => {
-  const { price, publicData, config, intl } = props;
-  const { listingType } = publicData || {};
-  const validListingTypes = config.listing.listingTypes;
-  const foundListingTypeConfig = validListingTypes.find(conf => conf.listingType === listingType);
-  const showPrice = displayPrice(foundListingTypeConfig);
+  const { price, publicData, config, intl, listingTypeConfig } = props;
+  const showPrice = displayPrice(listingTypeConfig);
   if (!showPrice && price) {
     return null;
   }
 
+  const isPriceVariationsInUse = isPriceVariationsEnabled(publicData, listingTypeConfig);
+  const hasMultiplePriceVariants = isPriceVariationsInUse && publicData?.priceVariants?.length > 1;
+
   const isBookable = isBookingProcessAlias(publicData?.transactionProcessAlias);
   const { formattedPrice, priceTitle } = priceData(price, config.currency, intl);
+
+  const priceValue = <span className={css.priceValue}>{formattedPrice}</span>;
+  const pricePerUnit = isBookable ? (
+    <span className={css.perUnit}>
+      <FormattedMessage id="ListingCard.perUnit" values={{ unitType: publicData?.unitType }} />
+    </span>
+  ) : (
+    ''
+  );
+
   return (
-    <div className={css.price}>
-      <div className={css.priceValue} title={priceTitle}>
-        {formattedPrice}
-      </div>
-      {isBookable ? (
-        <div className={css.perUnit}>
-          <FormattedMessage id="ListingCard.perUnit" values={{ unitType: publicData?.unitType }} />
-        </div>
-      ) : null}
+    <div className={css.price} title={priceTitle}>
+      {hasMultiplePriceVariants ? (
+        <FormattedMessage
+          id="ListingCard.priceStartingFrom"
+          values={{ priceValue, pricePerUnit }}
+        />
+      ) : (
+        <FormattedMessage id="ListingCard.price" values={{ priceValue, pricePerUnit }} />
+      )}
     </div>
   );
 };
 
-export const ListingCardComponent = props => {
+/**
+ * ListingCardImage
+ * Component responsible for rendering the image part of the listing card.
+ * It either renders the first image from the listing's images array with lazy loading,
+ * or a stylized placeholder if images are disabled for the listing type.
+ * Also wraps the image in a fixed aspect ratio container for consistent layout.
+ * @component
+ * @param {Object} props
+ * @param {Object} props.currentListing listing entity with image data
+ * @param {Function?} props.setActivePropsMaybe mouse enter/leave handlers for map highlighting
+ * @param {string} props.title listing title for alt text
+ * @param {string} props.renderSizes img/srcset size rules
+ * @param {number} props.aspectWidth aspect ratio width
+ * @param {number} props.aspectHeight aspect ratio height
+ * @param {string} props.variantPrefix image variant prefix (e.g. "listing-card")
+ * @param {boolean} props.showListingImage whether to show actual listing image or not
+ * @param {Object?} props.style the background color for the listing card with no image
+ * @returns {JSX.Element} listing image with fixed aspect ratio or fallback preview
+ */
+const ListingCardImage = props => {
+  const {
+    currentListing,
+    setActivePropsMaybe,
+    title,
+    renderSizes,
+    aspectWidth,
+    aspectHeight,
+    variantPrefix,
+    showListingImage,
+    style,
+  } = props;
+
+  const firstImage =
+    currentListing.images && currentListing.images.length > 0 ? currentListing.images[0] : null;
+  const variants = firstImage
+    ? Object.keys(firstImage?.attributes?.variants).filter(k => k.startsWith(variantPrefix))
+    : [];
+
+  // Render the listing image only if listing images are enabled in the listing type
+  return showListingImage ? (
+    <AspectRatioWrapper
+      className={css.aspectRatioWrapper}
+      width={aspectWidth}
+      height={aspectHeight}
+      {...setActivePropsMaybe}
+    >
+      <LazyImage
+        rootClassName={css.rootForImage}
+        alt={title}
+        image={firstImage}
+        variants={variants}
+        sizes={renderSizes}
+      />
+    </AspectRatioWrapper>
+  ) : (
+    <ListingCardThumbnail
+      style={style}
+      listingTitle={title}
+      className={css.aspectRatioWrapper}
+      width={aspectWidth}
+      height={aspectHeight}
+      setActivePropsMaybe={setActivePropsMaybe}
+    />
+  );
+};
+
+/**
+ * ListingCard
+ *
+ * @component
+ * @param {Object} props
+ * @param {string?} props.className add more style rules in addition to component's own css.root
+ * @param {string?} props.rootClassName overwrite components own css.root
+ * @param {Object} props.listing API entity: listing or ownListing
+ * @param {string?} props.renderSizes for img/srcset
+ * @param {Function?} props.setActiveListing
+ * @param {boolean?} props.showAuthorInfo
+ * @returns {JSX.Element} listing card to be used in search result panel etc.
+ */
+export const ListingCard = props => {
   const config = useConfiguration();
+  const intl = props.intl || useIntl();
+
   const {
     className,
     rootClassName,
-    intl,
     listing,
     renderSizes,
     setActiveListing,
-    showAuthorInfo,
+    showAuthorInfo = true,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
+
   const currentListing = ensureListing(listing);
   const id = currentListing.id.uuid;
   const { title = '', price, publicData } = currentListing.attributes;
   const slug = createSlug(title);
+
   const author = ensureUser(listing.author);
   const authorName = author.attributes.profile.displayName;
-  const firstImage =
-    currentListing.images && currentListing.images.length > 0 ? currentListing.images[0] : null;
+
+  const { listingType, cardStyle } = publicData || {};
+  const validListingTypes = config.listing.listingTypes;
+  const foundListingTypeConfig = validListingTypes.find(conf => conf.listingType === listingType);
+  const showListingImage = requireListingImage(foundListingTypeConfig);
 
   const {
     aspectWidth = 1,
     aspectHeight = 1,
     variantPrefix = 'listing-card',
   } = config.layout.listingImage;
-  const variants = firstImage
-    ? Object.keys(firstImage?.attributes?.variants).filter(k => k.startsWith(variantPrefix))
-    : [];
 
+  // Sets the listing as active in the search map when hovered (if the search map is enabled)
   const setActivePropsMaybe = setActiveListing
     ? {
         onMouseEnter: () => setActiveListing(currentListing.id),
@@ -109,22 +209,18 @@ export const ListingCardComponent = props => {
 
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
-      <AspectRatioWrapper
-        className={css.aspectRatioWrapper}
-        /*width={aspectWidth}
-        height={aspectHeight}*/
-        width={4}
-        height={5}
-        {...setActivePropsMaybe}
-      >
-        <LazyImage
-          rootClassName={css.rootForImage}
-          alt={title}
-          image={firstImage}
-          variants={variants}
-          sizes={renderSizes}
-        />
-      </AspectRatioWrapper>
+      <ListingCardImage
+        renderSizes={renderSizes}
+        title={title}
+        currentListing={currentListing}
+        config={config}
+        setActivePropsMaybe={setActivePropsMaybe}
+        aspectWidth={aspectWidth}
+        aspectHeight={aspectHeight}
+        variantPrefix={variantPrefix}
+        style={cardStyle}
+        showListingImage={showListingImage}
+      />
       <div className={classNames(css.info2, css.cousine)}>   
         <span className={classNames(css.infoTitle, css.elipsis)}>{richText(title, {
               longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
@@ -134,13 +230,22 @@ export const ListingCardComponent = props => {
 {
 /*
       <div className={css.info}>        
+        <PriceMaybe
+          price={price}
+          publicData={publicData}
+          config={config}
+          intl={intl}
+          listingTypeConfig={foundListingTypeConfig}
+        />
         <div className={css.mainInfo}>
-          <div className={css.title}>
-            {richText(title, {
-              longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
-              longWordClass: css.longWord,
-            })}
-          </div>
+          {showListingImage && (
+            <div className={css.title}>
+              {richText(title, {
+                longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
+                longWordClass: css.longWord,
+              })}
+            </div>
+          )}
           {showAuthorInfo ? (
             <div className={css.authorInfo}>
               <FormattedMessage id="ListingCard.author" values={{ authorName }} />
@@ -155,25 +260,4 @@ export const ListingCardComponent = props => {
   );
 };
 
-ListingCardComponent.defaultProps = {
-  className: null,
-  rootClassName: null,
-  renderSizes: null,
-  setActiveListing: null,
-  showAuthorInfo: true,
-};
-
-ListingCardComponent.propTypes = {
-  className: string,
-  rootClassName: string,
-  intl: intlShape.isRequired,
-  listing: oneOfType([propTypes.listing, propTypes.ownListing]).isRequired,
-  showAuthorInfo: bool,
-
-  // Responsive image sizes hint
-  renderSizes: string,
-
-  setActiveListing: func,
-};
-
-export default injectIntl(ListingCardComponent);
+export default ListingCard;

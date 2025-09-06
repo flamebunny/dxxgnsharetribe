@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { bool, func, object, number, string } from 'prop-types';
 import classNames from 'classnames';
 
-import { FormattedMessage, intlShape } from '../../../../util/reactIntl';
+import { FormattedMessage } from '../../../../util/reactIntl';
 import { ACCOUNT_SETTINGS_PAGES } from '../../../../routing/routeConfiguration';
-import { propTypes } from '../../../../util/types';
 import {
   Avatar,
   InlineTextButton,
@@ -41,14 +39,10 @@ const LoginLink = () => {
   );
 };
 
-const InboxLink = ({ notificationCount, currentUserHasListings }) => {
+const InboxLink = ({ notificationCount, inboxTab }) => {
   const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
   return (
-    <NamedLink
-      className={css.topbarLink}
-      name="InboxPage"
-      params={{ tab: currentUserHasListings ? 'sales' : 'orders' }}
-    >
+    <NamedLink className={css.topbarLink} name="InboxPage" params={{ tab: inboxTab }}>
       <span className={css.topbarLinkLabel}>
         <FormattedMessage id="TopbarDesktop.inbox" />
         {notificationDot}
@@ -57,7 +51,7 @@ const InboxLink = ({ notificationCount, currentUserHasListings }) => {
   );
 };
 
-const ProfileMenu = ({ currentPage, currentUser, onLogout, notificationCount, currentUserHasListings }) => {
+const ProfileMenu = ({ currentPage, currentUser, onLogout, notificationCount, currentUserHasListings, showManageListingsLink}) => {
   const notificationDot = notificationCount > 0 ? <div className={css.notificationDot} /> : null;
   const currentPageClass = page => {
     const isAccountSettingsPage =
@@ -71,15 +65,17 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, notificationCount, cu
         <Avatar className={css.avatar} user={currentUser} disableProfileLink />
       </MenuLabel>
       <MenuContent className={css.profileMenuContent}>
-        <MenuItem key="ManageListingsPage">
-          <NamedLink
-            className={classNames(css.menuLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <span className={css.menuItemBorder} />
-            <FormattedMessage id="TopbarDesktop.yourListingsLink" />
-          </NamedLink>
-        </MenuItem>
+        {showManageListingsLink ? (
+          <MenuItem key="ManageListingsPage">
+            <NamedLink
+              className={classNames(css.menuLink, currentPageClass('ManageListingsPage'))}
+              name="ManageListingsPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.yourListingsLink" />
+            </NamedLink>
+          </MenuItem>
+        ) : null}
         <MenuItem key="ProfileSettingsPage">
           <NamedLink
             className={classNames(css.menuLink, currentPageClass('ProfileSettingsPage'))}
@@ -122,6 +118,27 @@ const ProfileMenu = ({ currentPage, currentUser, onLogout, notificationCount, cu
   );
 };
 
+/**
+ * Topbar for desktop layout
+ *
+ * @component
+ * @param {Object} props
+ * @param {string?} props.className add more style rules in addition to components own css.root
+ * @param {string?} props.rootClassName overwrite components own css.root
+ * @param {CurrentUser} props.currentUser API entity
+ * @param {string?} props.currentPage
+ * @param {boolean} props.isAuthenticated
+ * @param {number} props.notificationCount
+ * @param {Function} props.onLogout
+ * @param {Function} props.onSearchSubmit
+ * @param {Object?} props.initialSearchFormValues
+ * @param {Object} props.intl
+ * @param {Object} props.config
+ * @param {boolean} props.showSearchForm
+ * @param {boolean} props.showCreateListingsLink
+ * @param {string} props.inboxTab
+ * @returns {JSX.Element} search icon
+ */
 const TopbarDesktop = props => {
   const {
     className,
@@ -130,13 +147,15 @@ const TopbarDesktop = props => {
     currentUser,
     currentPage,
     rootClassName,
-    currentUserHasListings,
-    notificationCount,
+    notificationCount = 0,
     intl,
     isAuthenticated,
     onLogout,
     onSearchSubmit,
-    initialSearchFormValues,
+    initialSearchFormValues = {},
+    showSearchForm,
+    showCreateListingsLink,
+    inboxTab,
   } = props;
   const [mounted, setMounted] = useState(false);
 
@@ -152,19 +171,36 @@ const TopbarDesktop = props => {
   const classes = classNames(rootClassName || css.root, className);
 
   const inboxLinkMaybe = authenticatedOnClientSide ? (
-    <InboxLink
-      notificationCount={notificationCount}
-      currentUserHasListings={currentUserHasListings}
-    />
+    <InboxLink notificationCount={notificationCount} inboxTab={inboxTab} />
   ) : null;
 
   const profileMenuMaybe = authenticatedOnClientSide ? (
     <ProfileMenu currentPage={currentPage} currentUser={currentUser} onLogout={onLogout} notificationCount={notificationCount}
-      currentUserHasListings={currentUserHasListings} />
+      currentUserHasListings={currentUserHasListings} showManageListingsLink={showCreateListingsLink} />
+      currentUser={currentUser}
+      onLogout={onLogout}
+      showManageListingsLink={showCreateListingsLink}
+    />
   ) : null;
 
   const signupLinkMaybe = isAuthenticatedOrJustHydrated ? null : <SignupLink />;
   const loginLinkMaybe = isAuthenticatedOrJustHydrated ? null : <LoginLink />;
+
+  const searchFormMaybe = showSearchForm ? (
+    <TopbarSearchForm
+      className={classNames(css.searchLink, { [css.takeAvailableSpace]: giveSpaceForSearch })}
+      desktopInputRoot={css.topbarSearchWithLeftPadding}
+      onSubmit={onSearchSubmit}
+      initialValues={initialSearchFormValues}
+      appConfig={config}
+    />
+  ) : (
+    <div
+      className={classNames(css.spacer, css.topbarSearchWithLeftPadding, {
+        [css.takeAvailableSpace]: giveSpaceForSearch,
+      })}
+    />
+  );
 
   return (
     <nav className={classes}>
@@ -174,19 +210,14 @@ const TopbarDesktop = props => {
         alt={intl.formatMessage({ id: 'TopbarDesktop.logo' }, { marketplaceName })}
         linkToExternalSite={config?.topbar?.logoLink}
       />
-      <TopbarSearchForm
-        className={classNames(css.searchLink, { [css.takeAvailableSpace]: giveSpaceForSearch })}
-        desktopInputRoot={css.topbarSearchWithLeftPadding}
-        onSubmit={onSearchSubmit}
-        initialValues={initialSearchFormValues}
-        appConfig={config}
-      />
+      {searchFormMaybe}
 
       <CustomLinksMenu
         currentPage={currentPage}
         customLinks={customLinks}
         intl={intl}
         hasClientSideContentReady={authenticatedOnClientSide || !isAuthenticatedOrJustHydrated}
+        showCreateListingsLink={showCreateListingsLink}
       />
 
       {profileMenuMaybe}
@@ -194,31 +225,6 @@ const TopbarDesktop = props => {
       {loginLinkMaybe}
     </nav>
   );
-};
-
-TopbarDesktop.defaultProps = {
-  rootClassName: null,
-  className: null,
-  currentUser: null,
-  currentPage: null,
-  notificationCount: 0,
-  initialSearchFormValues: {},
-  config: null,
-};
-
-TopbarDesktop.propTypes = {
-  rootClassName: string,
-  className: string,
-  currentUserHasListings: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  currentPage: string,
-  isAuthenticated: bool.isRequired,
-  onLogout: func.isRequired,
-  notificationCount: number,
-  onSearchSubmit: func.isRequired,
-  initialSearchFormValues: object,
-  intl: intlShape.isRequired,
-  config: object,
 };
 
 export default TopbarDesktop;

@@ -1,10 +1,9 @@
 import React from 'react';
-import { bool, func, object, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { useConfiguration } from '../../context/configurationContext';
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import { PROFILE_PAGE_PENDING_APPROVAL_VARIANT } from '../../util/urlHelpers';
 import { ensureCurrentUser } from '../../util/data';
@@ -12,6 +11,7 @@ import {
   initialValuesForUserFields,
   isUserAuthorized,
   pickUserFieldsData,
+  showCreateListingLinkForUser,
 } from '../../util/userHelpers';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 
@@ -49,8 +49,29 @@ const ViewProfileLink = props => {
   ) : null;
 };
 
+/**
+ * ProfileSettingsPage
+ *
+ * @component
+ * @param {Object} props
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {Object} props.image - The image
+ * @param {string} props.image.id - The image id
+ * @param {propTypes.uuid} props.image.imageId - The image id
+ * @param {File} props.image.file - The image file
+ * @param {propTypes.image} props.image.uploadedImage - The uploaded image
+ * @param {Function} props.onImageUpload - The image upload function
+ * @param {Function} props.onUpdateProfile - The update profile function
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {boolean} props.updateInProgress - Whether the update is in progress
+ * @param {propTypes.error} props.updateProfileError - The update profile error
+ * @param {propTypes.error} props.uploadImageError - The upload image error
+ * @param {boolean} props.uploadInProgress - Whether the upload is in progress
+ * @returns {JSX.Element}
+ */
 export const ProfileSettingsPageComponent = props => {
   const config = useConfiguration();
+  const intl = useIntl();
   const {
     currentUser,
     image,
@@ -61,7 +82,6 @@ export const ProfileSettingsPageComponent = props => {
     updateProfileError,
     uploadImageError,
     uploadInProgress,
-    intl,
   } = props;
 
   const { userFields, userTypes = [] } = config.user;
@@ -152,13 +172,18 @@ export const ProfileSettingsPageComponent = props => {
 
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn
         topbar={
           <>
             <TopbarContainer />
-            <UserNav currentPage="ProfileSettingsPage" />
+            <UserNav
+              currentPage="ProfileSettingsPage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         footer={<FooterContainer />}
@@ -176,37 +201,6 @@ export const ProfileSettingsPageComponent = props => {
       </LayoutSingleColumn>
     </Page>
   );
-};
-
-ProfileSettingsPageComponent.defaultProps = {
-  currentUser: null,
-  uploadImageError: null,
-  updateProfileError: null,
-  image: null,
-  config: null,
-};
-
-ProfileSettingsPageComponent.propTypes = {
-  currentUser: propTypes.currentUser,
-  image: shape({
-    id: string,
-    imageId: propTypes.uuid,
-    file: object,
-    uploadedImage: propTypes.image,
-  }),
-  onImageUpload: func.isRequired,
-  onUpdateProfile: func.isRequired,
-  scrollingDisabled: bool.isRequired,
-  updateInProgress: bool.isRequired,
-  updateProfileError: propTypes.error,
-  uploadImageError: propTypes.error,
-  uploadInProgress: bool.isRequired,
-
-  // from useConfiguration()
-  config: object,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -238,8 +232,7 @@ const ProfileSettingsPage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(ProfileSettingsPageComponent);
 
 export default ProfileSettingsPage;

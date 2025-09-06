@@ -13,7 +13,7 @@
     background-color: var(--colorWhite);
   }
 
-  &:target {
+  &[id] {
     scroll-margin-top: var(--topbarHeight);
     @media (--viewportMedium) {
       scroll-margin-top: var(--topbarHeightDesktop);

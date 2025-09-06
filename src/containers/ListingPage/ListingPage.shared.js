@@ -48,18 +48,13 @@ export const priceData = (price, marketplaceCurrency, intl) => {
  * @param {Money} price
  * @returns {Money|null}
  */
-export const priceForSchemaMaybe = (price, intl) => {
+export const priceForSchemaMaybe = price => {
   try {
     const schemaPrice = convertMoneyToNumber(price);
-    return schemaPrice
-      ? {
-          price: intl.formatNumber(schemaPrice, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
-          priceCurrency: price.currency,
-        }
-      : {};
+    return {
+      price: schemaPrice.toFixed(2),
+      priceCurrency: price.currency,
+    };
   } catch (e) {
     return {};
   }
@@ -188,7 +183,9 @@ export const handleSubmit = parameters => values => {
     bookingEndTime,
     bookingStartDate, // not relevant (omit)
     bookingEndDate, // not relevant (omit)
+    priceVariantName, // relevant for bookings
     quantity: quantityRaw,
+    seats: seatsRaw,
     deliveryMethod,
     ...otherOrderData
   } = values;
@@ -208,15 +205,21 @@ export const handleSubmit = parameters => values => {
         },
       }
     : {};
+  // priceVariantName is relevant for bookings
+  const priceVariantNameMaybe = priceVariantName ? { priceVariantName } : {};
   const quantity = Number.parseInt(quantityRaw, 10);
   const quantityMaybe = Number.isInteger(quantity) ? { quantity } : {};
+  const seats = Number.parseInt(seatsRaw, 10);
+  const seatsMaybe = Number.isInteger(seats) ? { seats } : {};
   const deliveryMethodMaybe = deliveryMethod ? { deliveryMethod } : {};
 
   const initialValues = {
     listing,
     orderData: {
       ...bookingMaybe,
+      ...priceVariantNameMaybe,
       ...quantityMaybe,
+      ...seatsMaybe,
       ...deliveryMethodMaybe,
       ...otherOrderData,
     },

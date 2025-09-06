@@ -111,11 +111,13 @@
 }
 
 .price {
+  composes: textSmall from global;
   /* Layout */
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   flex-shrink: 0;
+  color: var(--colorGrey700);
 }
 
 .priceValue {

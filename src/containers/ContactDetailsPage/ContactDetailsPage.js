@@ -1,13 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { useConfiguration } from '../../context/configurationContext';
 
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import { ensureCurrentUser } from '../../util/data';
+import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers';
 
 import { sendVerificationEmail } from '../../ducks/user.duck';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
@@ -26,8 +26,27 @@ import {
 } from './ContactDetailsPage.duck';
 import css from './ContactDetailsPage.module.css';
 
+/**
+ * @param {Object} props
+ * @param {propTypes.error} [props.saveEmailError] - The save email error
+ * @param {propTypes.error} [props.savePhoneNumberError] - The save phone number error
+ * @param {boolean} [props.saveContactDetailsInProgress] - Whether the contact details are in progress
+ * @param {propTypes.currentUser} [props.currentUser] - The current user
+ * @param {boolean} [props.contactDetailsChanged] - Whether the contact details have changed
+ * @param {Function} props.onChange - The change function
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {boolean} props.sendVerificationEmailInProgress - Whether the verification email is in progress
+ * @param {propTypes.error} [props.sendVerificationEmailError] - The verification email error
+ * @param {Function} props.onResendVerificationEmail - The resend verification email function
+ * @param {Function} props.onSubmitContactDetails - The submit contact details function
+ * @param {Function} props.onResetPassword - The reset password function
+ * @param {boolean} [props.resetPasswordInProgress] - Whether the reset password is in progress
+ * @param {propTypes.error} [props.resetPasswordError] - The reset password error
+ * @returns {JSX.Element}
+ */
 export const ContactDetailsPageComponent = props => {
   const config = useConfiguration();
+  const intl = useIntl();
   const {
     saveEmailError,
     savePhoneNumberError,
@@ -36,14 +55,13 @@ export const ContactDetailsPageComponent = props => {
     contactDetailsChanged,
     onChange,
     scrollingDisabled,
-    sendVerificationEmailInProgress,
+    sendVerificationEmailInProgress = false,
     sendVerificationEmailError,
     onResendVerificationEmail,
     onSubmitContactDetails,
     onResetPassword,
-    resetPasswordInProgress,
+    resetPasswordInProgress = false,
     resetPasswordError,
-    intl,
   } = props;
   const { userTypes = [] } = config.user;
 
@@ -87,6 +105,14 @@ export const ContactDetailsPageComponent = props => {
 
   const title = intl.formatMessage({ id: 'ContactDetailsPage.title' });
 
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+  const { showPayoutDetails, showPaymentMethods } = showPaymentDetailsForUser(config, currentUser);
+  const accountSettingsNavProps = {
+    currentPage: 'ContactDetailsPage',
+    showPaymentMethods,
+    showPayoutDetails,
+  };
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
@@ -96,12 +122,15 @@ export const ContactDetailsPageComponent = props => {
               desktopClassName={css.desktopTopbar}
               mobileClassName={css.mobileTopbar}
             />
-            <UserNav currentPage="ContactDetailsPage" />
+            <UserNav
+              currentPage="ContactDetailsPage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         sideNav={null}
         useAccountSettingsNav
-        currentPage="ContactDetailsPage"
+        accountSettingsNavProps={accountSettingsNavProps}
         footer={<FooterContainer />}
       >
         <div className={css.content}>
@@ -113,36 +142,6 @@ export const ContactDetailsPageComponent = props => {
       </LayoutSideNavigation>
     </Page>
   );
-};
-
-ContactDetailsPageComponent.defaultProps = {
-  saveEmailError: null,
-  savePhoneNumberError: null,
-  currentUser: null,
-  sendVerificationEmailError: null,
-  resetPasswordInProgress: false,
-  resetPasswordError: null,
-};
-
-const { bool, func } = PropTypes;
-
-ContactDetailsPageComponent.propTypes = {
-  saveEmailError: propTypes.error,
-  savePhoneNumberError: propTypes.error,
-  saveContactDetailsInProgress: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  contactDetailsChanged: bool.isRequired,
-  onChange: func.isRequired,
-  onSubmitContactDetails: func.isRequired,
-  scrollingDisabled: bool.isRequired,
-  sendVerificationEmailInProgress: bool.isRequired,
-  sendVerificationEmailError: propTypes.error,
-  onResendVerificationEmail: func.isRequired,
-  resetPasswordInProgress: bool,
-  resetPasswordError: propTypes.error,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -181,8 +180,7 @@ const ContactDetailsPage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(ContactDetailsPageComponent);
 
 export default ContactDetailsPage;

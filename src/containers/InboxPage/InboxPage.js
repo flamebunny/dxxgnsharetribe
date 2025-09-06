@@ -1,12 +1,11 @@
 import React from 'react';
-import { arrayOf, bool, number, oneOf, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
 
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, intlShape, useIntl } from '../../util/reactIntl';
 import {
   propTypes,
   DATE_TYPE_DATE,
@@ -15,6 +14,8 @@ import {
   LINE_ITEM_HOUR,
   LISTING_UNIT_TYPES,
   STOCK_MULTIPLE_ITEMS,
+  AVAILABILITY_MULTIPLE_SEATS,
+  LINE_ITEM_FIXED,
 } from '../../util/types';
 import { subtractTime } from '../../util/dates';
 import {
@@ -48,6 +49,7 @@ import NotFoundPage from '../../containers/NotFoundPage/NotFoundPage';
 
 import { stateDataShape, getStateData } from './InboxPage.stateData';
 import css from './InboxPage.module.css';
+import { getCurrentUserTypeRoles } from '../../util/userHelpers';
 
 // Check if the transaction line-items use booking-related units
 const getUnitLineItem = lineItems => {
@@ -95,7 +97,9 @@ const BookingTimeInfoMaybe = props => {
     : null;
 
   const lineItemUnitType = unitLineItem ? unitLineItem.code : null;
-  const dateType = lineItemUnitType === LINE_ITEM_HOUR ? DATE_TYPE_DATETIME : DATE_TYPE_DATE;
+  const dateType = [LINE_ITEM_HOUR, LINE_ITEM_FIXED].includes(lineItemUnitType)
+    ? DATE_TYPE_DATETIME
+    : DATE_TYPE_DATE;
 
   const timeZone = transaction?.listing?.attributes?.availabilityPlan?.timezone || 'Etc/UTC';
   const { bookingStart, bookingEnd } = bookingData(transaction, lineItemUnitType, timeZone);
@@ -111,10 +115,17 @@ const BookingTimeInfoMaybe = props => {
   );
 };
 
-BookingTimeInfoMaybe.propTypes = {
-  transaction: propTypes.transaction.isRequired,
-};
-
+/**
+ * The InboxItem component.
+ *
+ * @component
+ * @param {Object} props
+ * @param {TX_TRANSITION_ACTOR_CUSTOMER | TX_TRANSITION_ACTOR_PROVIDER} props.transactionRole - The transaction role
+ * @param {propTypes.transaction} props.tx - The transaction
+ * @param {intlShape} props.intl - The intl object
+ * @param {stateDataShape} props.stateData - The state data
+ * @returns {JSX.Element} inbox item component
+ */
 export const InboxItem = props => {
   const {
     transactionRole,
@@ -122,6 +133,7 @@ export const InboxItem = props => {
     intl,
     stateData,
     isBooking,
+    availabilityType,
     stockType = STOCK_MULTIPLE_ITEMS,
   } = props;
   const { customer, provider, listing } = tx;
@@ -133,7 +145,6 @@ export const InboxItem = props => {
   const unitLineItem = getUnitLineItem(lineItems);
   const quantity = hasPricingData && !isBooking ? unitLineItem.quantity.toString() : null;
   const showStock = stockType === STOCK_MULTIPLE_ITEMS || (quantity && unitLineItem.quantity > 1);
-
   const otherUser = isCustomer ? provider : customer;
   const otherUserDisplayName = <UserDisplayName user={otherUser} intl={intl} />;
   const isOtherUserBanned = otherUser.attributes.banned;
@@ -169,6 +180,11 @@ export const InboxItem = props => {
             <FormattedMessage id="InboxPage.quantity" values={{ quantity }} />
           ) : null}
         </div>
+        {availabilityType == AVAILABILITY_MULTIPLE_SEATS && unitLineItem?.seats ? (
+          <div className={css.itemSeats}>
+            <FormattedMessage id="InboxPage.seats" values={{ seats: unitLineItem.seats }} />
+          </div>
+        ) : null}
         <div className={css.itemState}>
           <div className={stateClasses}>
             <FormattedMessage
@@ -182,23 +198,33 @@ export const InboxItem = props => {
   );
 };
 
-InboxItem.propTypes = {
-  transactionRole: oneOf([TX_TRANSITION_ACTOR_CUSTOMER, TX_TRANSITION_ACTOR_PROVIDER]).isRequired,
-  tx: propTypes.transaction.isRequired,
-  intl: intlShape.isRequired,
-  stateData: stateDataShape.isRequired,
-};
-
+/**
+ * The InboxPage component.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.currentUser - The current user
+ * @param {boolean} props.fetchInProgress - Whether the fetch is in progress
+ * @param {propTypes.error} props.fetchOrdersOrSalesError - The fetch orders or sales error
+ * @param {propTypes.pagination} props.pagination - The pagination object
+ * @param {Object} props.params - The params object
+ * @param {string} props.params.tab - The tab
+ * @param {number} props.providerNotificationCount - The provider notification count
+ * @param {boolean} props.scrollingDisabled - Whether scrolling is disabled
+ * @param {Array<propTypes.transaction>} props.transactions - The transactions array
+ * @param {Object} props.intl - The intl object
+ * @returns {JSX.Element} inbox page component
+ */
 export const InboxPageComponent = props => {
   const config = useConfiguration();
+  const intl = useIntl();
   const {
     currentUser,
     fetchInProgress,
     fetchOrdersOrSalesError,
-    intl,
     pagination,
     params,
-    providerNotificationCount,
+    providerNotificationCount = 0,
     scrollingDisabled,
     transactions,
   } = props;
@@ -207,6 +233,11 @@ export const InboxPageComponent = props => {
   if (!validTab) {
     return <NotFoundPage staticContext={props.staticContext} />;
   }
+
+  const { customer: isCustomerUserType, provider: isProviderUserType } = getCurrentUserTypeRoles(
+    config,
+    currentUser
+  );
 
   const isOrders = tab === 'orders';
   const hasNoResults = !fetchInProgress && transactions.length === 0 && !fetchOrdersOrSalesError;
@@ -232,7 +263,7 @@ export const InboxPageComponent = props => {
 
     const publicData = tx?.listing?.attributes?.publicData || {};
     const foundListingTypeConfig = findListingTypeConfig(publicData);
-    const { transactionType, stockType } = foundListingTypeConfig || {};
+    const { transactionType, stockType, availabilityType } = foundListingTypeConfig || {};
     const process = tx?.attributes?.processName || transactionType?.transactionType;
     const transactionProcess = resolveLatestProcessName(process);
     const isBooking = isBookingProcess(transactionProcess);
@@ -246,6 +277,7 @@ export const InboxPageComponent = props => {
           intl={intl}
           stateData={stateData}
           stockType={stockType}
+          availabilityType={availabilityType}
           isBooking={isBooking}
         />
       </li>
@@ -260,35 +292,44 @@ export const InboxPageComponent = props => {
   const hasTransactions =
     !fetchInProgress && hasOrderOrSaleTransactions(transactions, isOrders, currentUser);
 
-  const tabs = [
-    {
-      text: (
-        <span>
-          <FormattedMessage id="InboxPage.ordersTabTitle" />
-        </span>
-      ),
-      selected: isOrders,
-      linkProps: {
-        name: 'InboxPage',
-        params: { tab: 'orders' },
-      },
-    },
-    {
-      text: (
-        <span>
-          <FormattedMessage id="InboxPage.salesTabTitle" />
-          {providerNotificationCount > 0 ? (
-            <NotificationBadge count={providerNotificationCount} />
-          ) : null}
-        </span>
-      ),
-      selected: !isOrders,
-      linkProps: {
-        name: 'InboxPage',
-        params: { tab: 'sales' },
-      },
-    },
-  ];
+  const ordersTabMaybe = isCustomerUserType
+    ? [
+        {
+          text: (
+            <span>
+              <FormattedMessage id="InboxPage.ordersTabTitle" />
+            </span>
+          ),
+          selected: isOrders,
+          linkProps: {
+            name: 'InboxPage',
+            params: { tab: 'orders' },
+          },
+        },
+      ]
+    : [];
+
+  const salesTabMaybe = isProviderUserType
+    ? [
+        {
+          text: (
+            <span>
+              <FormattedMessage id="InboxPage.salesTabTitle" />
+              {providerNotificationCount > 0 ? (
+                <NotificationBadge count={providerNotificationCount} />
+              ) : null}
+            </span>
+          ),
+          selected: !isOrders,
+          linkProps: {
+            name: 'InboxPage',
+            params: { tab: 'sales' },
+          },
+        },
+      ]
+    : [];
+
+  const tabs = [...ordersTabMaybe, ...salesTabMaybe];
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -347,31 +388,6 @@ export const InboxPageComponent = props => {
   );
 };
 
-InboxPageComponent.defaultProps = {
-  currentUser: null,
-  fetchOrdersOrSalesError: null,
-  pagination: null,
-  providerNotificationCount: 0,
-  sendVerificationEmailError: null,
-};
-
-InboxPageComponent.propTypes = {
-  params: shape({
-    tab: string.isRequired,
-  }).isRequired,
-
-  currentUser: propTypes.currentUser,
-  fetchInProgress: bool.isRequired,
-  fetchOrdersOrSalesError: propTypes.error,
-  pagination: propTypes.pagination,
-  providerNotificationCount: number,
-  scrollingDisabled: bool.isRequired,
-  transactions: arrayOf(propTypes.transaction).isRequired,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
-};
-
 const mapStateToProps = state => {
   const { fetchInProgress, fetchOrdersOrSalesError, pagination, transactionRefs } = state.InboxPage;
   const { currentUser, currentUserNotificationCount: providerNotificationCount } = state.user;
@@ -386,9 +402,6 @@ const mapStateToProps = state => {
   };
 };
 
-const InboxPage = compose(
-  connect(mapStateToProps),
-  injectIntl
-)(InboxPageComponent);
+const InboxPage = compose(connect(mapStateToProps))(InboxPageComponent);
 
 export default InboxPage;

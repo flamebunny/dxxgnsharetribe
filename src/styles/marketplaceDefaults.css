@@ -482,7 +482,6 @@ select {
   transition: all ease-in-out 100ms;
 
   padding: 3px 24px 3px 12px;
-  box-shadow: 0 2px 3px 0 rgba(216, 220, 230, 0.7);
 
   /* Unset user agent styles */
   appearance: none;
@@ -516,6 +515,8 @@ select:focus {
 }
 select:disabled {
   opacity: 0.5;
+  appearance: none;
+  color: var(--colorGrey300);
 
   &:hover {
     cursor: not-allowed;
@@ -1433,6 +1434,16 @@ textarea {
 }
 
 /* Modal Close icon */
+
+.marketplaceModalCloseNav {
+  /* Position inside modal */
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  /* Some content (like map) is positioning itself on top of close button without z-index handling */
+  z-index: calc(var(--zIndexModal) + 1);
+}
 
 .marketplaceModalCloseStyles {
   /* Position inside modal */

@@ -60,15 +60,20 @@ const LinkComponent = ({ linkConfig, currentPage }) => {
  * @returns div with same styles as the real "More" label or null if width is known.
  */
 const MeasureMoreMenu = props => {
-  const { width, setWidth, label } = props;
   const moreMenuRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const { width, setWidth, label } = props;
+
   useEffect(() => {
-    if (moreMenuRef.current && !width) {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && moreMenuRef.current && !width) {
       setWidth(moreMenuRef.current.offsetWidth);
     }
-  }, [moreMenuRef, width]);
+  }, [mounted, moreMenuRef, width]);
 
-  const isServer = typeof window === 'undefined';
   // Component is measured outside of the viewport
   const styleWrapper = !!width
     ? {}
@@ -84,7 +89,7 @@ const MeasureMoreMenu = props => {
         },
       };
 
-  return !width && !isServer
+  return !width && mounted
     ? ReactDOM.createPortal(
         <div
           id="measureMoreLabel"
@@ -105,14 +110,22 @@ const MeasureMoreMenu = props => {
  * @param {*} props contain keys: showMoreLabel, isOpen, intl
  * @returns span containing menu label text and IconArrowHead
  */
-const MenuLabelContent = ({ showMoreLabel, isOpen, intl }) => (
-  <span className={css.linkMenuLabelWrapper}>
-    {showMoreLabel
-      ? intl.formatMessage({ id: 'TopbarDesktop.LinksMenu.more' })
-      : intl.formatMessage({ id: 'TopbarDesktop.LinksMenu.all' })}
-    <IconArrowHead direction="down" size="small" rootClassName={css.arrowIcon} />
-  </span>
-);
+const MenuLabelContent = ({ showMoreLabel, isOpen, intl }) => {
+  const menuLabel = showMoreLabel
+    ? intl.formatMessage({ id: 'TopbarDesktop.LinksMenu.more' })
+    : intl.formatMessage({ id: 'TopbarDesktop.LinksMenu.all' });
+  return (
+    <span className={css.linkMenuLabelWrapper}>
+      {menuLabel}
+      <IconArrowHead
+        direction="down"
+        size="small"
+        rootClassName={css.arrowIcon}
+        ariaLabel={menuLabel}
+      />
+    </span>
+  );
+};
 
 /**
  * Menu that shows custom links with label showing either "Menu" or "More".

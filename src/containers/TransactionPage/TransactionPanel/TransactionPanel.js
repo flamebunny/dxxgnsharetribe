@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { arrayOf, bool, func, node, object, oneOf, string } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage, injectIntl, intlShape } from '../../../util/reactIntl';
@@ -56,6 +55,37 @@ const displayNames = (currentUser, provider, customer, intl) => {
   };
 };
 
+/**
+ * Transaction panel
+ *
+ * @component
+ * @param {Object} props - The props
+ * @param {string} [props.className] - Custom class that extends the default class for the root element
+ * @param {string} [props.rootClassName] - Custom class that extends the default class for the root element
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {string} props.transactionRole - The transaction role
+ * @param {propTypes.listing} props.listing - The listing
+ * @param {propTypes.user} props.customer - The customer
+ * @param {propTypes.user} props.provider - The provider
+ * @param {boolean} props.hasTransitions - Whether the transitions are shown
+ * @param {propTypes.uuid} props.transactionId - The transaction id
+ * @param {Array<propTypes.message>)} props.messages - The messages
+ * @param {boolean} props.initialMessageFailed - Whether the initial message failed
+ * @param {boolean} props.savePaymentMethodFailed - Whether the save payment method failed
+ * @param {propTypes.error} props.fetchMessagesError - The fetch messages error
+ * @param {boolean} props.sendMessageInProgress - Whether the send message is in progress
+ * @param {propTypes.error} props.sendMessageError - The send message error
+ * @param {Function} props.onOpenDisputeModal - The on open dispute modal function
+ * @param {Function} props.onSendMessage - The on send message function
+ * @param {stateDataShape} props.stateData - The state data
+ * @param {boolean} props.showBookingLocation - Whether the booking location is shown
+ * @param {React.ReactNode} props.activityFeed - The activity feed
+ * @param {React.ReactNode} props.orderBreakdown - The order breakdown
+ * @param {React.ReactNode} props.orderPanel - The order panel
+ * @param {object} props.config - The config
+ * @param {intlShape} props.intl - The intl
+ * @returns {JSX.Element} The TransactionPanel component
+ */
 export class TransactionPanelComponent extends Component {
   constructor(props) {
     super(props);
@@ -124,18 +154,19 @@ export class TransactionPanelComponent extends Component {
       listing,
       customer,
       provider,
-      hasTransitions,
+      hasTransitions = false,
       protectedData,
       messages,
-      initialMessageFailed,
-      savePaymentMethodFailed,
+      initialMessageFailed = false,
+      savePaymentMethodFailed = false,
       fetchMessagesError,
       sendMessageInProgress,
       sendMessageError,
       onOpenDisputeModal,
+      showListingImage,
       intl,
-      stateData,
-      showBookingLocation,
+      stateData = {},
+      showBookingLocation = false,
       activityFeed,
       isInquiryProcess,
       orderBreakdown,
@@ -191,6 +222,7 @@ export class TransactionPanelComponent extends Component {
     const showDetailCardHeadings = stateData.showDetailCardHeadings || !hasViewingRights;
 
     const deliveryMethod = protectedData?.deliveryMethod || 'none';
+    const priceVariantName = protectedData?.priceVariantName;
 
     const classes = classNames(rootClassName || css.root, className);
 
@@ -205,6 +237,7 @@ export class TransactionPanelComponent extends Component {
               image={firstImage}
               provider={provider}
               isCustomer={isCustomer}
+              showListingImage={showListingImage}
               listingImageConfig={config.layout.listingImage}
             />
             {isProvider ? (
@@ -243,6 +276,7 @@ export class TransactionPanelComponent extends Component {
                   <BreakdownMaybe
                     orderBreakdown={orderBreakdown}
                     processName={stateData.processName}
+                    priceVariantName={priceVariantName}
                   />
                   <DiminishedActionButtonMaybe
                     showDispute={stateData.showDispute}
@@ -324,11 +358,13 @@ export class TransactionPanelComponent extends Component {
                   image={firstImage}
                   provider={provider}
                   isCustomer={isCustomer}
+                  showListingImage={showListingImage}
                   listingImageConfig={config.layout.listingImage}
                 />
 
                 <DetailCardHeadingsMaybe
                   showDetailCardHeadings={showDetailCardHeadings}
+                  showListingImage={showListingImage}
                   listingTitle={
                     listingDeleted ? (
                       listingTitle
@@ -350,6 +386,7 @@ export class TransactionPanelComponent extends Component {
                   className={css.breakdownContainer}
                   orderBreakdown={orderBreakdown}
                   processName={stateData.processName}
+                  priceVariantName={priceVariantName}
                 />
 
                 {stateData.showActionButtons ? (
@@ -367,56 +404,6 @@ export class TransactionPanelComponent extends Component {
     );
   }
 }
-
-TransactionPanelComponent.defaultProps = {
-  rootClassName: null,
-  className: null,
-  currentUser: null,
-  listing: null,
-  customer: null,
-  provider: null,
-  hasTransitions: false,
-  fetchMessagesError: null,
-  initialMessageFailed: false,
-  savePaymentMethodFailed: false,
-  sendMessageError: null,
-  sendReviewError: null,
-  stateData: {},
-  activityFeed: null,
-  showBookingLocation: false,
-  orderBreakdown: null,
-  orderPanel: null,
-};
-
-TransactionPanelComponent.propTypes = {
-  rootClassName: string,
-  className: string,
-
-  currentUser: propTypes.currentUser,
-  transactionRole: oneOf(['customer', 'provider']).isRequired,
-  listing: propTypes.listing,
-  customer: propTypes.user,
-  provider: propTypes.user,
-  hasTransitions: bool,
-  transactionId: propTypes.uuid.isRequired,
-  messages: arrayOf(propTypes.message).isRequired,
-  initialMessageFailed: bool,
-  savePaymentMethodFailed: bool,
-  fetchMessagesError: propTypes.error,
-  sendMessageInProgress: bool.isRequired,
-  sendMessageError: propTypes.error,
-  onOpenDisputeModal: func.isRequired,
-  onSendMessage: func.isRequired,
-  stateData: stateDataShape,
-  showBookingLocation: bool,
-  activityFeed: node,
-  orderBreakdown: node,
-  orderPanel: node,
-  config: object.isRequired,
-
-  // from injectIntl
-  intl: intlShape,
-};
 
 const TransactionPanel = injectIntl(TransactionPanelComponent);
 

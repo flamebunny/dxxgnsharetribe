@@ -8,7 +8,6 @@
  */
 
 import React from 'react';
-import { arrayOf, bool, node, shape, string } from 'prop-types';
 import classNames from 'classnames';
 import { FieldArray } from 'react-final-form-arrays';
 import { FieldCheckbox, ValidationError } from '../../components';
@@ -30,9 +29,10 @@ const FieldCheckboxRenderer = props => {
 
   const classes = classNames(rootClassName || css.root, className);
   const listClasses = twoColumns ? classNames(css.list, css.twoColumns) : css.list;
+  const Tag = label ? 'fieldset' : 'div';
 
   return (
-    <fieldset className={classes}>
+    <Tag className={classes}>
       {label ? <legend>{label}</legend> : null}
       <ul className={listClasses}>
         {options.map((option, index) => {
@@ -53,37 +53,39 @@ const FieldCheckboxRenderer = props => {
         })}
       </ul>
       <ValidationError fieldMeta={{ ...meta }} />
-    </fieldset>
+    </Tag>
   );
 };
 
-FieldCheckboxRenderer.defaultProps = {
-  rootClassName: null,
-  className: null,
-  label: null,
-  twoColumns: false,
-};
-
-FieldCheckboxRenderer.propTypes = {
-  rootClassName: string,
-  className: string,
-  id: string.isRequired,
-  label: node,
-  options: arrayOf(
-    shape({
-      key: string.isRequired,
-      label: node.isRequired,
-    })
-  ).isRequired,
-  twoColumns: bool,
-};
-
-const FieldCheckboxGroup = props => <FieldArray component={FieldCheckboxRenderer} {...props} />;
-
-// Name and component are required fields for FieldArray.
+// Note: name and component are required fields for FieldArray.
 // Component-prop we define in this file, name needs to be passed in
-FieldCheckboxGroup.propTypes = {
-  name: string.isRequired,
-};
+
+/**
+ * @typedef {Object} CheckboxGroupOption
+ * @property {string} key
+ * @property {string} label
+ */
+
+/**
+ * Final Form Field containing checkbox group.
+ * Renders a group of checkboxes that can be used to select
+ * multiple values from a set of options.
+ *
+ * The corresponding component when rendering the selected
+ * values is PropertyGroup.
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} props.name this is required for FieldArray (Final Form component)
+ * @param {string?} props.className add more style rules in addition to components own css.root
+ * @param {string?} props.rootClassName overwrite components own css.root
+ * @param {string?} props.optionLabelClassName given to each option
+ * @param {string} props.id givent to input
+ * @param {ReactNode} props.label the label for the checkbox group
+ * @param {Array<CheckboxGroupOption>} props.options E.g. [{ key, label }]
+ * @param {boolean} props.twoColumns
+ * @returns {JSX.Element} Final Form Field containing multiple checkbox inputs
+ */
+const FieldCheckboxGroup = props => <FieldArray component={FieldCheckboxRenderer} {...props} />;
 
 export default FieldCheckboxGroup;

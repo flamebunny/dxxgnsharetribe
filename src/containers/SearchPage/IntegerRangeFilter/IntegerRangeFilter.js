@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import { arrayOf, bool, func, node, object, string } from 'prop-types';
 
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
@@ -23,6 +22,22 @@ const convertQueryParamToObject = valueRange => {
   // We explicitly compare `minValue` to null as comparing to '0' returns false but '0' is a valid range value.
   return !!valueRange && minValue != null && maxValue != null ? { minValue, maxValue } : null;
 };
+const hasValue = value => value != null;
+
+// Extracts range values for form from query parameters. If a valid query parameter exists, it converts
+// the string to an object using `convertQueryParamToObject`. If not, initializes as an empty object.
+const getValidRangeValues = (queryParamNames, rangeParams, min, max) => {
+  const parsedRangeValues = rangeParams?.[queryParamNames]
+    ? convertQueryParamToObject(rangeParams[queryParamNames])
+    : {};
+
+  const { minValue, maxValue } = parsedRangeValues || {};
+  const hasValidMinValue = hasValue(minValue) && minValue >= min;
+  const hasValidMaxValue = hasValue(maxValue) && maxValue > minValue && maxValue <= max;
+  const hasRangeValues = rangeParams && hasValidMinValue && hasValidMaxValue;
+
+  return hasRangeValues ? { minValue, maxValue } : {};
+};
 
 // Transforms a range object containing `minValue` and `maxValue`
 // into query parameter format, i.e. "0,1000"
@@ -33,6 +48,45 @@ const formatToQueryParam = (range, queryParamName) => {
   return { [queryParamName]: value };
 };
 
+// Handles form submission by extracting and updating the range values from the form's current state.
+const getHandleSubmit = (name, queryParamNames, onSubmit) => values => {
+  const usedValue = values?.[name] ? values[name] : values;
+  const { minValue, maxValue } = usedValue || {};
+  // // We need to send API exclusive max value
+  // // https://www.sharetribe.com/api-reference/marketplace.html#extended-data-filtering
+  // const exclusiveMax = maxValue + 1;
+
+  return onSubmit(
+    formatToQueryParam(
+      {
+        minValue: minValue,
+        maxValue: maxValue,
+      },
+      queryParamNames
+    )
+  );
+};
+
+/**
+ * IntegerRangeFilter component
+ *
+ * @component
+ * @param {Object} props
+ * @param {string} [props.className] - Custom class that extends the default class for the root element
+ * @param {string} [props.rootClassName] - Custom class that overrides the default class for the root element
+ * @param {string} props.id - The ID
+ * @param {string} props.name - The name
+ * @param {React.Node} props.label - The label
+ * @param {Array<string>} props.queryParamNames - The query param names
+ * @param {Object} props.initialValues - The initial values
+ * @param {boolean} [props.showAsPopup] - Whether to show the filter as a popup
+ * @param {number} [props.min] - The minimum value
+ * @param {number} [props.max] - The maximum value
+ * @param {number} [props.step] - The step
+ * @param {Function} props.onSubmit - The function to submit
+ * @param {intlShape} props.intl - The intl object
+ * @returns {JSX.Element}
+ */
 const IntegerRangeFilter = props => {
   const {
     min,
@@ -47,41 +101,16 @@ const IntegerRangeFilter = props => {
     intl,
     id,
     name,
-    showAsPopup,
+    showAsPopup = true,
     ...rest
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
 
-  const hasValue = value => value != null;
-
-  // Extracts initial values for form from query parameters. If a valid query parameter exists, it converts
-  // the string to an object using `convertQueryParamToObject`. If not, initializes as an empty object.
-  const parsedInitialValues =
-    initialValues && initialValues[queryParamNames]
-      ? convertQueryParamToObject(initialValues[queryParamNames])
-      : {};
-
-  const { minValue, maxValue } = parsedInitialValues || {};
-  const hasInitialValues = initialValues && hasValue(minValue) && hasValue(maxValue);
-
-  const resolvedInitialValues = { [name]: hasInitialValues ? parsedInitialValues : {} };
-
-  // Handles form submission by extracting and updating the range values from the form's current state.
-  const handleSubmit = values => {
-    const usedValue = values?.[name] ? values[name] : values;
-    const { minValue, maxValue } = usedValue || {};
-
-    return onSubmit(
-      formatToQueryParam(
-        {
-          minValue: minValue,
-          maxValue: maxValue,
-        },
-        queryParamNames
-      )
-    );
-  };
+  const handleSubmit = getHandleSubmit(name, queryParamNames, onSubmit);
+  const validRangeValues = getValidRangeValues(queryParamNames, initialValues, min, max);
+  const hasInitialValues = Object.keys(validRangeValues).length > 0;
+  const resolvedInitialValues = { [name]: validRangeValues };
 
   // We use useRef to create a mutable object that persists across renders without causing re-renders.
   // This is used as a flag to control whether debouncing should be applied.
@@ -113,7 +142,7 @@ const IntegerRangeFilter = props => {
 
   // Used to display the selected values above the filter component in the "grid" view
   const labelSelectionForPlain = hasInitialValues ? (
-    <FormattedMessage id="IntegerRangeFilter.labelSelectedPlain" values={{ minValue, maxValue }} />
+    <FormattedMessage id="IntegerRangeFilter.labelSelectedPlain" values={validRangeValues} />
   ) : null;
 
   return showAsPopup ? (
@@ -160,26 +189,6 @@ const IntegerRangeFilter = props => {
       />
     </FilterPlain>
   );
-};
-
-IntegerRangeFilter.defaultProps = {
-  rootClassName: null,
-  className: null,
-  showAsPopup: true,
-  liveEdit: false,
-  initialValues: null,
-};
-
-IntegerRangeFilter.propTypes = {
-  rootClassName: string,
-  className: string,
-  id: string.isRequired,
-  label: node,
-  liveEdit: bool,
-  queryParamNames: arrayOf(string).isRequired,
-  onSubmit: func.isRequired,
-  initialValues: object,
-  showAsPopup: bool,
 };
 
 export default IntegerRangeFilter;

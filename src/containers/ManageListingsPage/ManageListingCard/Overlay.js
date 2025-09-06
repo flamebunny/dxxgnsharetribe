@@ -1,9 +1,19 @@
 import React from 'react';
-import { node, string } from 'prop-types';
 import classNames from 'classnames';
 
 import css from './Overlay.module.css';
 
+/**
+ * Overlay
+ *
+ * @param {Object} props
+ * @param {string} [props.className] - Custom class that extends the default class for the root element
+ * @param {string} [props.rootClassName] - Custom class that overrides the default class for the root element
+ * @param {string} [props.message] - The message
+ * @param {string} [props.errorMessage] - The error message
+ * @param {React.ReactNode} [props.children] - The children
+ * @returns {JSX.Element} Overlay component
+ */
 const Overlay = props => {
   
 
@@ -29,22 +39,6 @@ const Overlay = props => {
   );
 };
 
-Overlay.defaultProps = {
-  className: null,
-  rootClassName: null,
-  message: null,
   messageClass: null,
-  errorMessage: null,
-  children: null,
-};
-
-Overlay.propTypes = {
-  className: string,
-  rootClassName: string,
-  message: string,
   messageClass: string,
-  errorMessage: string,
-  children: node,
-};
-
 export default Overlay;

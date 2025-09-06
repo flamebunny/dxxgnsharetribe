@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { bool, func, object } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { useConfiguration } from '../../context/configurationContext.js';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { ensureCurrentUser, ensureStripeCustomer, ensurePaymentMethodCard } from '../../util/data';
 import { propTypes } from '../../util/types';
+import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers.js';
 import { savePaymentMethod, deletePaymentMethod } from '../../ducks/paymentMethods.duck';
 import { handleCardSetup } from '../../ducks/stripe.duck';
 import { manageDisableScrolling, isScrollingDisabled } from '../../ducks/ui.duck';
@@ -21,9 +22,30 @@ import { createStripeSetupIntent, stripeCustomer } from './PaymentMethodsPage.du
 
 import css from './PaymentMethodsPage.module.css';
 
+/**
+ * The payment methods page.
+ *
+ * @param {Object} props
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {Object} props.addPaymentMethodError - The add payment method error
+ * @param {Object} props.deletePaymentMethodError - The delete payment method error
+ * @param {Object} props.createStripeCustomerError - The create stripe customer error
+ * @param {propTypes.error} props.handleCardSetupError - The handle card setup error
+ * @param {Function} props.onCreateSetupIntent - The function to create a SetupIntent
+ * @param {Function} props.onHandleCardSetup - The function to handle card setup
+ * @param {Function} props.onSavePaymentMethod - The function to save payment method
+ * @param {Function} props.onDeletePaymentMethod - The function to delete payment method
+ * @param {Function} props.fetchStripeCustomer - The function to fetch stripe customer
+ * @param {Function} props.onManageDisableScrolling - The function to manage disable scrolling
+ * @param {boolean} props.stripeCustomerFetched - Whether the stripe customer is fetched
+ * @returns {JSX.Element} Payment methods page component
+ */
 const PaymentMethodsPageComponent = props => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [cardState, setCardState] = useState(null);
+  const intl = useIntl();
+  const config = useConfiguration();
 
   const {
     currentUser,
@@ -39,7 +61,6 @@ const PaymentMethodsPageComponent = props => {
     fetchStripeCustomer,
     scrollingDisabled,
     onManageDisableScrolling,
-    intl,
     stripeCustomerFetched,
   } = props;
 
@@ -132,7 +153,7 @@ const PaymentMethodsPageComponent = props => {
     ? `${ensuredCurrentUser.attributes.profile.firstName} ${ensuredCurrentUser.attributes.profile.lastName}`
     : null;
 
-  const initalValuesForStripePayment = { name: userName };
+  const initialValuesForStripePayment = { name: userName };
 
   const card = hasDefaultPaymentMethod
     ? ensurePaymentMethodCard(currentUser.stripeCustomer.defaultPaymentMethod).attributes.card
@@ -140,6 +161,15 @@ const PaymentMethodsPageComponent = props => {
 
   const showForm = cardState === 'replaceCard' || !hasDefaultPaymentMethod;
   const showCardDetails = !!hasDefaultPaymentMethod;
+
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+  const { showPayoutDetails, showPaymentMethods } = showPaymentDetailsForUser(config, currentUser);
+  const accountSettingsNavProps = {
+    currentPage: 'PaymentMethodsPage',
+    showPaymentMethods,
+    showPayoutDetails,
+  };
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
@@ -149,12 +179,15 @@ const PaymentMethodsPageComponent = props => {
               desktopClassName={css.desktopTopbar}
               mobileClassName={css.mobileTopbar}
             />
-            <UserNav currentPage="PaymentMethodsPage" />
+            <UserNav
+              currentPage="PaymentMethodsPage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         sideNav={null}
         useAccountSettingsNav
-        currentPage="PaymentMethodsPage"
+        accountSettingsNavProps={accountSettingsNavProps}
         footer={<FooterContainer />}
       >
         <div className={css.content}>
@@ -176,7 +209,7 @@ const PaymentMethodsPageComponent = props => {
                 <PaymentMethodsForm
                   className={css.paymentForm}
                   formId="PaymentMethodsForm"
-                  initialValues={initalValuesForStripePayment}
+                  initialValues={initialValuesForStripePayment}
                   onSubmit={handleSubmit}
                   handleRemovePaymentMethod={handleRemovePaymentMethod}
                   hasDefaultPaymentMethod={hasDefaultPaymentMethod}
@@ -193,31 +226,6 @@ const PaymentMethodsPageComponent = props => {
       </LayoutSideNavigation>
     </Page>
   );
-};
-
-PaymentMethodsPageComponent.defaultProps = {
-  currentUser: null,
-  addPaymentMethodError: null,
-  deletePaymentMethodError: null,
-  createStripeCustomerError: null,
-  handleCardSetupError: null,
-};
-
-PaymentMethodsPageComponent.propTypes = {
-  currentUser: propTypes.currentUser,
-  scrollingDisabled: bool.isRequired,
-  addPaymentMethodError: object,
-  deletePaymentMethodError: object,
-  createStripeCustomerError: object,
-  handleCardSetupError: object,
-  onCreateSetupIntent: func.isRequired,
-  onHandleCardSetup: func.isRequired,
-  onSavePaymentMethod: func.isRequired,
-  onDeletePaymentMethod: func.isRequired,
-  fetchStripeCustomer: func.isRequired,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -260,8 +268,7 @@ const PaymentMethodsPage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(PaymentMethodsPageComponent);
 
 export default PaymentMethodsPage;

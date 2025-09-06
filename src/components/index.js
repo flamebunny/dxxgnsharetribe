@@ -18,6 +18,7 @@ export { default as IconArrowHead } from './IconArrowHead/IconArrowHead';
 export { default as IconBannedUser } from './IconBannedUser/IconBannedUser';
 export { default as IconCheckmark } from './IconCheckmark/IconCheckmark';
 export { default as IconClose } from './IconClose/IconClose';
+export { default as IconDate } from './IconDate/IconDate';
 export { default as IconDelete } from './IconDelete/IconDelete';
 export { default as IconDisputeOrder } from './IconDisputeOrder/IconDisputeOrder';
 export { default as IconEdit } from './IconEdit/IconEdit';
@@ -30,6 +31,7 @@ export { default as IconKeysSuccess } from './IconKeysSuccess/IconKeysSuccess';
 export { default as IconReviewStar } from './IconReviewStar/IconReviewStar';
 export { default as IconReviewUser } from './IconReviewUser/IconReviewUser';
 export { default as IconSearch } from './IconSearch/IconSearch';
+export { default as IconLocation } from './IconLocation/IconLocation';
 export { default as IconSocialMediaFacebook } from './IconSocialMediaFacebook/IconSocialMediaFacebook';
 export { default as IconSocialMediaInstagram } from './IconSocialMediaInstagram/IconSocialMediaInstagram';
 export { default as IconSocialMediaTwitter } from './IconSocialMediaTwitter/IconSocialMediaTwitter';
@@ -49,6 +51,7 @@ export { default as Logo } from './Logo/Logo';
 export { default as NamedLink } from './NamedLink/NamedLink';
 export { default as NamedRedirect } from './NamedRedirect/NamedRedirect';
 export { default as NotificationBadge } from './NotificationBadge/NotificationBadge';
+export { default as ListingCardThumbnail } from './ListingCardThumbnail/ListingCardThumbnail';
 export { default as OutsideClickHandler } from './OutsideClickHandler/OutsideClickHandler';
 export { default as Promised } from './Promised/Promised';
 export { default as PropertyGroup } from './PropertyGroup/PropertyGroup';
@@ -88,6 +91,7 @@ export { default as ModalInMobile } from './ModalInMobile/ModalInMobile';
 // Fields (for Final Form)
 export { default as FieldCheckbox } from './FieldCheckbox/FieldCheckbox';
 export { default as FieldCurrencyInput } from './FieldCurrencyInput/FieldCurrencyInput';
+export { default as FieldNumber } from './FieldNumber/FieldNumber';
 export { default as FieldRadioButton } from './FieldRadioButton/FieldRadioButton';
 export { default as FieldReviewRating } from './FieldReviewRating/FieldReviewRating';
 export { default as FieldSelect } from './FieldSelect/FieldSelect';
@@ -99,8 +103,6 @@ export { default as FieldBoolean } from './FieldBoolean/FieldBoolean';
 export { default as FieldCheckboxGroup } from './FieldCheckboxGroup/FieldCheckboxGroup';
 export { default as FieldPhoneNumberInput } from './FieldPhoneNumberInput/FieldPhoneNumberInput';
 export { default as LocationAutocompleteInput, FieldLocationAutocompleteInput } from './LocationAutocompleteInput/LocationAutocompleteInput';
-// Fields and inputs using old naming pattern
-export { default as StripeBankAccountTokenInputField } from './StripeBankAccountTokenInputField/StripeBankAccountTokenInputField';
 
 // NOTE: these are code-splitted since these components are heavy and needed only on couple of pages
 export const FieldDateRangePicker = loadable(() => import(/* webpackChunkName: "FieldDateRangePicker" */ './DatePicker/FieldDateRangePicker/FieldDateRangePicker'));

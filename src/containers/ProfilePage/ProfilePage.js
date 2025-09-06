@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { bool, arrayOf, oneOfType } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -26,7 +25,11 @@ import {
   isNotFoundError,
 } from '../../util/errors';
 import { pickCustomFieldProps } from '../../util/fieldHelpers';
-import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
+import {
+  getCurrentUserTypeRoles,
+  hasPermissionToViewData,
+  isUserAuthorized,
+} from '../../util/userHelpers';
 import { richText } from '../../util/richText';
 
 import { isScrollingDisabled } from '../../ducks/ui.duck';
@@ -125,39 +128,53 @@ export const MobileReviews = props => {
 };
 
 export const DesktopReviews = props => {
-  const [showReviewsType, setShowReviewsType] = useState(REVIEW_TYPE_OF_PROVIDER);
-  const { reviews, queryReviewsError } = props;
+  const { reviews, queryReviewsError, userTypeRoles } = props;
+  const { customer: isCustomerUserType, provider: isProviderUserType } = userTypeRoles;
+
+  const initialReviewState = !isProviderUserType
+    ? REVIEW_TYPE_OF_CUSTOMER
+    : REVIEW_TYPE_OF_PROVIDER;
+  const [showReviewsType, setShowReviewsType] = useState(initialReviewState);
+
   const reviewsOfProvider = reviews.filter(r => r.attributes.type === REVIEW_TYPE_OF_PROVIDER);
   const reviewsOfCustomer = reviews.filter(r => r.attributes.type === REVIEW_TYPE_OF_CUSTOMER);
   const isReviewTypeProviderSelected = showReviewsType === REVIEW_TYPE_OF_PROVIDER;
   const isReviewTypeCustomerSelected = showReviewsType === REVIEW_TYPE_OF_CUSTOMER;
   const classes = classNames(css.desktopReviewsTitle, css.inter);
-  const desktopReviewTabs = [
-    {
-      text: (
+  const providerReviewsMaybe = isProviderUserType
+    ? [
+        {
+          text: (
         <Heading as="h3" rootClassName={classes}>
-          <FormattedMessage
-            id="ProfilePage.reviewsFromMyCustomersTitle"
-            values={{ count: reviewsOfProvider.length }}
-          />
-        </Heading>
-      ),
-      selected: isReviewTypeProviderSelected,
-      onClick: () => setShowReviewsType(REVIEW_TYPE_OF_PROVIDER),
-    },
-    {
-      text: (
+              <FormattedMessage
+                id="ProfilePage.reviewsFromMyCustomersTitle"
+                values={{ count: reviewsOfProvider.length }}
+              />
+            </Heading>
+          ),
+          selected: isReviewTypeProviderSelected,
+          onClick: () => setShowReviewsType(REVIEW_TYPE_OF_PROVIDER),
+        },
+      ]
+    : [];
+
+  const customerReviewsMaybe = isCustomerUserType
+    ? [
+        {
+          text: (
         <Heading as="h3" rootClassName={classes}>
-          <FormattedMessage
-            id="ProfilePage.reviewsAsACustomerTitle"
-            values={{ count: reviewsOfCustomer.length }}
-          />
-        </Heading>
-      ),
-      selected: isReviewTypeCustomerSelected,
-      onClick: () => setShowReviewsType(REVIEW_TYPE_OF_CUSTOMER),
-    },
-  ];
+              <FormattedMessage
+                id="ProfilePage.reviewsAsACustomerTitle"
+                values={{ count: reviewsOfCustomer.length }}
+              />
+            </Heading>
+          ),
+          selected: isReviewTypeCustomerSelected,
+          onClick: () => setShowReviewsType(REVIEW_TYPE_OF_CUSTOMER),
+        },
+      ]
+    : [];
+  const desktopReviewTabs = [...providerReviewsMaybe, ...customerReviewsMaybe];
 
   return (
     <div className={css.desktopReviews}>
@@ -188,13 +205,13 @@ export const CustomUserFields = props => {
     <>
       <SectionDetailsMaybe {...props} />
       {propsForCustomFields.map(customFieldProps => {
-        const { schemaType, ...fieldProps } = customFieldProps;
+        const { schemaType, key, ...fieldProps } = customFieldProps;
         return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
-          <SectionMultiEnumMaybe {...fieldProps} />
+          <SectionMultiEnumMaybe key={key} {...fieldProps} />
         ) : schemaType === SCHEMA_TYPE_TEXT ? (
-          <SectionTextMaybe {...fieldProps} />
+          <SectionTextMaybe key={key} {...fieldProps} />
         ) : schemaType === SCHEMA_TYPE_YOUTUBE ? (
-          <SectionYoutubeVideoMaybe {...fieldProps} />
+          <SectionYoutubeVideoMaybe key={key} {...fieldProps} />
         ) : null;
       })}
     </>
@@ -202,26 +219,33 @@ export const CustomUserFields = props => {
 };
 
 export const MainContent = props => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const {
     userShowError,
     bio,
     displayName,
     listings,
     queryListingsError,
-    reviews,
+    reviews = [],
     queryReviewsError,
     publicData,
     metadata,
     userFieldConfig,
     intl,
     hideReviews,
+    userTypeRoles,
   } = props;
 
   const hasListings = listings.length > 0;
   const hasMatchMedia = typeof window !== 'undefined' && window?.matchMedia;
-  const isMobileLayout = hasMatchMedia
-    ? window.matchMedia(`(max-width: ${MAX_MOBILE_SCREEN_WIDTH}px)`)?.matches
-    : true;
+  const isMobileLayout =
+    mounted && hasMatchMedia
+      ? window.matchMedia(`(max-width: ${MAX_MOBILE_SCREEN_WIDTH}px)`)?.matches
+      : true;
 
   const hasBio = !!bio;
   const bioWithLinks = richText(bio, {
@@ -268,14 +292,38 @@ export const MainContent = props => {
         </div>
       ) : null}
       {hideReviews ? null : isMobileLayout ? (
-        <MobileReviews reviews={reviews} queryReviewsError={queryReviewsError} />
+        <MobileReviews
+          reviews={reviews}
+          queryReviewsError={queryReviewsError}
+          userTypeRoles={userTypeRoles}
+        />
       ) : (
-        <DesktopReviews reviews={reviews} queryReviewsError={queryReviewsError} />
+        <DesktopReviews
+          reviews={reviews}
+          queryReviewsError={queryReviewsError}
+          userTypeRoles={userTypeRoles}
+        />
       )}
     </div>
   );
 };
 
+/**
+ * ProfilePageComponent
+ *
+ * @component
+ * @param {Object} props
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {boolean} props.useCurrentUser - Whether to use the current user
+ * @param {propTypes.user|propTypes.currentUser} props.user - The user
+ * @param {propTypes.error} props.userShowError - The user show error
+ * @param {propTypes.error} props.queryListingsError - The query listings error
+ * @param {Array<propTypes.listing|propTypes.ownListing>} props.listings - The listings
+ * @param {Array<propTypes.review>} props.reviews - The reviews
+ * @param {propTypes.error} props.queryReviewsError - The query reviews error
+ * @returns {JSX.Element} ProfilePageComponent
+ */
 export const ProfilePageComponent = props => {
   const config = useConfiguration();
   const intl = useIntl();
@@ -319,6 +367,8 @@ export const ProfilePageComponent = props => {
   const hasUserPendingApprovalError = isErrorUserPendingApproval(userShowError);
   const hasNoViewingRightsUser = currentUser && !hasPermissionToViewData(currentUser);
   const hasNoViewingRightsOnPrivateMarketplace = isPrivateMarketplace && hasNoViewingRightsUser;
+
+  const userTypeRoles = getCurrentUserTypeRoles(config, profileUser);
 
   const isDataLoaded = isPreview
     ? currentUser != null || userShowError != null
@@ -380,6 +430,7 @@ export const ProfilePageComponent = props => {
     // and the first pass on client-side should render the same UI.
     return null;
   }
+
   // This is rendering normal profile page (not preview for pending-approval)
   return (
 
@@ -389,6 +440,10 @@ export const ProfilePageComponent = props => {
       schema={{
         '@context': 'http://schema.org',
         '@type': 'ProfilePage',
+        mainEntity: {
+          '@type': 'Person',
+          name: profileUser?.attributes?.profile?.displayName,
+        },
         name: schemaTitle,
       }}
     >
@@ -413,6 +468,7 @@ export const ProfilePageComponent = props => {
           userFieldConfig={userFields}
           hideReviews={hasNoViewingRightsOnPrivateMarketplace}
           intl={intl}
+          userTypeRoles={userTypeRoles}
           {...rest}
         />
       
@@ -424,27 +480,6 @@ export const ProfilePageComponent = props => {
   );
 };
 
-ProfilePageComponent.defaultProps = {
-  currentUser: null,
-  user: null,
-  userShowError: null,
-  queryListingsError: null,
-  reviews: [],
-  queryReviewsError: null,
-};
-
-ProfilePageComponent.propTypes = {
-  scrollingDisabled: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  useCurrentUser: bool.isRequired,
-  user: oneOfType([propTypes.user, propTypes.currentUser]),
-  userShowError: propTypes.error,
-  queryListingsError: propTypes.error,
-  listings: arrayOf(oneOfType([propTypes.listing, propTypes.ownListing])).isRequired,
-  reviews: arrayOf(propTypes.review),
-  queryReviewsError: propTypes.error,
-};
-
 const mapStateToProps = state => {
   const { currentUser } = state.user;
   const {
@@ -452,7 +487,7 @@ const mapStateToProps = state => {
     userShowError,
     queryListingsError,
     userListingRefs,
-    reviews,
+    reviews = [],
     queryReviewsError,
   } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);

@@ -3,12 +3,10 @@
  * shows login actions for those who are not authenticated.
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { ACCOUNT_SETTINGS_PAGES } from '../../../../routing/routeConfiguration';
 import { FormattedMessage } from '../../../../util/reactIntl';
-import { propTypes } from '../../../../util/types';
 import { ensureCurrentUser } from '../../../../util/data';
 
 import {
@@ -55,15 +53,30 @@ const CustomLinkComponent = ({ linkConfig, currentPage }) => {
   );
 };
 
+/**
+ * Menu for mobile layout (opens through hamburger icon)
+ *
+ * @component
+ * @param {Object} props
+ * @param {boolean} props.isAuthenticated
+ * @param {string?} props.currentPage
+ * @param {boolean} props.currentUserHasListings
+ * @param {Object?} props.currentUser API entity
+ * @param {number} props.notificationCount
+ * @param {Array<Object>} props.customLinks Contains object like { group, text, type, href, route }
+ * @param {Function} props.onLogout
+ * @returns {JSX.Element} search icon
+ */
 const TopbarMobileMenu = props => {
   const {
     isAuthenticated,
     currentPage,
-    currentUserHasListings,
+    inboxTab,
     currentUser,
-    notificationCount,
+    notificationCount = 0,
     customLinks,
     onLogout,
+    showCreateListingsLink,
   } = props;
 
   const user = ensureCurrentUser(currentUser);
@@ -77,6 +90,12 @@ const TopbarMobileMenu = props => {
       />
     );
   });
+
+  const createListingsLinkMaybe = showCreateListingsLink ? (
+    <NamedLink className={css.createNewListingLink} name="NewListingPage">
+      <FormattedMessage id="TopbarMobileMenu.newListingLink" />
+    </NamedLink>
+  ) : null;
 
   if (!isAuthenticated) {
     const signup = (
@@ -97,7 +116,7 @@ const TopbarMobileMenu = props => {
       </span>
     );
     return (
-      <div className={css.root}>
+      <nav className={css.root}>
         <div className={css.content}>
           <div className={css.authenticationGreeting}>
             <FormattedMessage
@@ -110,12 +129,8 @@ const TopbarMobileMenu = props => {
 
           <div className={css.spacer} />
         </div>
-        <div className={css.footer}>
-          <NamedLink className={css.createNewListingLink} name="NewListingPage">
-            <FormattedMessage id="TopbarMobileMenu.newListingLink" />
-          </NamedLink>
-        </div>
-      </div>
+        <div className={css.footer}>{createListingsLinkMaybe}</div>
+      </nav>
     );
   }
 
@@ -131,7 +146,15 @@ const TopbarMobileMenu = props => {
     const isInboxPage = currentPage?.indexOf('InboxPage') === 0 && page?.indexOf('InboxPage') === 0;
     return currentPage === page || isAccountSettingsPage || isInboxPage ? css.currentPage : null;
   };
-  const inboxTab = currentUserHasListings ? 'sales' : 'orders';
+
+  const manageListingsLinkMaybe = showCreateListingsLink ? (
+    <NamedLink
+      className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
+      name="ManageListingsPage"
+    >
+      <FormattedMessage id="TopbarMobileMenu.yourListingsLink" />
+    </NamedLink>
+  ) : null;
 
   return (
     <div className={css.root}>
@@ -153,12 +176,7 @@ const TopbarMobileMenu = props => {
             <FormattedMessage id="TopbarMobileMenu.inboxLink" />
             {notificationCountBadge}
           </NamedLink>
-          <NamedLink
-            className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <FormattedMessage id="TopbarMobileMenu.yourListingsLink" />
-          </NamedLink>
+          {manageListingsLinkMaybe}
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('ProfileSettingsPage'))}
             name="ProfileSettingsPage"
@@ -175,26 +193,9 @@ const TopbarMobileMenu = props => {
         <div className={css.customLinksWrapper}>{extraLinks}</div>
         <div className={css.spacer} />
       </div>
-      <div className={css.footer}>
-        <NamedLink className={css.createNewListingLink} name="NewListingPage">
-          <FormattedMessage id="TopbarMobileMenu.newListingLink" />
-        </NamedLink>
-      </div>
+      <div className={css.footer}>{createListingsLinkMaybe}</div>
     </div>
   );
-};
-
-TopbarMobileMenu.defaultProps = { currentUser: null, notificationCount: 0, currentPage: null };
-
-const { bool, func, number, string } = PropTypes;
-
-TopbarMobileMenu.propTypes = {
-  isAuthenticated: bool.isRequired,
-  currentUserHasListings: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  currentPage: string,
-  notificationCount: number,
-  onLogout: func.isRequired,
 };
 
 export default TopbarMobileMenu;

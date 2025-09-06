@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { array, arrayOf, bool, func, shape, string, oneOf, object } from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import classNames from 'classnames';
 
 // Contexts
 import { useConfiguration } from '../../context/configurationContext';
 import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 // Utils
-import { FormattedMessage, intlShape, useIntl } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { LISTING_STATE_PENDING_APPROVAL, LISTING_STATE_CLOSED, propTypes } from '../../util/types';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import {
@@ -27,6 +27,7 @@ import {
   isForbiddenError,
 } from '../../util/errors.js';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers.js';
+import { requireListingImage } from '../../util/configHelpers';
 import {
   ensureListing,
   ensureOwnListing,
@@ -48,6 +49,7 @@ import { initializeCardPaymentData } from '../../ducks/stripe.duck.js';
 // Shared components
 import {
   H4,
+  H3,
   Page,
   NamedLink,
   NamedRedirect,
@@ -96,6 +98,11 @@ export const ListingPageComponent = props => {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(
     props.inquiryModalOpenForListingId === props.params.id
   );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const {
     isAuthenticated,
@@ -108,16 +115,10 @@ export const ListingPageComponent = props => {
     location,
     scrollingDisabled,
     showListingError,
-    reviews,
+    reviews = [],
     fetchReviewsError,
     sendInquiryInProgress,
     sendInquiryError,
-    monthlyTimeSlots,
-    onFetchTimeSlots,
-    onFetchTransactionLineItems,
-    lineItems,
-    fetchLineItemsInProgress,
-    fetchLineItemsError,
     history,
     callSetInitialValues,
     onSendInquiry,
@@ -125,10 +126,12 @@ export const ListingPageComponent = props => {
     config,
     routeConfiguration,
     showOwnListingsOnly,
+    ...restOfProps
   } = props;
 
   const listingConfig = config.listing;
   const listingId = new UUID(rawParams.id);
+  const isVariant = rawParams.variant != null;
   const isPendingApprovalVariant = rawParams.variant === LISTING_PAGE_PENDING_APPROVAL_VARIANT;
   const isDraftVariant = rawParams.variant === LISTING_PAGE_DRAFT_VARIANT;
   const currentListing =
@@ -207,6 +210,9 @@ export const ListingPageComponent = props => {
       <ErrorPage topbar={topbar} scrollingDisabled={scrollingDisabled} intl={intl} invalidListing />
     );
   }
+  const validListingTypes = listingConfig.listingTypes;
+  const foundListingTypeConfig = validListingTypes.find(conf => conf.listingType === listingType);
+  const showListingImage = requireListingImage(foundListingTypeConfig);
 
   const processName = resolveLatestProcessName(transactionProcessAlias.split('/')[0]);
   const isBooking = isBookingProcess(processName);
@@ -332,7 +338,7 @@ export const ListingPageComponent = props => {
         offers: {
           '@type': 'Offer',
           url: productURL,
-          ...priceForSchemaMaybe(price, intl),
+          ...priceForSchemaMaybe(price),
           ...availabilityMaybe,
         },
       }}
@@ -340,7 +346,7 @@ export const ListingPageComponent = props => {
       <LayoutSingleColumn className={css.pageRoot} topbar={topbar} footer={<FooterContainer />}>
         <div className={css.contentWrapperForProductLayout}>
           <div className={css.mainColumnForProductLayout}>
-            {currentListing.id && noPayoutDetailsSetWithOwnListing ? (
+            {mounted && currentListing.id && noPayoutDetailsSetWithOwnListing ? (
               <ActionBarMaybe
                 className={css.actionBarForProductLayout}
                 isOwnListing={isOwnListing}
@@ -349,7 +355,7 @@ export const ListingPageComponent = props => {
                 currentUser={currentUser}
               />
             ) : null}
-            {currentListing.id ? (
+            {mounted && currentListing.id ? (
               <ActionBarMaybe
                 className={css.actionBarForProductLayout}
                 isOwnListing={isOwnListing}
@@ -363,24 +369,29 @@ export const ListingPageComponent = props => {
                 }}
               />
             ) : null}
-            <SectionGallery
-              listing={currentListing}
-              variantPrefix={config.layout.listingImage.variantPrefix}
-            />
-            
-            
-          </div>
-
-          <div className={css.orderColumnForProductLayout}>
+            {showListingImage && (
+              <SectionGallery
+                listing={currentListing}
+                variantPrefix={config.layout.listingImage.variantPrefix}
+              />
+            )}
+            <div
+              className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
+            >
+              {showListingImage ? (
             <div className={css.breadcrumbs}>
               <a className={css.breadcrumbLink} href="/s/">All</a>
               <span className={css.spacer}>·</span>
               <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
             </div>
-            <div className={css.mobileHeading}>
-              <H4 as="h1" className={css.orderPanelTitle}>
-                <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-              </H4>
+                <H4 as="h1" className={css.orderPanelTitle}>
+                  <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
+                </H4>
+              ) : (
+                <H3 as="h1" className={css.orderPanelTitle}>
+                  <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
+                </H3>
+              )}
             </div>
             <div className={classNames(css.mobileAuthor)}>                
               <span className={css.providerNameLinked}>
@@ -389,7 +400,9 @@ export const ListingPageComponent = props => {
             </div>
 
             <OrderPanel
-              className={css.productOrderPanel}
+              className={classNames(css.productOrderPanel, {
+                [css.imagesEnabled]: showListingImage,
+              })}
               listing={currentListing}
               isOwnListing={isOwnListing}
               onSubmit={handleOrderSubmit}
@@ -404,16 +417,12 @@ export const ListingPageComponent = props => {
               author={ensuredAuthor}
               onManageDisableScrolling={onManageDisableScrolling}
               onContactUser={onContactUser}
-              monthlyTimeSlots={monthlyTimeSlots}
-              onFetchTimeSlots={onFetchTimeSlots}
-              onFetchTransactionLineItems={onFetchTransactionLineItems}
-              lineItems={lineItems}
-              fetchLineItemsInProgress={fetchLineItemsInProgress}
-              fetchLineItemsError={fetchLineItemsError}
+              {...restOfProps}
               validListingTypes={config.listing.listingTypes}
               marketplaceCurrency={config.currency}
               dayCountAvailableForBooking={config.stripe.dayCountAvailableForBooking}
               marketplaceName={config.marketplaceName}
+              showListingImage={showListingImage}
             />
             <SectionTextMaybe text={description} showAsIngress />
 
@@ -441,72 +450,39 @@ export const ListingPageComponent = props => {
   );
 };
 
-ListingPageComponent.defaultProps = {
-  currentUser: null,
-  inquiryModalOpenForListingId: null,
-  showListingError: null,
-  reviews: [],
-  fetchReviewsError: null,
-  monthlyTimeSlots: null,
-  sendInquiryError: null,
-  lineItems: null,
-  fetchLineItemsError: null,
-};
-
-ListingPageComponent.propTypes = {
-  // from useHistory
-  history: shape({
-    push: func.isRequired,
-  }).isRequired,
-  // from useLocation
-  location: shape({
-    search: string,
-  }).isRequired,
-
-  // from useIntl
-  intl: intlShape.isRequired,
-
-  // from useConfiguration
-  config: object.isRequired,
-  // from useRouteConfiguration
-  routeConfiguration: arrayOf(propTypes.route).isRequired,
-
-  params: shape({
-    id: string.isRequired,
-    slug: string,
-    variant: oneOf([LISTING_PAGE_DRAFT_VARIANT, LISTING_PAGE_PENDING_APPROVAL_VARIANT]),
-  }).isRequired,
-
-  isAuthenticated: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  getListing: func.isRequired,
-  getOwnListing: func.isRequired,
-  onManageDisableScrolling: func.isRequired,
-  scrollingDisabled: bool.isRequired,
-  inquiryModalOpenForListingId: string,
-  showListingError: propTypes.error,
-  callSetInitialValues: func.isRequired,
-  reviews: arrayOf(propTypes.review),
-  fetchReviewsError: propTypes.error,
-  monthlyTimeSlots: object,
-  // monthlyTimeSlots could be something like:
-  // monthlyTimeSlots: {
-  //   '2019-11': {
-  //     timeSlots: [],
-  //     fetchTimeSlotsInProgress: false,
-  //     fetchTimeSlotsError: null,
-  //   }
-  // }
-  sendInquiryInProgress: bool.isRequired,
-  sendInquiryError: propTypes.error,
-  onSendInquiry: func.isRequired,
-  onInitializeCardPaymentData: func.isRequired,
-  onFetchTransactionLineItems: func.isRequired,
-  lineItems: array,
-  fetchLineItemsInProgress: bool.isRequired,
-  fetchLineItemsError: propTypes.error,
-};
-
+/**
+ * The ListingPage component with carousel layout.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.params - The path params object
+ * @param {string} props.params.id - The listing id
+ * @param {string} props.params.slug - The listing slug
+ * @param {LISTING_PAGE_DRAFT_VARIANT | LISTING_PAGE_PENDING_APPROVAL_VARIANT} props.params.variant - The listing variant
+ * @param {Function} props.onManageDisableScrolling - The on manage disable scrolling function
+ * @param {boolean} props.isAuthenticated - Whether the user is authenticated
+ * @param {Function} props.getListing - The get listing function
+ * @param {Function} props.getOwnListing - The get own listing function
+ * @param {Object} props.currentUser - The current user
+ * @param {boolean} props.scrollingDisabled - Whether scrolling is disabled
+ * @param {string} props.inquiryModalOpenForListingId - The inquiry modal open for the specific listing id
+ * @param {propTypes.error} props.showListingError - The show listing error
+ * @param {Function} props.callSetInitialValues - The call setInitialValues function, which is given to this function as a parameter
+ * @param {Array<propTypes.review>} props.reviews - The reviews
+ * @param {propTypes.error} props.fetchReviewsError - The fetch reviews error
+ * @param {Object<string, Object>} props.monthlyTimeSlots - The monthly time slots. E.g. { '2019-11': { timeSlots: [], fetchTimeSlotsInProgress: false, fetchTimeSlotsError: null } }
+ * @param {Object<string, Object>} props.timeSlotsForDate - The time slots for date. E.g. { '2019-11-01': { timeSlots: [], fetchedAt: 1572566400000, fetchTimeSlotsError: null, fetchTimeSlotsInProgress: false } }
+ * @param {boolean} props.sendInquiryInProgress - Whether the send inquiry is in progress
+ * @param {propTypes.error} props.sendInquiryError - The send inquiry error
+ * @param {Function} props.onSendInquiry - The on send inquiry function
+ * @param {Function} props.onInitializeCardPaymentData - The on initialize card payment data function
+ * @param {Function} props.onFetchTimeSlots - The on fetch time slots function
+ * @param {Function} props.onFetchTransactionLineItems - The on fetch transaction line items function
+ * @param {Array<propTypes.transactionLineItem>} props.lineItems - The line items
+ * @param {boolean} props.fetchLineItemsInProgress - Whether the fetch line items is in progress
+ * @param {propTypes.error} props.fetchLineItemsError - The fetch line items error
+ * @returns {JSX.Element} listing page component
+ */
 const EnhancedListingPage = props => {
   const config = useConfiguration();
   const routeConfiguration = useRouteConfiguration();
@@ -515,7 +491,7 @@ const EnhancedListingPage = props => {
   const location = useLocation();
 
   const showListingError = props.showListingError;
-  const isVariant = props.params?.variant?.length > 0;
+  const isVariant = props.params?.variant != null;
   const currentUser = props.currentUser;
   if (isForbiddenError(showListingError) && !isVariant && !currentUser) {
     // This can happen if private marketplace mode is active
@@ -573,6 +549,7 @@ const mapStateToProps = state => {
     reviews,
     fetchReviewsError,
     monthlyTimeSlots,
+    timeSlotsForDate,
     sendInquiryInProgress,
     sendInquiryError,
     lineItems,
@@ -604,10 +581,11 @@ const mapStateToProps = state => {
     showListingError,
     reviews,
     fetchReviewsError,
-    monthlyTimeSlots,
-    lineItems,
-    fetchLineItemsInProgress,
-    fetchLineItemsError,
+    monthlyTimeSlots, // for OrderPanel
+    timeSlotsForDate, // for OrderPanel
+    lineItems, // for OrderPanel
+    fetchLineItemsInProgress, // for OrderPanel
+    fetchLineItemsError, // for OrderPanel
     sendInquiryInProgress,
     sendInquiryError,
   };
@@ -618,11 +596,11 @@ const mapDispatchToProps = dispatch => ({
     dispatch(manageDisableScrolling(componentId, disableScrolling)),
   callSetInitialValues: (setInitialValues, values, saveToSessionStorage) =>
     dispatch(setInitialValues(values, saveToSessionStorage)),
-  onFetchTransactionLineItems: params => dispatch(fetchTransactionLineItems(params)),
+  onFetchTransactionLineItems: params => dispatch(fetchTransactionLineItems(params)), // for OrderPanel
   onSendInquiry: (listing, message) => dispatch(sendInquiry(listing, message)),
   onInitializeCardPaymentData: () => dispatch(initializeCardPaymentData()),
-  onFetchTimeSlots: (listingId, start, end, timeZone) =>
-    dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
+  onFetchTimeSlots: (listingId, start, end, timeZone, options) =>
+    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)), // for OrderPanel
 });
 
 // Note: it is important that the withRouter HOC is **outside** the

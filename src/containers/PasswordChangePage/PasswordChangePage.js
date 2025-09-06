@@ -1,11 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { useConfiguration } from '../../context/configurationContext';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
+import { showCreateListingLinkForUser, showPaymentDetailsForUser } from '../../util/userHelpers';
 
 import { Page, UserNav, H3, LayoutSideNavigation } from '../../components';
 
@@ -17,7 +18,24 @@ import PasswordChangeForm from './PasswordChangeForm/PasswordChangeForm';
 import { changePassword, changePasswordClear, resetPassword } from './PasswordChangePage.duck';
 import css from './PasswordChangePage.module.css';
 
+/**
+ * The change-password page.
+ *
+ * @param {Object} props
+ * @param {propTypes.error} props.changePasswordError - The change password error
+ * @param {boolean} props.changePasswordInProgress - Whether the change password is in progress
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {function} props.onChange - The function to change the password
+ * @param {function} props.onSubmitChangePassword - The function to submit the change password form
+ * @param {boolean} props.passwordChanged - Whether the password has changed
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @param {boolean} props.resetPasswordInProgress - Whether the reset password is in progress
+ * @param {propTypes.error} props.resetPasswordError - The reset password error
+ * @returns {JSX.Element} Password change page component
+ */
 export const PasswordChangePageComponent = props => {
+  const intl = useIntl();
+  const config = useConfiguration();
   const {
     changePasswordError,
     changePasswordInProgress,
@@ -25,11 +43,10 @@ export const PasswordChangePageComponent = props => {
     onChange,
     onSubmitChangePassword,
     onResetPassword,
-    resetPasswordInProgress,
+    resetPasswordInProgress = false,
     resetPasswordError,
     passwordChanged,
     scrollingDisabled,
-    intl,
   } = props;
 
   const changePasswordForm =
@@ -50,6 +67,14 @@ export const PasswordChangePageComponent = props => {
 
   const title = intl.formatMessage({ id: 'PasswordChangePage.title' });
 
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+  const { showPayoutDetails, showPaymentMethods } = showPaymentDetailsForUser(config, currentUser);
+  const accountSettingsNavProps = {
+    currentPage: 'PasswordChangePage',
+    showPaymentMethods,
+    showPayoutDetails,
+  };
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
@@ -59,12 +84,15 @@ export const PasswordChangePageComponent = props => {
               desktopClassName={css.desktopTopbar}
               mobileClassName={css.mobileTopbar}
             />
-            <UserNav currentPage="PasswordChangePage" />
+            <UserNav
+              currentPage="PasswordChangePage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         sideNav={null}
         useAccountSettingsNav
-        currentPage="PasswordChangePage"
+        accountSettingsNavProps={accountSettingsNavProps}
         footer={<FooterContainer />}
       >
         <div className={css.content}>
@@ -76,30 +104,6 @@ export const PasswordChangePageComponent = props => {
       </LayoutSideNavigation>
     </Page>
   );
-};
-
-PasswordChangePageComponent.defaultProps = {
-  changePasswordError: null,
-  currentUser: null,
-  resetPasswordInProgress: false,
-  resetPasswordError: null,
-};
-
-const { bool, func } = PropTypes;
-
-PasswordChangePageComponent.propTypes = {
-  changePasswordError: propTypes.error,
-  changePasswordInProgress: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  onChange: func.isRequired,
-  onSubmitChangePassword: func.isRequired,
-  passwordChanged: bool.isRequired,
-  scrollingDisabled: bool.isRequired,
-  resetPasswordInProgress: bool,
-  resetPasswordError: propTypes.error,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -133,8 +137,7 @@ const PasswordChangePage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(PasswordChangePageComponent);
 
 export default PasswordChangePage;

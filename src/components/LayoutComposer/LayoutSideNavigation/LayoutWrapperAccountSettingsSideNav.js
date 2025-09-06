@@ -3,7 +3,6 @@
  * Navigational 'aside' content should be added to this wrapper.
  */
 import React, { useEffect, useState } from 'react';
-import { node, string } from 'prop-types';
 
 import { FormattedMessage } from '../../../util/reactIntl';
 
@@ -56,9 +55,21 @@ const scrollToTab = (currentPage, scrollLeft, setScrollLeft) => {
   }
 };
 
-const LayoutWrapperAccountSettingsSideNavComponent = props => {
+/**
+ * Side nav with navigation to different account settings.
+ *
+ * @component
+ * @param {Object} props
+ * @param {Object} props.accountSettingsNavProps
+ * @param {string?} props.accountSettingsNavProps.currentPage
+ * @param {boolean?} props.accountSettingsNavProps.showPaymentMethods
+ * @param {boolean?} props.accountSettingsNavProps.showPayoutDetails
+ * @returns {JSX.Element} Side nav with navigation to different account settings
+ */
+const LayoutWrapperAccountSettingsSideNav = props => {
   const [mounted, setMounted] = useState(false);
   const [scrollLeft, setScrollLeft] = useGlobalState('scrollLeft');
+  const { accountSettingsNavProps } = props;
 
   useEffect(() => {
     setMounted(true);
@@ -66,7 +77,7 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
 
   useEffect(() => {
     if (mounted) {
-      const { currentPage } = props;
+      const { currentPage } = accountSettingsNavProps;
       const hasMatchMedia = typeof window !== 'undefined' && window?.matchMedia;
       const hasHorizontalTabLayout = hasMatchMedia
         ? window.matchMedia(`(max-width: ${MAX_HORIZONTAL_NAV_SCREEN_WIDTH}px)`)?.matches
@@ -79,7 +90,34 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
     }
   }, [mounted]);
 
-  const { currentPage } = props;
+  const { currentPage, showPaymentMethods, showPayoutDetails } = accountSettingsNavProps;
+  const payoutDetailsMaybe = showPayoutDetails
+    ? [
+        {
+          text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
+          selected: currentPage === 'StripePayoutPage',
+          id: 'StripePayoutPageTab',
+          linkProps: {
+            name: 'StripePayoutPage',
+          },
+        },
+      ]
+    : [];
+
+  const paymentMethodsMaybe = showPaymentMethods
+    ? [
+        {
+          text: (
+            <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />
+          ),
+          selected: currentPage === 'PaymentMethodsPage',
+          id: 'PaymentMethodsPageTab',
+          linkProps: {
+            name: 'PaymentMethodsPage',
+          },
+        },
+      ]
+    : [];
 
   const tabs = [
     {
@@ -98,41 +136,11 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
         name: 'PasswordChangePage',
       },
     },
-    {
-      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
-      selected: currentPage === 'StripePayoutPage',
-      id: 'StripePayoutPageTab',
-      linkProps: {
-        name: 'StripePayoutPage',
-      },
-    },
-    {
-      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />,
-      selected: currentPage === 'PaymentMethodsPage',
-      id: 'PaymentMethodsPageTab',
-      linkProps: {
-        name: 'PaymentMethodsPage',
-      },
-    },
+    ...payoutDetailsMaybe,
+    ...paymentMethodsMaybe,
   ];
 
   return <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
 };
-
-LayoutWrapperAccountSettingsSideNavComponent.defaultProps = {
-  className: null,
-  rootClassName: null,
-  children: null,
-  currentPage: null,
-};
-
-LayoutWrapperAccountSettingsSideNavComponent.propTypes = {
-  children: node,
-  className: string,
-  rootClassName: string,
-  currentPage: string,
-};
-
-const LayoutWrapperAccountSettingsSideNav = LayoutWrapperAccountSettingsSideNavComponent;
 
 export default LayoutWrapperAccountSettingsSideNav;

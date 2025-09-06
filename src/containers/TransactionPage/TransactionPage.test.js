@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import '@testing-library/jest-dom';
 import Decimal from 'decimal.js';
 
@@ -113,6 +113,8 @@ describe('TransactionPage', () => {
     onFetchTransactionLineItems: noop,
     nextTransitions: null,
     monthlyTimeSlots: {},
+    timeSlotsForDate: {},
+    showListingImage: true,
     //transaction,
     //lineItems,
   };
@@ -159,7 +161,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(purchases)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(purchases)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
 
       const stateData = getStateData(
@@ -186,8 +188,9 @@ describe('TransactionPage', () => {
           id: tx.id?.uuid,
         },
       };
-
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const providerTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -298,7 +301,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(purchases)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(purchases)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -327,7 +330,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const providerTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -456,7 +461,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -485,7 +490,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -624,7 +631,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -653,7 +660,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -788,7 +797,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check booking: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check booking: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_PROVIDER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -817,7 +826,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -955,7 +966,7 @@ describe('TransactionPage', () => {
       };
     });
 
-    test.each(bookings)('check purchase: $tr', ({ tr, tx, isReversal, isReceived }) => {
+    test.each(bookings)('check purchase: $tr', async ({ tr, tx, isReversal, isReceived }) => {
       const transactionRole = TX_TRANSITION_ACTOR_CUSTOMER;
       const isInquiry = tr === 'transition/inquire';
 
@@ -984,7 +995,9 @@ describe('TransactionPage', () => {
         },
       };
 
-      render(<TransactionPageComponent {...props} />);
+      await act(async () => {
+        render(<TransactionPageComponent {...props} />);
+      });
 
       const state = stateData.processState;
       const txTitle = `TransactionPage.${processName}.${transactionRole}.${state}.title`;
@@ -1150,8 +1163,9 @@ describe('TransactionPage', () => {
         // Listing's title (side card)
         expect(getAllByText('listing-item title')).toHaveLength(2);
         // Default unit price is $55
-        expect(getAllByText('$55.00')).toHaveLength(2);
-        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(2);
+        expect(getAllByText('OrderPanel.price')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.priceInMobileCTA')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(1);
 
         // BookingTimeForm inputs
         expect(getByText('BookingTimeForm.bookingStartTitle')).toBeInTheDocument();
@@ -1234,7 +1248,8 @@ describe('TransactionPage', () => {
         expect(getAllByText('listing-item title')).toHaveLength(1);
 
         // Don't show listing pricing
-        expect(screen.queryByText('$55.00')).toBeNull();
+        expect(screen.queryByText('OrderPanel.price')).toBeNull();
+        expect(screen.queryByText('OrderPanel.priceInMobileCTA')).toBeNull();
         expect(screen.queryByText('OrderPanel.perUnit')).toBeNull();
 
         // Don't show BookingTimeForm inputs
@@ -1317,8 +1332,9 @@ describe('TransactionPage', () => {
         // Listing's title (side card)
         expect(getAllByText('listing-item title')).toHaveLength(2);
         // Default unit price is $55
-        expect(getAllByText('$55.00')).toHaveLength(2);
-        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(2);
+        expect(getAllByText('OrderPanel.price')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.priceInMobileCTA')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(1);
 
         // BookingTimeForm inputs
         expect(getByText('BookingDatesForm.bookingStartTitle')).toBeInTheDocument();
@@ -1400,7 +1416,8 @@ describe('TransactionPage', () => {
         expect(getAllByText('listing-item title')).toHaveLength(1);
 
         // Don't show listing pricing
-        expect(screen.queryByText('$55.00')).toBeNull();
+        expect(screen.queryByText('OrderPanel.price')).toBeNull();
+        expect(screen.queryByText('OrderPanel.priceInMobileCTA')).toBeNull();
         expect(screen.queryByText('OrderPanel.perUnit')).toBeNull();
 
         // Don't show BookingDatesForm inputs
@@ -1482,8 +1499,9 @@ describe('TransactionPage', () => {
         // Listing's title (side card)
         expect(getAllByText('listing-item title')).toHaveLength(2);
         // Default unit price is $55
-        expect(getAllByText('$55.00')).toHaveLength(2);
-        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(2);
+        expect(getAllByText('OrderPanel.price')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.priceInMobileCTA')).toHaveLength(1);
+        expect(getAllByText('OrderPanel.perUnit')).toHaveLength(1);
 
         // Order purchase CTA
         expect(getByText('OrderPanel.ctaButtonMessagePurchase')).toBeInTheDocument();
@@ -1563,7 +1581,8 @@ describe('TransactionPage', () => {
         expect(getAllByText('listing-item title')).toHaveLength(1);
 
         // Don't show listing pricing
-        expect(screen.queryByText('$55.00')).toBeNull();
+        expect(screen.queryByText('OrderPanel.price')).toBeNull();
+        expect(screen.queryByText('OrderPanel.priceInMobileCTA')).toBeNull();
         expect(screen.queryByText('OrderPanel.perUnit')).toBeNull();
 
         // Don't show order purchase CTA

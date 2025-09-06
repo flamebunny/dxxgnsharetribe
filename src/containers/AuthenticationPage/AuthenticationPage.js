@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { bool, func, object, oneOf, shape } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
@@ -12,7 +11,7 @@ import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 import { camelize } from '../../util/string';
 import { pathByRouteName } from '../../util/routes';
 import { apiBaseUrl } from '../../util/api';
-import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import { ensureCurrentUser } from '../../util/data';
 import {
@@ -28,6 +27,7 @@ import { sendVerificationEmail } from '../../ducks/user.duck';
 import {
   Page,
   Heading,
+  IconSpinner,
   NamedRedirect,
   LinkTabNavHorizontal,
   SocialLoginButton,
@@ -61,6 +61,7 @@ import { FacebookLogo, GoogleLogo } from './socialLoginLogos';
 // Social login buttons are needed by AuthenticationForms
 export const SocialLoginButtonsMaybe = props => {
   const routeConfiguration = useRouteConfiguration();
+  const intl = useIntl();
   const { isLogin, showFacebookLogin, showGoogleLogin, from, userType } = props;
   const showSocialLogins = showFacebookLogin || showGoogleLogin;
 
@@ -96,6 +97,13 @@ export const SocialLoginButtonsMaybe = props => {
     window.location.href = `${baseUrl}/api/auth/google?${queryParams}`;
   };
 
+  const facebookAuthenticationMessage = isLogin
+    ? intl.formatMessage({ id: 'AuthenticationPage.loginWithFacebook' })
+    : intl.formatMessage({ id: 'AuthenticationPage.signupWithFacebook' });
+
+  const googleAuthenticationMessage = isLogin
+    ? intl.formatMessage({ id: 'AuthenticationPage.loginWithGoogle' })
+    : intl.formatMessage({ id: 'AuthenticationPage.signupWithGoogle' });
   return showSocialLogins ? (
     <div className={css.idpButtons}>
       <div className={css.socialButtonsOr}>
@@ -107,12 +115,10 @@ export const SocialLoginButtonsMaybe = props => {
       {showFacebookLogin ? (
         <div className={css.socialButtonWrapper}>
           <SocialLoginButton onClick={() => authWithFacebook()}>
-            <span className={css.buttonIcon}>{FacebookLogo}</span>
-            {isLogin ? (
-              <FormattedMessage id="AuthenticationPage.loginWithFacebook" />
-            ) : (
-              <FormattedMessage id="AuthenticationPage.signupWithFacebook" />
-            )}
+            <span className={css.buttonIcon}>
+              <FacebookLogo ariaLabelledBy="facebook-authentication-msg" />
+            </span>
+            <span id="facebook-authentication-msg">{facebookAuthenticationMessage}</span>
           </SocialLoginButton>
         </div>
       ) : null}
@@ -120,12 +126,10 @@ export const SocialLoginButtonsMaybe = props => {
       {showGoogleLogin ? (
         <div className={css.socialButtonWrapper}>
           <SocialLoginButton onClick={() => authWithGoogle()}>
-            <span className={css.buttonIcon}>{GoogleLogo}</span>
-            {isLogin ? (
-              <FormattedMessage id="AuthenticationPage.loginWithGoogle" />
-            ) : (
-              <FormattedMessage id="AuthenticationPage.signupWithGoogle" />
-            )}
+            <span className={css.buttonIcon}>
+              <GoogleLogo ariaLabelledBy="google-authentication-msg" />
+            </span>
+            <span id="google-authentication-msg">{googleAuthenticationMessage}</span>
           </SocialLoginButton>
         </div>
       ) : null}
@@ -165,6 +169,7 @@ export const AuthenticationForms = props => {
     termsAndConditions,
   } = props;
   const config = useConfiguration();
+  const intl = useIntl();
   const { userFields, userTypes = [] } = config.user;
   const preselectedUserType = userTypes.find(conf => conf.userType === userType)?.userType || null;
 
@@ -257,9 +262,13 @@ export const AuthenticationForms = props => {
       ? signupErrorMessage
       : null;
 
+  const ariaLabel = `${intl.formatMessage({
+    id: 'AuthenticationPage.signupLinkText',
+  })} & ${intl.formatMessage({ id: 'AuthenticationPage.loginLinkText' })}`;
+
   return (
     <div className={css.content}>
-      <LinkTabNavHorizontal className={classNames(css.tabs, css.ebgaramond)} tabs={tabs} />
+      <LinkTabNavHorizontal className={classNames(css.tabs, css.ebgaramond)} tabs={tabs} ariaLabel={ariaLabel} />
       {loginOrSignupError}
 
       {isLogin ? (
@@ -448,12 +457,70 @@ const getAuthErrorFromCookies = () => {
     : null;
 };
 
+const BlankPage = props => {
+  const { schemaTitle, schemaDescription, scrollingDisabled, topbarClasses } = props;
+  return (
+    <Page
+      title={schemaTitle}
+      scrollingDisabled={scrollingDisabled}
+      schema={{
+        '@context': 'http://schema.org',
+        '@type': 'WebPage',
+        name: schemaTitle,
+        description: schemaDescription,
+      }}
+    >
+      <LayoutSingleColumn
+        topbar={<TopbarContainer className={topbarClasses} />}
+        footer={<FooterContainer />}
+      >
+        <div className={css.spinnerContainer}>
+          <IconSpinner />
+        </div>
+      </LayoutSingleColumn>
+    </Page>
+  );
+};
+
+/**
+ * The AuthenticationPage component.
+ *
+ * @component
+ * @param {Object} props
+ * @param {boolean} props.authInProgress - Whether the authentication is in progress
+ * @param {propTypes.currentUser} props.currentUser - The current user
+ * @param {boolean} props.isAuthenticated - Whether the user is authenticated
+ * @param {propTypes.error} props.loginError - The login error
+ * @param {propTypes.error} props.signupError - The signup error
+ * @param {propTypes.error} props.confirmError - The confirm error
+ * @param {Function} props.submitLogin - The login submit function
+ * @param {Function} props.submitSignup - The signup submit function
+ * @param {Function} props.submitSingupWithIdp - The signup with IdP submit function
+ * @param {'login' | 'signup'| 'confirm'} props.tab - The tab to render
+ * @param {boolean} props.sendVerificationEmailInProgress - Whether the verification email is in progress
+ * @param {propTypes.error} props.sendVerificationEmailError - The verification email error
+ * @param {Function} props.onResendVerificationEmail - The resend verification email function
+ * @param {Function} props.onManageDisableScrolling - The manage disable scrolling function
+ * @param {object} props.privacyAssetsData - The privacy assets data
+ * @param {boolean} props.privacyFetchInProgress - Whether the privacy fetch is in progress
+ * @param {propTypes.error} props.privacyFetchError - The privacy fetch error
+ * @param {object} props.tosAssetsData - The terms of service assets data
+ * @param {boolean} props.tosFetchInProgress - Whether the terms of service fetch is in progress
+ * @param {propTypes.error} props.tosFetchError - The terms of service fetch error
+ * @param {object} props.location - The location object
+ * @param {object} props.params - The path parameters
+ * @param {boolean} props.scrollingDisabled - Whether the scrolling is disabled
+ * @returns {JSX.Element}
+ */
 export const AuthenticationPageComponent = props => {
   const [tosModalOpen, setTosModalOpen] = useState(false);
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const [authInfo, setAuthInfo] = useState(getAuthInfoFromCookies());
   const [authError, setAuthError] = useState(getAuthErrorFromCookies());
+  const [mounted, setMounted] = useState(false);
+
   const config = useConfiguration();
+  const intl = useIntl();
 
   useEffect(() => {
     // Remove the autherror cookie once the content is saved to state
@@ -461,6 +528,7 @@ export const AuthenticationPageComponent = props => {
     if (authError) {
       Cookies.remove('st-autherror');
     }
+    setMounted(true);
   }, []);
 
   // On mobile, it's better to scroll to top.
@@ -471,7 +539,6 @@ export const AuthenticationPageComponent = props => {
   const {
     authInProgress,
     currentUser,
-    intl,
     isAuthenticated,
     location,
     params: pathParams,
@@ -482,7 +549,7 @@ export const AuthenticationPageComponent = props => {
     submitSignup,
     confirmError,
     submitSingupWithIdp,
-    tab,
+    tab = 'signup',
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
     onResendVerificationEmail,
@@ -518,12 +585,41 @@ export const AuthenticationPageComponent = props => {
   // flag only when the current user is fully loaded.
   const showEmailVerification = !isLogin && currentUserLoaded && !user.attributes.emailVerified;
 
-  // Already authenticated, redirect away from auth page
-  if (isAuthenticated && from) {
+  const marketplaceName = config.marketplaceName;
+  const schemaTitle = isLogin
+    ? intl.formatMessage({ id: 'AuthenticationPage.schemaTitleLogin' }, { marketplaceName })
+    : intl.formatMessage({ id: 'AuthenticationPage.schemaTitleSignup' }, { marketplaceName });
+  const schemaDescription = isLogin
+    ? intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionLogin' }, { marketplaceName })
+    : intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionSignup' }, { marketplaceName });
+  const topbarClasses = classNames({
+    [css.hideOnMobile]: showEmailVerification,
+  });
+
+  const shouldRedirectToFrom = isAuthenticated && from;
+  const shouldRedirectToLandingPage =
+    isAuthenticated && currentUserLoaded && !showEmailVerification;
+  if (!mounted && shouldRedirectToLandingPage) {
+    // Show a blank page for already authenticated users,
+    // when the first rendering on client side is not yet done
+    // This is done to avoid hydration issues when full page load is happening.
+    return (
+      <BlankPage
+        schemaTitle={schemaTitle}
+        schemaDescription={schemaDescription}
+        topbarClasses={topbarClasses}
+      />
+    );
+  }
+
+  if (shouldRedirectToFrom) {
+    // Already authenticated, redirect back to the page the user tried to access
     return <Redirect to={from} />;
-  } else if (isAuthenticated && currentUserLoaded && !showEmailVerification) {
+  } else if (shouldRedirectToLandingPage) {
+    // Already authenticated, redirect to the landing page (this was direct access to /login or /signup)
     return <NamedRedirect name="LandingPage" />;
   } else if (show404) {
+    // User type not found, show 404
     return <NotFoundPage staticContext={props.staticContext} />;
   }
 
@@ -537,18 +633,6 @@ export const AuthenticationPageComponent = props => {
       <FormattedMessage id={resendErrorTranslationId} />
     </p>
   ) : null;
-
-  const marketplaceName = config.marketplaceName;
-  const schemaTitle = isLogin
-    ? intl.formatMessage({ id: 'AuthenticationPage.schemaTitleLogin' }, { marketplaceName })
-    : intl.formatMessage({ id: 'AuthenticationPage.schemaTitleSignup' }, { marketplaceName });
-  const schemaDescription = isLogin
-    ? intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionLogin' }, { marketplaceName })
-    : intl.formatMessage({ id: 'AuthenticationPage.schemaDescriptionSignup' }, { marketplaceName });
-
-  const topbarClasses = classNames({
-    [css.hideOnMobile]: showEmailVerification,
-  });
 
   return (
     <Page
@@ -616,7 +700,7 @@ export const AuthenticationPageComponent = props => {
         usePortal
         onManageDisableScrolling={onManageDisableScrolling}
       >
-        <div className={css.termsWrapper}>
+        <div className={css.termsWrapper} role="complementary">
           <TermsOfServiceContent
             inProgress={tosFetchInProgress}
             error={tosFetchError}
@@ -631,7 +715,7 @@ export const AuthenticationPageComponent = props => {
         usePortal
         onManageDisableScrolling={onManageDisableScrolling}
       >
-        <div className={css.privacyWrapper}>
+        <div className={css.privacyWrapper} role="complementary">
           <PrivacyPolicyContent
             inProgress={tosFetchInProgress}
             error={tosFetchError}
@@ -641,59 +725,6 @@ export const AuthenticationPageComponent = props => {
       </Modal>
     </Page>
   );
-};
-
-AuthenticationPageComponent.defaultProps = {
-  currentUser: null,
-  loginError: null,
-  signupError: null,
-  confirmError: null,
-  tab: 'signup',
-  sendVerificationEmailError: null,
-  showSocialLoginsForTests: false,
-  privacyAssetsData: null,
-  privacyFetchInProgress: false,
-  privacyFetchError: null,
-  tosAssetsData: null,
-  tosFetchInProgress: false,
-  tosFetchError: null,
-};
-
-AuthenticationPageComponent.propTypes = {
-  authInProgress: bool.isRequired,
-  currentUser: propTypes.currentUser,
-  isAuthenticated: bool.isRequired,
-  loginError: propTypes.error,
-  scrollingDisabled: bool.isRequired,
-  signupError: propTypes.error,
-  confirmError: propTypes.error,
-
-  submitLogin: func.isRequired,
-  submitSignup: func.isRequired,
-  tab: oneOf(['login', 'signup', 'confirm']),
-
-  sendVerificationEmailInProgress: bool.isRequired,
-  sendVerificationEmailError: propTypes.error,
-  onResendVerificationEmail: func.isRequired,
-  onManageDisableScrolling: func.isRequired,
-
-  // to fetch privacy-policy page asset
-  // which is shown in modal
-  privacyAssetsData: object,
-  privacyFetchInProgress: bool,
-  privacyFetchError: propTypes.error,
-
-  // to fetch terms-of-service page asset
-  // which is shown in modal
-  tosAssetsData: object,
-  tosFetchInProgress: bool,
-  tosFetchError: propTypes.error,
-
-  // from withRouter
-  location: shape({ state: object }).isRequired,
-
-  // from injectIntl
-  intl: intlShape.isRequired,
 };
 
 const mapStateToProps = state => {
@@ -746,8 +777,7 @@ const AuthenticationPage = compose(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  ),
-  injectIntl
+  )
 )(AuthenticationPageComponent);
 
 export default AuthenticationPage;

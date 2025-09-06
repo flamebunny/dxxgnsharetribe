@@ -46,7 +46,7 @@ export const SingleDatePicker = props => {
   }, []);
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && value?.getTime() !== dateData?.date?.getTime()) {
       // If mounted, changes to value should be reflected to 'date' state
       setDateData({
         date: value,
@@ -124,11 +124,13 @@ export const SingleDatePicker = props => {
     }
   };
 
+  const disabled = props.disabled;
   const inputProps = {
     type: 'text',
     onChange: handleOnChangeOnInput,
     onKeyDown: handleOnKeyDownOnInput,
     ...(readOnly ? { readOnly } : {}),
+    ...(disabled ? { disabled } : {}),
   };
 
   return (

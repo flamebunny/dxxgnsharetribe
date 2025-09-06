@@ -119,8 +119,12 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
   //       ...and then turned enforceValidListingType config to true in configListing.js
   // Read More:
   // https://www.sharetribe.com/docs/how-to/manage-search-schemas-with-flex-cli/#adding-listing-search-schemas
-  const searchValidListingTypes = listingTypes => {
-    return config.listing.enforceValidListingType
+  const searchValidListingTypes = (listingTypes, listingTypePathParam, isListingTypeVariant) => {
+    return isListingTypeVariant
+      ? {
+          pub_listingType: listingTypePathParam,
+        }
+      : config.listing.enforceValidListingType
       ? {
           pub_listingType: listingTypes.map(l => l.listingType),
           // pub_transactionProcessAlias: listingTypes.map(l => l.transactionType.alias),
@@ -129,34 +133,93 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
       : {};
   };
 
-  const omitInvalidCategoryParams = params => {
+  const constructCategoryPropertiesForAPI = (queryParamPrefix, categories, level, params) => {
+    const levelKey = `${queryParamPrefix}${level}`;
+    const levelValue =
+      typeof params?.[levelKey] !== 'undefined' ? `${params?.[levelKey]}` : undefined;
+    const foundCategory = categories.find(cat => cat.id === levelValue);
+    const subcategories = foundCategory?.subcategories || [];
+    // Note: we might need to prepare nested categories too: categoryLevel1, categoryLevel2, categoryLevel3
+    return foundCategory && subcategories.length > 0
+      ? {
+          [levelKey]: levelValue,
+          ...constructCategoryPropertiesForAPI(queryParamPrefix, subcategories, level + 1, params),
+        }
+      : foundCategory
+      ? { [levelKey]: levelValue }
+      : {};
+  };
+
+  /**
+   * Category filter params are prepared here. We omit invalid category names.
+   * I.e. params that are not part of the currently configured category tree.
+   *
+   * @param {string} paramName - The name of the parameter to prepare.
+   * @param {Object} params - The search params object.
+   * @returns {Object} The prepared parameter object.
+   */
+  const prepareCategoryParams = (paramName, params) => {
     const categoryConfig = config.search.defaultFilters?.find(f => f.schemaType === 'category');
     const categories = config.categoryConfiguration.categories;
-    const { key: prefix, scope } = categoryConfig || {};
-    const categoryParamPrefix = constructQueryParamName(prefix, scope);
+    const { key, scope } = categoryConfig || {};
+    const categoryParamPrefix = constructQueryParamName(key, scope);
+    return paramName.startsWith(categoryParamPrefix)
+      ? constructCategoryPropertiesForAPI(categoryParamPrefix, categories, 1, params)
+      : {};
+  };
 
-    const validURLParamForCategoryData = (prefix, categories, level, params) => {
-      const levelKey = `${categoryParamPrefix}${level}`;
-      const levelValue = params?.[levelKey];
-      const foundCategory = categories.find(cat => cat.id === levelValue);
-      const subcategories = foundCategory?.subcategories || [];
-      return foundCategory && subcategories.length > 0
-        ? {
-            [levelKey]: levelValue,
-            ...validURLParamForCategoryData(prefix, subcategories, level + 1, params),
-          }
-        : foundCategory
-        ? { [levelKey]: levelValue }
-        : {};
-    };
+  const constructIntegerRangePropertyForAPI = (queryParamPrefix, params) => {
+    const integerValue = params?.[queryParamPrefix];
+    const [min, max] = integerValue ? integerValue.split(',') : [];
+    // NOTE: long filter needs exclusive max value on API side
+    const inclusiveMin = Number.parseInt(min, 10);
+    const exclusiveMax = Number.parseInt(max, 10) + 1;
 
-    const categoryKeys = validURLParamForCategoryData(prefix, categories, 1, params);
-    const nonCategoryKeys = Object.entries(params).reduce(
-      (picked, [k, v]) => (k.startsWith(categoryParamPrefix) ? picked : { ...picked, [k]: v }),
-      {}
-    );
+    // NOTE: currently we don't validate the range values against the integer range config,
+    // but we might want to do that in the future.
 
-    return { ...nonCategoryKeys, ...categoryKeys };
+    return Number.isInteger(inclusiveMin) && Number.isInteger(exclusiveMax)
+      ? { [queryParamPrefix]: [inclusiveMin, exclusiveMax].join(',') }
+      : {};
+  };
+
+  /**
+   * Integer range filter values are converted to API params of type 'long'.
+   *
+   * The range end must be exclusive. E.g. 1000,2000 -> 1000,2001
+   *
+   * NOTE: currently we don't validate the range values against the integer range config,
+   * but we might want to do that in the future.
+   *
+   * @param {string} paramName - The name of the parameter to prepare.
+   * @param {Object} params - The search params object.
+   * @returns {Object} The prepared parameter object.
+   */
+  const prepareIntegerRangeParam = (paramName, params) => {
+    const integerRangeConfig = config.listing.listingFields?.find(f => f.schemaType === 'long');
+    const { key, scope } = integerRangeConfig || {};
+    const integerParamPrefix = constructQueryParamName(key, scope);
+    return paramName.startsWith(integerParamPrefix)
+      ? constructIntegerRangePropertyForAPI(integerParamPrefix, params)
+      : {};
+  };
+
+  // This function goes through given params and if there's a specific handler for the parameter type,
+  // it calls the handler to prepare the property for API.
+  // Otherwise, it just passes the param through.
+  const prepareAPIParams = (params, paramHandlers) => {
+    const pickedKeys = Object.entries(params).reduce((picked, [k, v]) => {
+      const preparedParams = paramHandlers.reduce((picked, fn) => {
+        return { ...picked, ...fn(k, params) };
+      }, {});
+
+      // If the param is not handled by any of the handlers, we pass it through.
+      const currentParam = Object.keys(preparedParams).length > 0 ? preparedParams : { [k]: v };
+
+      return { ...picked, ...currentParam };
+    }, {});
+
+    return pickedKeys;
   };
 
   const priceSearchParams = priceParam => {
@@ -239,21 +302,60 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
     return hasDatesFilterInUse ? {} : { minStock: 1, stockMode: 'match-undefined' };
   };
 
-  const { perPage, price, dates, sort, mapSearch, ...restOfParams } = searchParams;
+  const seatsSearchParams = (seats, datesMaybe) => {
+    const seatsFilter = config.search.defaultFilters.find(f => f.key === 'seats');
+    const hasDatesFilterInUse = Object.keys(datesMaybe).length > 0;
+
+    // Seats filter cannot be applied without dates
+    return hasDatesFilterInUse && seatsFilter ? { seats } : {};
+  };
+
+  const {
+    perPage,
+    price,
+    dates,
+    seats,
+    sort,
+    mapSearch,
+    listingTypePathParam,
+    isListingTypeVariant,
+    ...restOfParams
+  } = searchParams;
+  // The params related to default filters are prepared one-by-one
+  // We could consider moving them to the prepareAPIParams function too.
   const priceMaybe = priceSearchParams(price);
   const datesMaybe = datesSearchParams(dates);
   const stockMaybe = stockFilters(datesMaybe);
+  const seatsMaybe = seatsSearchParams(seats, datesMaybe);
   const sortMaybe = sort === config.search.sortConfig.relevanceKey ? {} : { sort };
 
   const params = {
-    // The rest of the params except invalid nested category-related params
+    // The params that are related to listing fields and categories are prepared here.
+    // We add handler functions that check category and integer range configurations.
+    // - With category params, we essentially just omit invalid category names.
+    //   I.e. params that are not part of the currently configured category tree.
+    // - With integer range params, we prepare the property for API.
+    //   I.e. the range end must be exclusive. E.g. 1000,2000 -> 1000,2001
     // Note: invalid independent search params are still passed through
-    ...omitInvalidCategoryParams(restOfParams),
+    ...prepareAPIParams(restOfParams, [prepareCategoryParams, prepareIntegerRangeParam]),
+    // If the search page variant is of type /s/:listingType, this sets the pub_listingType
+    // query parameter to the value of the listing type path parameter. The ordering matters here,
+    // since this value overrides any possible pub_listingType value coming from query parameters
+    // i.e. the previous row.
+    //
+    // Only one value is currently supported in pub_listingType – if you want to support e.g.
+    // /s/:listingType?pub_listingType=[otherListingType] => pub_listingType=listingType,otherListingType,
+    // you'll need to customize a logic that merges the query param and path param values.
+    ...searchValidListingTypes(
+      config.listing.listingTypes,
+      listingTypePathParam,
+      isListingTypeVariant
+    ),
     ...priceMaybe,
     ...datesMaybe,
     ...stockMaybe,
+    ...seatsMaybe,
     ...sortMaybe,
-    ...searchValidListingTypes(config.listing.listingTypes),
     perPage,
   };
 
@@ -287,6 +389,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
 
   // In private marketplace mode, this page won't fetch data if the user is unauthorized
+  const { listingType: listingTypePathParam } = params || {};
   const state = getState();
   const currentUser = state.user?.currentUser;
   const isAuthorized = currentUser && isUserAuthorized(currentUser);
@@ -306,6 +409,10 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   const { page = 1, address, origin, ...rest } = queryParams;
   const originMaybe = isOriginInUse(config) && origin ? { origin } : {};
 
+  const listingTypeVariantMaybe = listingTypePathParam
+    ? { listingTypePathParam, isListingTypeVariant: true }
+    : {};
+
   const {
     aspectWidth = 1,
     aspectHeight = 1,
@@ -317,6 +424,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     {
       ...rest,
       ...originMaybe,
+      ...listingTypeVariantMaybe,
       page,
       perPage: RESULT_PAGE_SIZE,
       include: ['author', 'images'],
@@ -329,11 +437,14 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         'publicData.listingType',
         'publicData.transactionProcessAlias',
         'publicData.unitType',
+        'publicData.cardStyle',
         // These help rendering of 'purchase' listings,
         // when transitioning from search page to listing page
         'publicData.pickupEnabled',
         'publicData.shippingEnabled',
         'publicData.shippingPriceInSubunitsOneItem',
+        'publicData.priceVariationsEnabled',
+        'publicData.priceVariants',
       ],
       'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
       'fields.image': [
