@@ -233,6 +233,14 @@
  /* width: 100%; */
 }
 
+.title {
+  color: var(--marketplaceColor);
+  font-size: 18px;
+  margin: 0px 0px 10px 0;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
 .title a {
   color: var(--marketplaceColor);
   margin: 5px 0px;
@@ -250,6 +258,10 @@
   font-weight: 600;
   text-transform: uppercase;
   line-height: 44px;
+}
+
+.fontCousine {
+  font-family: "Cousine", serif; 
 }
 
 .center {
@@ -394,7 +406,7 @@
   height: 40px;
   border-radius: 50%;
 
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0);
 
   @media (--viewportLarge) {
     /* center content */

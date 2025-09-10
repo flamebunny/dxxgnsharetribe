@@ -151,7 +151,7 @@ const SectionCarouselNew = props => {
     >
       {hasHeaderFields ? (
         <header className={classNames(css.center)}>
-          <h2 className={classNames(css.title, css.fontInter)}><a href="/s">{title.content}</a></h2> 
+          <h2 className={classNames(css.title, css.fontCousine)}><a href="/s">{title.content}</a></h2> 
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>
