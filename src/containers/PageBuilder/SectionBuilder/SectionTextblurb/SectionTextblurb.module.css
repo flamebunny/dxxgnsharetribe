@@ -16,7 +16,7 @@
 }
 
 .title {
-  font-size: 14px;    
+  font-size: 14px !important;    
 }
 .description{
   font-size: 14px;
