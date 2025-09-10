@@ -35,14 +35,78 @@
   }
 
   & li {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 16px;
     color: var(--colorGrey700);
-    padding: 0px;
     list-style-position: inside;
+    display: inline-block;
+    padding: 0px 10px;
   }
 
   & p {
     padding: 0px;
   }
+
+  & a {
+    text-transform: uppercase;
+    text-decoration: line-through;
+  }
+
+  & li a {
+    font-family: "Cousine", serif;
+    background: none;
+    color: #4A4A4A;
+    box-shadow: none;
+    font-weight: 600;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0;
+    padding: 0;
+    line-height: 18px;
+    text-transform: uppercase;
+    text-decoration: line-through;
+  }
+
+  & li a:hover {
+    background: #FFF;
+    color: #000;
+  }
+
+  & li a:after {
+    content: '';
+    height: 1px;
+    background: black;
+    display: block;
+    padding: 0;
+    margin-top: -10px;
+    width: calc(100% + 20px);
+    margin-left: -10px;
+  }
+
+  & li a:hover:after  {
+    background: #FFF;
+    color: #000;
+  }
+
+  & li:first-child a:after { 
+    margin-left: 0%; 
+    width: calc(100% + 10px);
+  }
+
+  & li:last-child a:after { 
+    margin-left: -10px; 
+    width: calc(100% + 10px);
+  }
+
+  & li:first-child a:hover:after { 
+    margin-left: 0; 
+    width: 100%;
+  }
+  & li:last-child a:hover:after {
+    margin-left: 0; 
+    width: 100%;
+  }
+
+
+
 }

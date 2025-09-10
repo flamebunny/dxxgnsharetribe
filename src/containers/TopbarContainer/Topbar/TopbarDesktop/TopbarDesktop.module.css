@@ -16,9 +16,6 @@
   /* fill */
   background-color: var(--colorWhite);
 
-  /* shadows */
-  box-shadow: var(--boxShadowLight);
-
   @media (--viewportLarge) {
     padding: 0 24px 0 0;
   }

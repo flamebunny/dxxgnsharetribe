@@ -1,7 +1,7 @@
 @import '../../../../styles/customMediaQueries.css';
 
 .baseColumn {
-  /* max-width: var(--contentMaxWidthPages); */
+  max-width: var(--contentMaxWidthPages);
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 32px;
@@ -107,12 +107,13 @@
 
 .title {
   color: var(--marketplaceColor);
-  font-size: 36px;
-  margin: 5px 0px;
+  font-size: 18px;
+  margin: 0px 0px 10px 0;
+  font-weight: normal;
 }
 
-.fontPermanentMarker {
-  font-family: "Permanent Marker", serif;  
+.fontCousine {
+  font-family: "Cousine", serif; 
 }
 
 .center {
@@ -138,6 +139,10 @@
   gap: 10px;
   width: 100%;
 
+  > *:nth-child(n+7) {
+    display: none;
+  }
+
   @media (min-width: 550px) {
     gap: 10px;
     padding: 0 10px;
@@ -154,14 +159,11 @@
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
     grid-template-areas:
       "box1 box1 box2 box3"
-      "box1 box1 box4 box5"
-      "box6 box7 box8 box8"
-      "box9 box10 box8 box8"
-      "box11 box11 box12 box13"
-      "box11 box11 box14 box15";
+      "box1 box1 box4 box4"
+      "box5 box6 box4 box4";
     /*
     grid-template-areas:
       "box1 box1 box2 box3"
@@ -172,7 +174,7 @@
   }
 
   @media (min-width: 1440px) {
-    padding: 0 24px 0 24px;
+    padding: 0 0px 0 0px;
 
   }
 

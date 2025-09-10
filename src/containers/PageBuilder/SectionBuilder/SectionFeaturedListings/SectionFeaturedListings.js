@@ -65,7 +65,7 @@ const SectionFeaturedListings = props => {
       
       {hasHeaderFields ? (
         <header className={classNames(css.center)}>
-          <Field data={title} className={classNames(css.title, css.fontPermanentMarker)} options={fieldOptions} />
+          <Field data={title} className={classNames(css.title, css.fontCousine)} options={fieldOptions} />
           <Field data={description} className={defaultClasses.description} options={fieldOptions} />
           <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
         </header>

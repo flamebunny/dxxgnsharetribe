@@ -332,9 +332,9 @@
 
   @media (--viewportMedium) {
     width: 100%;
-    /*max-width: var(--contentMaxWidth);*/
-    max-width: 100%;
-    padding: 0 24px 0 24px;
+    max-width: var(--contentMaxWidthPages);
+    /*max-width: 100%;*/
+    padding: 0 0 0 0;
     margin: 0 auto 56px auto;
   }
 
@@ -344,8 +344,8 @@
     /*max-width: unset;*/
     /*width: min(calc(var(--contentMaxWidth) + 72px), 100vw);*/
     width: 100%;
-    max-width: 100%;
-    padding: 64px 36px 0 36px;
+    max-width: var(--contentMaxWidthPages);
+    padding: 64px 0 0 0;
     margin: 0 auto 117px auto;
   }
 }

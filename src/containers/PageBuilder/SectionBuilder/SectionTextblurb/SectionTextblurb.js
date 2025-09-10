@@ -43,16 +43,16 @@ const SectionTextblurb = props => {
     >
       {hasHeaderFields ? (
         <header 
-          className={classNames(css.textwide, defaultClasses.sectionDetails)}
+          className={classNames(css.root)}
         >
-          <Field data={title} className={classNames(defaultClasses.title, css.textwidthunset, css.center, css.ebgaramond)} options={fieldOptions} />
-          <Field data={description} className={defaultClasses.description} options={fieldOptions} />
-          <Field data={callToAction} className={defaultClasses.ctaButton} options={fieldOptions} />
+          <Field data={title} className={classNames(css.title)} options={fieldOptions} />
+          <Field data={description} className={css.description} options={fieldOptions} />
+          <Field data={callToAction} className={css.ctaButton} options={fieldOptions} />
         </header>
       ) : null}
       {hasBlocks ? (
         <div
-          className={classNames(defaultClasses.blockContainer, css.articleMain, {
+          className={classNames(css.articleMain, {
             [css.noSidePaddings]: isInsideContainer,
           })}
         >

@@ -23,6 +23,8 @@
   padding: 0 12px 0 12px;
   margin: 0;
 
+  text-decoration: line-through;
+
   &:hover {
     color: var(--colorBlack);
     border-bottom: 4px solid var(--marketplaceColor);
@@ -34,6 +36,11 @@
     line-height: 16px;
     margin: 0;
   }
+  
+}
+
+a >  span > span{
+  text-decoration: none !important;
 }
 
 .highlight {
