@@ -187,7 +187,7 @@
   }
 
   @media (min-width: 1440px) {
-    width: calc((var(--carouselWidth) -  120px) / 4);
+    width: calc((var(--carouselWidth) -  673px) / 4);
   }
 
 
@@ -235,7 +235,7 @@
 
 .title {
   color: var(--marketplaceColor);
-  font-size: 18px;
+  font-size: 14px;
   margin: 0px 0px 10px 0;
   font-weight: normal;
   text-transform: uppercase;
@@ -278,7 +278,7 @@
 .box {
   position: relative;
   @media (--viewportLarge) {
-      color: #000;
+      color: var(--colorBlack);
       background: transparent !important;
 
       display: grid;

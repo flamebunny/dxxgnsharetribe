@@ -285,7 +285,7 @@
   font-size: 16px;
   line-height: 24px;
 
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   text-align: left;
 
   padding: 3px 0;
@@ -306,6 +306,7 @@
 
 .titleDraft {
   margin-right: 8px;
+  text-transform: uppercase;
 }
 
 /* Solid gray background for draft listings without image */
@@ -401,11 +402,11 @@
 }
 
 .manageLink {
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   white-space: pre;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration: none;
     color: var(--colorBlack);
   }
 }

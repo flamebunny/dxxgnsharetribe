@@ -1,5 +1,31 @@
 @import '../../../../styles/customMediaQueries.css';
 
+.container {
+  padding: 0 10px;
+  
+  @media (min-width: 550px) {   
+    padding: 0 10px;    
+  }
+
+  @media (--viewportMedium) {  
+    padding: 0 24px;   
+  }
+
+  @media (--viewportLarge) {    
+   
+  }
+
+  @media (min-width: 1120px) {
+    padding: 0;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0 0px 0 0px;
+  }
+
+
+}
+
 .root {
   max-width: var(--contentMaxWidthPages);
   text-align: left;
@@ -16,14 +42,38 @@
 }
 
 .title {
-  font-size: 14px !important;    
-}
-.description{
-  font-size: 14px;
-  line-height: 120px;  
-  padding: 0 !important;
+  font-size: 14px;    
+  
+  @media (min-width: 550px) {   
+  
+  }
+
+  @media (--viewportMedium) {  
+    font-size: 14px !important;  
+  }
+
+  @media (--viewportLarge) {    
+   
+  }
 }
 
+.description {
+  font-size: 12px;   
+  
+  @media (min-width: 550px) {   
+  
+  }
+
+  @media (--viewportMedium) {  
+    font-size: 14px;
+    line-height: 120px;  
+    padding: 0 !important; 
+  }
+
+  @media (--viewportLarge) {    
+   
+  }
+}
 
 .articleMain {
   max-width: var(--contentMaxWidthPages);

@@ -94,14 +94,14 @@
 .spinner {
   width: 28px;
   height: 28px;
-  stroke: var(--colorWhite);
+  stroke: var(--colorBlack);
   stroke-width: 3px;
 }
 
 .checkmark {
   width: 24px;
   height: 24px;
-  stroke: var(--colorWhite);
+  stroke: var(--colorBlack);
 
   /* Animation */
   animation-name: checkmarkAnimation;

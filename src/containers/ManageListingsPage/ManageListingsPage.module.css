@@ -71,12 +71,10 @@
 .heading {
   margin: 0 24px 24px 24px;
 
-  font-family: "EB Garamond", serif;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 54px;
-  line-height: 32px;
-  letter-spacing: -1px;
+  font-family: "Cousine", serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 18px;
   word-break: auto-phrase;
 
   @media (--viewportMedium) {

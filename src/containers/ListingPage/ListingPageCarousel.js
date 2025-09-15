@@ -321,6 +321,9 @@ export const ListingPageComponent = props => {
   );
   };
 
+  console.log('publicData');
+  console.log(publicData);
+
   return (
     <Page
       title={schemaTitle}
@@ -428,7 +431,8 @@ export const ListingPageComponent = props => {
               marketplaceName={config.marketplaceName}
               showListingImage={showListingImage}
             />
-            <SectionTextMaybe text={description} showAsIngress />
+
+            <SectionTextMaybe heading={'Description'} text={description} showAsIngress />
 
             <SectionMapMaybe
               geolocation={geolocation}
@@ -438,6 +442,7 @@ export const ListingPageComponent = props => {
             />
 
             <CustomListingFields2
+              heading={'Details'}
               publicData={publicData}
               metadata={metadata}
               listingFieldConfigs={listingConfig.listingFields}

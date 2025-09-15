@@ -72,14 +72,13 @@
   text-align: center;
   display: unset;  
 
-  font-weight: var(--fontWeightBold);
-  letter-spacing: -0.2px;
-  line-height: normal;
+  font-weight: var(--fontWeightRegular);
+  line-height: 24px;
 
   font-family: 'Inter';
-  font-size: 24px;
+  font-size: 18px;
   text-transform: uppercase;
-  color: #4A4A4A;  
+  color: #000;  
   position: relative;
   top: 0;
 }

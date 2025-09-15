@@ -26,6 +26,7 @@
   border: none;
   padding: 0;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .labelButtonContent {
@@ -79,7 +80,7 @@
   display: block;
   font-weight: var(--fontWeightMedium);
   color: var(--colorGrey300);
-  padding: 2px 0 4px 12px;
+  padding: 24px 0 4px 12px;
   text-transform: uppercase;
 
   /* Override button styles */
@@ -94,7 +95,7 @@
   }
 
   @media (--viewportMedium) {
-    padding: 4px 0 4px 12px;
+    padding: 24px 0 4px 12px;
     margin-top: 0px;
   }
 }

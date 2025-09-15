@@ -9,5 +9,6 @@
 .inputSuccess {
 }
 .inputError {
-  border: var(--borderErrorField);
+  /* border: var(--borderErrorField); */
+  border-bottom-color: var(--borderErrorFieldColor);
 }

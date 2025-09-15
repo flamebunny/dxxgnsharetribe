@@ -11,6 +11,9 @@
 }
 
 .defaultUserFields {
+  label {
+    display: none;
+  }
 }
 
 .name {
@@ -47,3 +50,6 @@
 .bottomWrapper {
   composes: marketplaceModalBottomWrapper from global;
 }
+
+
+

@@ -32,6 +32,7 @@ const MainPanelHeader = props => {
     resultsCount,
     searchInProgress = false,
     noResultsInfo,
+    labelHeading,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -39,6 +40,7 @@ const MainPanelHeader = props => {
   return (
     <div className={classes}>
       <div className={css.searchOptions}>
+        <h2 className={css.locationSearchHeader}>{labelHeading}</h2>
         <div className={css.searchResultSummary}>
           <span className={css.resultsFound}>
             {searchInProgress ? (

@@ -12,13 +12,14 @@
 .finePrint {
   composes: marketplaceModalHelperLink from global;
   padding: 3px 0 5px 0;
-  text-align: left;
+  text-align: center;
 }
 
 .privacyLink,
 .termsLink {
   composes: marketplaceModalHelperLink from global;
   color: var(--marketplaceColor);
+  text-decoration: line-through;
 
   &:hover {
     color: var(--marketplaceColorDark);

@@ -12,6 +12,8 @@ import SectionDetailsMaybe2 from './SectionDetailsMaybe2.js';
 import SectionMultiEnumMaybe from './SectionMultiEnumMaybe.js';
 import SectionTextMaybe2 from './SectionTextMaybe2.js';
 import SectionYoutubeVideoMaybe from './SectionYoutubeVideoMaybe.js';
+import { Heading } from '../../components';
+import css from './ListingPage.module.css';
 
 /**
  * Renders custom listing fields.
@@ -23,7 +25,7 @@ import SectionYoutubeVideoMaybe from './SectionYoutubeVideoMaybe.js';
  * @returns React.Fragment containing aforementioned components
  */
 const CustomListingFields2 = props => {
-  const { publicData, metadata, listingFieldConfigs, categoryConfiguration } = props;
+  const { publicData, metadata, listingFieldConfigs, categoryConfiguration, heading } = props;  
 
   const { key: categoryPrefix, categories: listingCategoriesConfig } = categoryConfiguration;
   const categoriesObj = pickCategoryFields(publicData, categoryPrefix, 1, listingCategoriesConfig);
@@ -43,7 +45,12 @@ const CustomListingFields2 = props => {
     ) || [];
 
   return (
-    <>
+    <section className={css.sectionDetails}>
+      {heading ? (
+        <Heading as="h2" rootClassName={css.sectionHeading}>
+          {heading}
+        </Heading>
+      ) : null}
       <SectionDetailsMaybe2 {...props} isFieldForCategory={isFieldForSelectedCategories} />
       {propsForCustomFields.map(customFieldProps => {
         const { schemaType, ...fieldProps } = customFieldProps;
@@ -58,7 +65,7 @@ const CustomListingFields2 = props => {
           <SectionYoutubeVideoMaybe {...fieldProps} />
         ) : null;
       })}
-    </>
+    </section>
   );
 };
 

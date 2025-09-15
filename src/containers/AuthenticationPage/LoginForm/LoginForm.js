@@ -71,7 +71,7 @@ const LoginFormComponent = props => (
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
-          <div>
+          <div className={css.defaultUserFields}>
             <FieldTextInput
               type="email"
               id={formId ? `${formId}.email` : 'email'}

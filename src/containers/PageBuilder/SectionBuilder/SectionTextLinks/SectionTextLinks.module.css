@@ -9,6 +9,20 @@
 
 .featuresMain {
   composes: baseColumn;
+  padding: 0 !important;
+
+  @media (min-width: 550px) {   
+  
+  }
+
+  @media (--viewportMedium) {  
+    padding: 0 32px !important;
+  }
+
+  @media (--viewportLarge) {    
+  
+  }
+
 }
 
 .block {
@@ -33,7 +47,7 @@
   .button a {
     font-family: "Cousine", serif;
     background: none;
-    color: #4A4A4A;
+    color: var(--colorBlack);
     box-shadow: none;
     font-weight: 600;
     font-size: 14px;
@@ -47,7 +61,7 @@
 
   .button a:hover {
     background: #FFF;
-    color: #000;
+    color: var(--colorBlack);
   }
 
   .button a:after {
@@ -63,7 +77,7 @@
 
   .button a:hover:after  {
     background: #FFF;
-    color: #000;
+    color: var(--colorBlack);
   }
 
   .button:first-child a:after { 
@@ -84,7 +98,6 @@
     margin-left: 0; 
     width: 100%;
   }
-
 
 
 .noSidePaddings {

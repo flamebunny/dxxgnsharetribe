@@ -55,7 +55,7 @@
   & li a {
     font-family: "Cousine", serif;
     background: none;
-    color: #4A4A4A;
+    color: var(--colorBlack);
     box-shadow: none;
     font-weight: 600;
     font-size: 14px;
@@ -69,7 +69,7 @@
 
   & li a:hover {
     background: #FFF;
-    color: #000;
+    color: var(--colorBlack);
   }
 
   & li a:after {
@@ -85,7 +85,7 @@
 
   & li a:hover:after  {
     background: #FFF;
-    color: #000;
+    color: var(--colorBlack);
   }
 
   & li:first-child a:after { 

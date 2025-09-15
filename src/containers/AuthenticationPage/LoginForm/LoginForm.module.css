@@ -30,3 +30,11 @@
 .recoveryLinkInfo {
   composes: marketplaceModalHelperText from global;
 }
+
+.defaultUserFields {
+  label {
+    display: none;
+  }
+}
+
+

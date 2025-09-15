@@ -6,6 +6,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  max-width: var(--contentMaxWidthPages);
+  margin: 0 auto;
 
   /* Content of EditListingWizard should have smaller z-index than Topbar */
   z-index: 0;
@@ -32,16 +34,13 @@
   flex-direction: row;
   padding: 0;
   flex-shrink: 0;
-  background-color: var(--colorWhite);
-  box-shadow: var(--boxShadowLight);
-  border-top: 1px solid var(--colorGrey100);
+  padding: 40px 0 20px 0px;
   overflow-x: scroll;
 
   @media (--viewportLarge) {
     padding: 72px 0 82px 36px;
     flex-direction: column;
     overflow-x: auto;
-    background-color: var(--colorGrey50);
     box-shadow: none;
     border-top: none;
   }

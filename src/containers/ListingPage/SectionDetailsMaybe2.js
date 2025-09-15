@@ -61,7 +61,7 @@ const SectionDetailsMaybe2 = props => {
           }
       })}
       
-      <div className={css.dimensions}><span>Dimensions: </span><span>D {depthwidthheight.width} x W {depthwidthheight.width} x H {depthwidthheight.height}</span> cm</div>
+      <div className={css.dimensions}><span>Dimensions: </span><span>D {depthwidthheight.width} x W {depthwidthheight.width} x H {depthwidthheight.height} cm</span></div>
       
       {existingListingFields.map(detail => {
 

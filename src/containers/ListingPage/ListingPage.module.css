@@ -1,6 +1,7 @@
 @import '../../styles/customMediaQueries.css';
 
 .root {
+
 }
 
 .pageRoot {
@@ -434,17 +435,16 @@
   }
   &.imagesEnabled {
     @media (--viewportLarge) {
-      margin-top: 24px;
+      margin-top: 0;
     }
   }
 }
 
 .orderPanelTitle {
   /* Font */
-  font-weight: var(--fontWeightBold);
-  font-family: 'Inter';
-  font-size: 30px;
-  line-height: 26px;
+  font-family: "Cousine", serif;
+  font-size: 14px;
+  line-height: 18px;
   text-transform: uppercase;
 
   /* Layout */
@@ -453,8 +453,8 @@
   margin-bottom: 0;
 
   @media (--viewportSmall) {
-    font-size: 36px;
-    line-height: 44px;
+    font-size: 14px;
+    line-height: 18px;
   }
 }
 
@@ -542,7 +542,7 @@
 .title {
   /* Font */
   composes: marketplaceModalTitleStyles from global;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   /* Layout */
   width: 100%;
@@ -564,19 +564,19 @@
   @media (--viewportMedium) {
     margin-top: 0;
     margin-bottom: 0;
-    color: var(--colorGrey700);
+    color: var(--colorBlack);
   }
 }
 
 .authorNameLink {
   composes: textSmall from global;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   /* Font */
-  font-weight: var(--fontWeightBold);
-  font-family: 'Inter';
-  font-size: 30px;
-  line-height: 36px;
+  font-weight: normal;
+  font-family: "Cousine", serif;
+  font-size: 14px;
+  line-height: 18px;
   text-transform: uppercase;
   text-decoration: line-through;
 
@@ -585,8 +585,8 @@
   }
 
   @media (--viewportSmall) {
-    font-size: 36px;
-    line-height: 44px;
+    font-size: 14px;
+    line-height: 18px;
   }
 }
 
@@ -655,16 +655,22 @@
   }
 }
 
-.sectionText {
+.sectionText,
+.sectionDetails {
   padding: 0;
   margin-bottom: 36px;
   margin-top: 42px;
+  text-transform: uppercase;
 
   @media (--viewportMedium) {
     padding: 0;
     margin-bottom: 40px;
     margin-top: 40px;
   }
+}
+
+.sectionDetails {
+
 }
 
 .sectionHeading,
@@ -747,6 +753,7 @@ sectionDetails {
   padding: 0;
   margin-top: 42px;
   scroll-margin-top: calc(var(--topbarHeight) + 24px);
+  text-transform: uppercase;
 
   @media (--viewportMedium) {
     padding: 0;
@@ -761,7 +768,7 @@ sectionDetails {
 .sectionReviews {
   h2 {
     font-weight: var(--fontWeightBold);
-    font-family: 'Inter', serif;
+    font-family: 'Cousine', serif;
     text-transform: uppercase;
     
   }
@@ -799,15 +806,43 @@ sectionDetails {
 .dimensions {
   padding: 0;
   line-height: 32px;
+  display: table;
+  width: 100%;
+
+  span {
+    display: table-cell;
+    &:first-child {
+      width: 150px;
+    }
+  }
 }
 
 .detailstext {
   padding: 0;
   line-height: 32px;
+  display: table;
+  width: 100%;
+
+  span {
+    display: table-cell;
+    &:first-child {
+      width: 150px;
+    }
+  }
 }
 
 .details {
   padding: 0;
+  display: table;
+  line-height: 32px;
+  width: 100%;
+
+  span {
+    display: table-cell;
+    &:first-child {
+      width: 150px;
+    }
+  }
 }
 
 

@@ -62,7 +62,7 @@ const Option = props => {
   return (
     <li className={css.option} style={{ paddingLeft: `${12}px`, ...cursorMaybe }}>
       <button
-        className={classNames(buttonClasses, css.bold)}
+        className={classNames(buttonClasses)}
         onClick={e => {
           e.preventDefault();
           e.stopPropagation();

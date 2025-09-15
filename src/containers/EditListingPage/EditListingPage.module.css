@@ -27,7 +27,7 @@
   box-shadow: none;
 
   @media (--viewportLarge) {
-    box-shadow: var(--boxShadowLight);
+    box-shadow: none;
   }
 }
 

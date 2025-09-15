@@ -8,7 +8,7 @@
   top: 0;
   z-index: var(--zIndexTopbar);
   min-width: 100%;
-  border-bottom: 1px solid var(--colorGrey100);
+  border-bottom: 1px solid rgba(0,0,0,0);
   background: #FFF;
 }
 

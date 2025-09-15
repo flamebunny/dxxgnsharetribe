@@ -28,7 +28,6 @@ const Review = props => {
           <UserDisplayName user={review.author} intl={intl} />
           <span className={css.separator}>•</span>
           {dateString}
-          <span className={css.desktopSeparator}>•</span>
           <span className={css.desktopReviewRatingWrapper}>
             <ReviewRating
               rating={review.attributes.rating}

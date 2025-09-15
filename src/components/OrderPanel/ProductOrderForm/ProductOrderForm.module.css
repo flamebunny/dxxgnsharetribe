@@ -1,7 +1,6 @@
 @import '../../../styles/customMediaQueries.css';
 
 .bookingBreakdownTitle {
-  letter-spacing: 1px;
   font-weight: var(--fontWeightMedium);
 }
 
@@ -63,11 +62,11 @@
 
 .submitButton {
   padding: 0 24px;
-  margin-top: 24px;
+  margin-top: 0;
 
   @media (--viewportMedium) {
     padding: 0;
-    margin-top: 42px;
+    margin-top: 0;
   }
 }
 
@@ -86,4 +85,8 @@
   @media (--viewportMedium) {
     padding: 0;
   }
+}
+
+label {
+
 }

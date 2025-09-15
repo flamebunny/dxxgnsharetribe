@@ -5,7 +5,7 @@
 
 .labelPlainSelected {
   color: var(--marketplaceColor);
-  opacity: 0.7;
+  opacity: 1;
 }
 
 .labelPlainSelected:hover {

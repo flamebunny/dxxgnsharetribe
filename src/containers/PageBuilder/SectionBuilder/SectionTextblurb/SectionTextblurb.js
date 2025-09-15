@@ -41,6 +41,7 @@ const SectionTextblurb = props => {
       appearance={appearance}
       options={fieldOptions}
     >
+      <div className={css.container}>
       {hasHeaderFields ? (
         <header 
           className={classNames(css.root)}
@@ -64,6 +65,7 @@ const SectionTextblurb = props => {
           />
         </div>
       ) : null}
+      </div>
     </SectionContainer>
   );
 };

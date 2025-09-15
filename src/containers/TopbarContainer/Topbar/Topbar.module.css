@@ -136,6 +136,10 @@
 
   @media (--viewportLarge) {
     display: block;
+    width: 100%;
+    position: relative;
+    max-width: var(--contentMaxWidthPages);
+    margin: 0 auto;
   }
 }
 

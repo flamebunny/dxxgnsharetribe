@@ -37,6 +37,9 @@ const Tab = props => {
 
   const isButton = !!onClick;
 
+  console.log('TabNavHorizontal');
+  console.log(text);
+
   return (
     <div className={className}>
       {isButton ? (

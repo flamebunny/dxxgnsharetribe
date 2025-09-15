@@ -6,7 +6,6 @@
 
   @media (--viewportLarge) {
     padding: 48px 36px 82px 59px;
-    border-left: 1px solid var(--colorGrey100);
     background-color: var(--colorWhite);
   }
 

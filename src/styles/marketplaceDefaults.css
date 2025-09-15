@@ -89,7 +89,8 @@
    * Note: changing --contentMaxWidth does not affect layouts with LayoutSideNavigation or search pages.
    */
   --contentMaxWidth: 1056px;
-  --contentMaxWidthPages: 1120px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
+  --contentMaxWidthPages: 1408px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
+  --contentMaxWidthPages2: 1120px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
   --contentMaxUltraWidthPages: 1760px; /* calc(Global width (1056px) + (Horizontal padding (32px) * 2) */
 
   /* Multiples of mobile and desktop spacing units should be used with margins and paddings. */
@@ -176,6 +177,7 @@
 
   /* ================ Inputs, textareas and selects ================ */
   --borderErrorField: 1px solid var(--colorFail);
+  --borderErrorFieldColor: var(--colorFail);
 
   /* ================ LandingPage ================ */
   --LandingPage_sectionMarginTop: 40px;
@@ -210,6 +212,7 @@ body {
   font-optical-sizing: auto;
 
   background-color: var(--colorWhite);
+  text-transform: uppercase;
 }
 
 ::selection {
@@ -247,10 +250,10 @@ a {
   color: var(--marketplaceColor);
 
   /* Text size should be inherited */
-  text-decoration: none;
+  text-decoration: line-through;
 }
 a:hover {
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
 }
 
@@ -375,12 +378,12 @@ pre {
 
   /* No margins for default font */
   font-size: 14px;
-  line-height: 24px;
+  line-height: 18px;
   padding: 0;
 
   @media (--viewportMedium) {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 18px;
     padding: 5px 0 3px 0;
   }
 }
@@ -402,7 +405,7 @@ pre {
 
 html {
   /* font is set earlier */
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   padding: 0;
   margin: 0;
 }
@@ -434,7 +437,7 @@ legend {
 
 label {
   font-weight: var(--fontWeightRegular);
-  font-size: 16px;
+  font-size: 14px;
   line-height: 16px;
   display: block;
   margin-top: 0;
@@ -460,7 +463,7 @@ select,
 input,
 textarea {
   font-family: var(--fontFamily);
-  font-size: 16px;
+  font-size: 14px;
 }
 
 select {
@@ -475,7 +478,10 @@ select {
 
   /* Borders */
   border-radius: 0px;
-  border: 1px solid #d8dce6;
+  border: 1px solid #000;
+  border-top: 1px solid rgba(0, 0, 0, 0);
+  border-left: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid rgba(0, 0, 0, 0);
   outline: none;
 
   /* Transition */
@@ -536,7 +542,11 @@ textarea {
 
   /* Borders */
   border-radius: 0px;
-  border: 1px solid #d8dce6;
+  border: 1px solid #000;
+  border-left-color: rgba(0,0,0,0);
+  border-right-color: rgba(0,0,0,0);
+  border-top-color: rgba(0,0,0,0);
+  
   outline: none;
 
   /* Transition */
@@ -654,15 +664,15 @@ textarea {
 
 .h3 {
   font-weight: var(--fontWeightBold);
-  font-size: 18px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 18px;
   /* x * 6px */
   margin-top: 18px;
   margin-bottom: 12px;
 
   @media (--viewportMedium) {
-    font-size: 30px;
-    line-height: 40px;
+    font-size: 14px;
+    line-height: 18px;
     padding: 1px 0 7px 0;
     /* x * 8px */
     margin-top: 16px;
@@ -763,8 +773,8 @@ textarea {
   padding: 0;
 
   @media (--viewportMedium) {
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 18px;
     padding: 5px 0 3px 0;
   }
 }
@@ -817,8 +827,8 @@ textarea {
 
 .marketplaceSmallFontStyles {
   font-weight: var(--fontWeightMedium);
-  font-size: 16px;
-  line-height: 26px;
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .marketplaceTinyFontStyles {
@@ -993,30 +1003,34 @@ textarea {
   /* Button text styles */
   /* Default button text is centered without decorations */
   text-align: center;
-  text-decoration: none;
+  text-decoration: line-through;
+  text-transform: uppercase;
 
   /* Button borders */
   /* Default button has no borders */
   border: none;
-  border-radius: var(--borderRadiusMedium);
+  border-radius: 0;
 
   /* Button colors */
   /* Default button uses marketplace color */
-  background-color: var(--marketplaceColor);
-  color: var(--colorWhite);
+  color: var(--colorBlack);
 }
 .buttonDefault:focus,
 .buttonDefault:hover {
   outline: none;
   box-shadow: var(--boxShadowButton);
-  background-color: var(--marketplaceColorDark);
+  background-color: var(--colorPrimaryButtonDark);
+  color: var(--colorWhite);
+}
+.buttonDefault:hover {
+  text-decoration: none;
 }
 .buttonDefault:disabled {
   box-shadow: none;
   cursor: not-allowed;
   text-decoration: none;
   background-color: var(--colorGrey100);
-  color: var(--colorWhite);
+  color: var(--colorBlack);
 }
 
 /**
@@ -1044,7 +1058,8 @@ textarea {
   /* Button text styles */
   /* Primary button text is centered without decorations */
   text-align: center;
-  text-decoration: none;
+  text-decoration: line-through;
+  text-transform: uppercase;
 
   /* Button borders */
   /* Primary button has no borders */
@@ -1053,8 +1068,8 @@ textarea {
 
   /* Button colors */
   /* Primary button uses success color */
-  background-color: var(--colorPrimaryButton);
-  color: var(--colorWhite);
+  color: var(--colorBlack);
+  
 
   @media (--viewportMedium) {
     padding: 20px 0 20px 0;
@@ -1074,7 +1089,7 @@ textarea {
   box-shadow: none;
   cursor: not-allowed;
   background-color: var(--colorGrey100);
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 }
 
 /**
@@ -1120,7 +1135,7 @@ textarea {
   box-shadow: none;
   cursor: not-allowed;
   background-color: var(--colorGrey100);
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 }
 
 /**
@@ -1158,7 +1173,7 @@ textarea {
 
   /* Button colors: secondary */
   background-color: var(--colorSecondaryButton);
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   @media (--viewportMedium) {
     padding: 20px 0 20px 0;
@@ -1221,7 +1236,7 @@ textarea {
 
   /* Button colors: secondary */
   background-color: var(--colorSecondaryButton);
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   @media (--viewportMedium) {
     height: 40px;
@@ -1255,10 +1270,11 @@ textarea {
   justify-content: center;
   align-items: center;
   text-align: center;
+  text-decoration: line-through;
 
   /* Colors */
   background-color: var(--colorWhite);
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   /* Borders */
   border-radius: var(--borderRadius);
@@ -1355,14 +1371,14 @@ textarea {
 
 /* Modal title */
 .marketplaceModalTitleStyles {
-  font-weight: var(--fontWeightBold);
-  font-size: 40px;
-  line-height: 36px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
   margin: 0;  
 
   @media (--viewportMedium) {
-    font-weight: var(--fontWeightBold);
-    line-height: 40px;
+    font-weight: var(--fontWeightRegular);
+    line-height: 18px;
     margin: 0;
     margin-bottom: 24px;
   }
@@ -1424,7 +1440,7 @@ textarea {
 
   -webkit-font-smoothing: subpixel-antialiased;
 
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   margin: 0;
 
   @media (--viewportMedium) {
@@ -1471,7 +1487,7 @@ textarea {
 
   /* Colors */
   background-color: transparent;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   cursor: pointer;
 }

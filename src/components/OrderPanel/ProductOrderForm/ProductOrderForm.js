@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Form as FinalForm, FormSpy } from 'react-final-form';
+import classNames from 'classnames';
 
 import { FormattedMessage, useIntl } from '../../../util/reactIntl';
 import { propTypes } from '../../../util/types';
@@ -13,6 +14,8 @@ import {
   InlineTextButton,
   PrimaryButton,
   H3,
+  H4,
+  H5,
   H6,
 } from '../../../components';
 
@@ -136,6 +139,8 @@ const renderForm = formRenderProps => {
     payoutDetailsWarning,
     marketplaceName,
     values,
+    className,
+    rootClassName,
   } = formRenderProps;
 
   // Note: don't add custom logic before useEffect
@@ -221,8 +226,11 @@ const renderForm = formRenderProps => {
   const submitInProgress = fetchLineItemsInProgress;
   const submitDisabled = !hasStock;
 
+  const classes = classNames(rootClassName || css.root, className);
+
   return (
-    <Form onSubmit={handleFormSubmit}>
+    
+    <Form onSubmit={handleFormSubmit} className={classes}>
       <FormSpy subscription={{ values: true }} onChange={handleOnChange} />
       {hasNoStockLeft ? null : hasOneItemLeft || !allowOrdersOfMultipleItems ? (
         <FieldTextInput
@@ -263,9 +271,9 @@ const renderForm = formRenderProps => {
 
       {showBreakdown ? (
         <div className={css.breakdownWrapper}>
-          <H6 as="h3" className={css.bookingBreakdownTitle}>
+          <H5 as="h3" className={css.bookingBreakdownTitle}>
             <FormattedMessage id="ProductOrderForm.breakdownTitle" />
-          </H6>
+          </H5>
           <hr className={css.totalDivider} />
           <EstimatedCustomerBreakdownMaybe
             breakdownData={breakdownData}

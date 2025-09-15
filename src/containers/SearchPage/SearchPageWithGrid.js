@@ -478,11 +478,8 @@ export class SearchPageComponent extends Component {
         schema={schema}
       >
         <TopbarContainer rootClassName={topbarClasses} currentSearchParams={validQueryParams} />
-        <div className={css.layoutWrapperContainer}>
-          
-          <h2 className={css.locationSearchHeader}>{labelHeading}</h2>
-          
-          
+        <div className={css.layoutWrapperContainer}>          
+   
           <MainPanelHeader
             className={css.mainPanel}
             sortByComponent={sortBy('desktop')}
@@ -492,6 +489,7 @@ export class SearchPageComponent extends Component {
             searchInProgress={searchInProgress}
             searchListingsError={searchListingsError}
             noResultsInfo={noResultsInfo}
+            labelHeading={labelHeading}
           />
           <aside className={css.layoutWrapperFilterColumn} data-testid="filterColumnAside">
             <div className={css.filterColumnContent}>

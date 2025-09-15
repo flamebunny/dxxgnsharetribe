@@ -10,13 +10,39 @@
   margin-bottom: 8px;
 }
 
+.locationSearchHeader {
+  color: var(--colorBlack);
+  font-size: 18px;
+  font-weight: var(--fontWeightMedium);
+  line-height: 24px;
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0;
+  margin-right: 90px;
+
+
+  @media (--viewportMedium) {
+  
+  } 
+  
+  @media (--viewportMedium) {
+   
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 20px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0;
+  }
+
+}
+
 .searchResultSummary {
   composes: textSmall from global;
 
-  margin-top: 10px;
-  margin-bottom: 11px;
-  margin-left: 0px;
-  margin-right: 8px;
+  margin: 0;
 }
 
 .loadingResults {
@@ -39,6 +65,8 @@
 .resultsFound {
   white-space: nowrap;
   text-transform: uppercase;
+  font-size: 14px;
+  line-height: 24px;
 }
 
 .sortyByWrapper {

@@ -31,7 +31,6 @@
 
 .reviewContent {
   composes: textSmall from global;
-  font-style: italic;
   margin: 0;
   white-space: pre-line;
 }
@@ -77,6 +76,7 @@
 
   @media (--viewportMedium) {
     display: inline-flex;
+    float: right;
   }
 }
 
@@ -95,4 +95,19 @@
   &:last-of-type {
     margin-right: 0;
   }
+}
+
+.desktopReviewRating {
+  font-weight: var(--fontWeightBold);
+
+  .filled {
+    color: #000000;
+  }
+  .unfilled {
+    color: #B2B2B2;
+  }
+}
+
+.reviewStarsSVG {
+  display: none;
 }

@@ -57,8 +57,11 @@
 
 .price {
   composes: h4 from global;
-  font-weight: var(--fontWeightBold);
+  font-weight: var(--fontWeightRegular);
   margin: 0 0 0 24px;
+  font-family: "Cousine", serif;
+  font-size: 14px;
+  line-height: 18px;
 
   @media (--viewportMedium) {
     margin: 0;
@@ -82,15 +85,14 @@
   align-items: center;
 
   /* Font */
-  font-weight: var(--fontWeightBold);
-  font-family: 'Inter';
-  font-size: 36px;
-  line-height: 44px;
+  font-family: "Cousine", serif;
+  font-size: 14px;
+  line-height: 18px;
   text-transform: uppercase;
 
   @media (--viewportMedium) {
     width: 100%;
-    margin: 0 0 5px 0;
+    margin: 0;
     padding: 0;
     color: var(--colorGrey700);
   }
@@ -127,7 +129,7 @@
 
   @media (--viewportLarge) {
     display: block;
-    margin-bottom: 0;
+    margin-bottom: 16px;
   }
 }
 
@@ -206,6 +208,7 @@
   flex-shrink: 0;
   margin-right: 22px;
   padding: 3px 0;
+  margin-bottom: 50px;
 
   @media (--viewportMedium) {
     padding: 4px 0;
@@ -283,5 +286,11 @@
 
   @media (--viewportMedium) {
     padding: 0;
+  }
+}
+
+.ProductOrderForm {
+  label{
+    display: none;
   }
 }

@@ -38,11 +38,11 @@
   @media (--viewportMedium) {
     padding: 0 0 96px 0;
     gap: 24px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (min-width: 1440px) {
@@ -50,7 +50,7 @@
   }
 
   @media (--viewportXLarge) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

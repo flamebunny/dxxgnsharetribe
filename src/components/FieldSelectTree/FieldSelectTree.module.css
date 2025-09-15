@@ -27,8 +27,9 @@
   font-weight: var(--fontWeightMedium);
   font-size: 16px;
   line-height: 24px;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   text-align: left;
+  text-transform: uppercase;
 
   /* Layout */
   display: block;
@@ -57,6 +58,7 @@
   composes: optionBtn;
   color: var(--marketplaceColorDark);
   opacity: 1;
+  font-weight: var(--fontWeightBold);
 
   &:focus,
   &:hover {
@@ -82,7 +84,7 @@
 }
 
 li ul.optionList button {
-  font-weight: normal !important;
+
 }
 
 .optionList {
