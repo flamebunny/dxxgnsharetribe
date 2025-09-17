@@ -42,18 +42,26 @@
   flex-grow: 1;
   flex-direction: column;
 
+  width: 100%;
+  max-width: var(--contentMaxWidthPages);
+  margin: 0 auto;
+
   @media (--viewportMedium) {
-    margin: 48px auto 0 auto;
+
   }
 
   @media (--viewportLarge) {
-    margin: 72px auto 0 auto;
+
     
   }
 
   @media (--viewportXLarge) {
     
   }
+}
+
+.listingPanel {
+  margin: 0 auto;
 }
 
 .noResultsContainer {
@@ -69,21 +77,13 @@
 }
 
 .heading {
-  margin: 0 24px 24px 24px;
-
+  margin: 0;
   font-family: "Cousine", serif;
   font-weight: normal;
   font-size: 14px;
   line-height: 18px;
   word-break: auto-phrase;
-
-  @media (--viewportMedium) {
-    margin: 0 24px 32px 24px;
-  }
-
-  @media (--viewportLarge) {
-    margin: 0 36px 32px 36px;
-  }
+  margin-bottom: 20px;
 }
 
 .createListingParagraph,
@@ -101,11 +101,9 @@
 
 .listingCards {
   padding: 0 0 72px 0;
-
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  width: 100%;
 
   @media (min-width: 550px) {
     grid-template-columns: repeat(2, 1fr);
@@ -115,11 +113,11 @@
   @media (--viewportMedium) {
     padding: 0 0 96px 0;
     gap: 24px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (min-width: 1440px) {
@@ -127,15 +125,11 @@
   }
 
   @media (--viewportXLarge) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-
-
-
 .listingCard {
-  margin-bottom: 36px;
   width: 100%;
 
   img {

@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   scroll-behavior: smooth;
-  padding: 0;
+  padding: 0 10px;
   margin: 0 auto;
   position: relative;
 
@@ -19,7 +19,29 @@
 
     }
   }
+
+  @media (min-width: 550px) {
+    padding: 0 10px; 
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 24px;
+  }
+
+  @media (--viewportLarge) {    
+
+  }
+
+  @media (min-width: 1120px) {
+    padding: 0 24px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0;
+  }
 }
+
+
 
 .carouselArrows {
   /* opacity: 0; */
@@ -105,16 +127,16 @@
   margin-right: 16px;
   scroll-snap-align: center;
 
-  transform: translateX(10px);
+  transform: translateX(10);
 
   @media (min-width: 550px) {
-    transform: translateX(10px);
+    transform: translateX(0);
   }
 
 
   @media (--viewportMedium) {
     margin-right: 30px;
-    transform: translateX(24px);
+    transform: translateX(0);
   }
 
   @media (min-width: 1200px) {
@@ -168,26 +190,24 @@
 }
 
 .fourColumns .block {
-  margin-right: 10px;
-  width: calc((var(--carouselWidth) -  32px) / 2);
+  width: calc((100% -  16px) / 2);
     
 
   @media (min-width: 550px) {
-    margin-right: 10px;
-    width: calc((var(--carouselWidth) -  32px) / 2);  
+    width: calc((100% -  16px) / 2);  
   }
 
   @media (--viewportMedium) {
     margin-right: 24px;
-    width: calc((var(--carouselWidth) -  120px) / 2);
+    width: calc((100% -  26px) / 2);
   }
 
   @media (--viewportLarge) {
-    width: calc((var(--carouselWidth) -  120px) / 4);
+    width: calc((100% -  70px) / 4);
   }
 
   @media (min-width: 1440px) {
-    width: calc((var(--carouselWidth) -  673px) / 4);
+    width: calc((100% -  80px) / 4);
   }
 
 

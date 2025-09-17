@@ -14,7 +14,7 @@ import {
   TX_TRANSITION_ACTOR_SYSTEM,
 } from '../../../transactions/transaction';
 
-import { Avatar, InlineTextButton, ReviewRating, UserDisplayName } from '../../../components';
+import { Avatar, InlineTextButton, Reviews, ReviewRating, UserDisplayName } from '../../../components';
 
 import { stateDataShape } from '../TransactionPage.stateData';
 

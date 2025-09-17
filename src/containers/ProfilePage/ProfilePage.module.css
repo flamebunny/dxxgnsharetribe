@@ -22,6 +22,10 @@
   flex-direction: column;
   padding: 0 10px;
 
+  max-width: var(--contentMaxWidthPages);
+  margin: 0 auto;
+  width: 100%;
+
   @media (--viewportSmall) {
     padding: 0 10px;
   }
@@ -32,10 +36,7 @@
      * and left padding together with border should be 60px.
      */
     padding: 24px 24px 0 24px;
-    background-color: var(--colorWhite);
-    border-left-width: 1px;
-    border-left-style: solid;
-    border-left-color: var(--colorGrey100);
+
   }
 
   @media (--viewportLarge) {
@@ -88,18 +89,19 @@
   flex-shrink: 0;
   margin: 0 0 20px 0;
   text-transform: uppercase;
-  font-family:'Inter';
+  font-family:'Cousine', sans-serif;
 
-  font-size: 24px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: var(--fontWeightRegular);
   padding: 5px 0 3px 0;
 
   @media (--viewportMedium) {
-    margin: 0 0 20px 0;
+    margin: 20px 0 20px 0;
   }
   @media (--viewportLarge) {
-    font-size: 40px;
-    line-height: 56px;
+    font-size: 18px;
+    line-height: 24px;
   }
 }
 
@@ -165,12 +167,12 @@
   margin: 0 auto;
   padding: 0 20px;
 
-  font-size: 12px;
+  font-size: 14px;
   line-height: 18px;
 
   @media (--viewportMedium) {
     font-size: 14px;
-    line-height: 24px;
+    line-height: 18px;
   }
 }
 
@@ -184,9 +186,11 @@
 }
 
 .listingsTitle {
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   margin-bottom: 0;
-  font-size: 24px;
+  font-size: 18px;
+  font-weight: var(--fontWeightRegular);
+  line-height: 24px;
   text-transform: uppercase;
 
   @media (--viewportMedium) {
@@ -220,11 +224,11 @@
   @media (--viewportMedium) {
     padding: 0 0 96px 0;
     gap: 24px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 
   @media (min-width: 1440px) {
@@ -232,7 +236,7 @@
   }
 
   @media (--viewportXLarge) {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
@@ -267,6 +271,10 @@
 .desktopReviewsTitle {
   composes: textLarge from global;
   margin-bottom: 0;
+
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .desktopReviewsTabNav {
@@ -392,4 +400,8 @@
   line-height: 24px;
   word-break: auto-phrase;
   text-transform: uppercase;
+}
+
+.cousine {
+  font-family: "Inter", serif;
 }

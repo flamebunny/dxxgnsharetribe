@@ -108,6 +108,13 @@
   }
 }
 
+.filled {
+  color: #000000;
+}
+.unfilled {
+  color: #B2B2B2;
+}
+
 .reviewStarsSVG {
   display: none;
 }

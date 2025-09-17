@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from '../../../util/reactIntl';
 import { createSlug, stringify } from '../../../util/urlHelpers';
 
-import { H1, H2, NamedLink } from '../../../components';
+import { H1, H2, H3, H4, NamedLink } from '../../../components';
 
 import css from './TransactionPanel.module.css';
 import { formatMoney } from '../../../util/currency';
@@ -56,14 +56,14 @@ const PanelHeading = props => {
 
   return (
     <>
-      <H1 className={titleClasses}>
+      <H4 className={titleClasses}>
         <span className={css.mainTitle}>
           <FormattedMessage
             id={`TransactionPage.${processName}.${transactionRole}.${processState}.title`}
             values={{ customerName, providerName, breakline }}
           />
         </span>
-      </H1>
+      </H4>
       <H2 className={css.listingTitleMobile}>
         <FormattedMessage id="TransactionPage.listingTitleMobile" values={{ listingLink }} />
 

@@ -26,15 +26,14 @@ const ReviewRating = props => {
       {stars.map(star => {
 
         const isFilled = star <= rating;
-        console.log(isFilled);
 
         return (
-          <div>
+          <div key={`star-${star}`}   >
             <div className={reviewStarClassName}>
               <div className={isFilled ? css.filled : css.unfilled}>X</div>
             </div>
             <IconReviewStar
-              key={`star-${star}`}             
+                        
               className={classNames(css.reviewStarsSVG, reviewStarClassName)}
               isFilled={star <= rating}
             />

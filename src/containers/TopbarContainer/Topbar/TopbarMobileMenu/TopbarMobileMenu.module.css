@@ -95,7 +95,7 @@
 
 .customLinkFont {
   /* Font */
-  font-weight: var(--fontWeightBold);
+  font-weight: var(--fontWeightRegular);
   font-size: 21px;
   line-height: 24px;
 

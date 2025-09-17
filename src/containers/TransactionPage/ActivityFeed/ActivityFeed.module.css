@@ -139,7 +139,7 @@
 }
 
 .transitionDate {
-  composes: marketplaceMessageDateFontStyles from global;
+
   color: var(--colorGrey300);
   margin: 7px 0 0 0;
 
@@ -153,9 +153,7 @@
 }
 
 .reviewContent {
-  composes: h4 from global;
-  font-style: italic;
-  white-space: pre-line;
+  composes: textSmall from global;
   margin: 8px 0 0 0;
 
   @media (--viewportMedium) {
@@ -167,6 +165,8 @@
 .reviewStars {
   display: block;
   margin-top: 4px;
+  display: inline-flex;
+  white-space: nowrap;
 
   @media (--viewportMedium) {
     margin: 5px 0;
@@ -174,10 +174,23 @@
 }
 
 .reviewStar {
-  width: 12px;
   height: 12px;
+  width: 12px;
   margin-right: 2px;
-  font-styles: initial;
+
+  font-weight: var(--fontWeightBold);
+
+  &:last-of-type {
+    margin-right: 0;
+  }
+}
+
+.filled {
+    color: #000000;
+}
+
+.unfilled {
+    color: #B2B2B2;
 }
 
 .showOlderWrapper {

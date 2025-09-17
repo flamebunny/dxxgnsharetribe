@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import { useConfiguration } from '../../context/configurationContext';
+import { showCreateListingLinkForUser } from '../../util/userHelpers';
 
 import { FormattedMessage, intlShape, useIntl } from '../../util/reactIntl';
 import {
@@ -30,6 +31,7 @@ import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { isScrollingDisabled } from '../../ducks/ui.duck';
 import {
   H2,
+  H3,
   Avatar,
   NamedLink,
   NotificationBadge,
@@ -331,6 +333,8 @@ export const InboxPageComponent = props => {
 
   const tabs = [...ordersTabMaybe, ...salesTabMaybe];
 
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
@@ -341,14 +345,17 @@ export const InboxPageComponent = props => {
               mobileRootClassName={css.mobileTopbar}
               desktopClassName={css.desktopTopbar}
             />
-            <UserNav currentPage="InboxPage" />
+            <UserNav
+              currentPage="InboxPage"
+              showManageListingsLink={showManageListingsLink}
+            />
           </>
         }
         sideNav={
           <>
-            <H2 as="h1" className={css.title}>
+            <H3 as="h1" className={css.title}>
               <FormattedMessage id="InboxPage.title" />
-            </H2>
+            </H3>
             <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />{' '}
           </>
         }

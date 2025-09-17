@@ -3,12 +3,15 @@
 .root {
   display: none;
 
+
   @media (--viewportMedium) {
     display: flex;
     justify-content: flex-end;
     height: 57px;
     align-items: flex-end;
     padding: 13px 24px 0 24px;
+    max-width: var(--contentMaxWidthPages);
+    margin: 0 auto;
   }
 
   @media (--viewportLarge) {

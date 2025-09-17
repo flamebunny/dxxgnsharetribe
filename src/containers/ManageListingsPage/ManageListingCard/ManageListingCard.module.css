@@ -127,7 +127,7 @@
 }
 
 .iconWrapper {
-  padding: 0px 10px 1px 10px;
+  padding: 4px 10px 1px 10px;
   color: var(--colorWhite);
   border-radius: var(--borderRadiusMedium);
   transition: var(--transitionStyleButton);
@@ -150,7 +150,7 @@
   z-index: var(--zIndexPopup);
 
   background-color: var(--colorGrey700);
-  border-radius: var(--borderRadiusMedium);
+  border-radius:0;
   box-shadow: var(--boxShadowPopup);
 }
 
@@ -172,7 +172,7 @@
   white-space: nowrap;
   text-align: left;
   padding: 8px 14px;
-  border-radius: var(--borderRadiusMedium);
+  border-radius: 0;
 
   /* Remove default margins from font */
   margin-top: 0;
@@ -265,7 +265,7 @@
 }
 
 .titleWrapper {
-  line-height: 24px;
+  line-height: 18px;
 }
 
 .title {
@@ -282,12 +282,11 @@
 
   /* Font */
   font-weight: var(--fontWeightRegular);
-  font-size: 16px;
-  line-height: 24px;
-
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: uppercase;
   color: var(--colorBlack);
   text-align: left;
-
   padding: 3px 0;
 
   /* Remove default margins from font */
@@ -347,10 +346,7 @@
   /* margin-top + n * line-height + margin-bottom => x * 6px */
   margin-top: 10px;
   margin-bottom: 8px;
-
-  font-weight: var(--fontWeightBold);
-  letter-spacing: -0.2px;
-
+  font-weight: var(--fontWeightRegular);
   width: 100%;
   height: 100%;
   padding: 0;
@@ -361,7 +357,7 @@
   align-items: center;
   border-radius: 0;
   color: #474747;
-  font-family: 'Inter';
+  font-family: 'Cousine', sans-serif;
   font-size: 24px;
   text-transform: uppercase;
 
@@ -384,7 +380,7 @@
   line-height: 18px;
   padding-top: 2px;
   padding-bottom: 4px;
-  font-size: 13px;
+  font-size: 14px;
   text-transform: uppercase;
 
   /* Remove default margins from font */
@@ -425,6 +421,10 @@
 
 .alternativeActionLink {
   composes: a textSmall from global;
-  text-decoration: underline;
   color: #FFF;
+  text-decoration: line-through;
+
+  &:hover {
+    text-decoration: none;
+  }
 }

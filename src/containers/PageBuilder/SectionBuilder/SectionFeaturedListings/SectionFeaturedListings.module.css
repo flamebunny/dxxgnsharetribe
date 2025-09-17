@@ -174,11 +174,11 @@
   }
 
   @media (min-width: 1120px) {
-    padding: 0;
+    padding: 0 24px;
   }
 
   @media (min-width: 1440px) {
-    padding: 0 0px 0 0px;
+    padding: 0;
   }
 
 

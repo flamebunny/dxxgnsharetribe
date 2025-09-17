@@ -37,9 +37,6 @@ const Tab = props => {
 
   const isButton = !!onClick;
 
-  console.log('TabNavHorizontal');
-  console.log(text);
-
   return (
     <div className={className}>
       {isButton ? (
@@ -58,16 +55,19 @@ const Tab = props => {
 const TabNavHorizontal = props => {
   const { className, rootClassName, tabRootClassName, tabs, skin = LIGHT_SKIN, ariaLabel } = props;
   const isDark = skin === DARK_SKIN;
-  const classes = classNames(rootClassName || css.root, { [css.darkSkin]: isDark }, className);
+  const classes = classNames(rootClassName || css.root, className);
+  const classes2 = classNames({ [css.darkSkin]: isDark });
   const tabClasses = tabRootClassName || css.tab;
   const ariaLabelMaybe = ariaLabel ? { ['aria-label']: ariaLabel } : {};
-  return (
-    <nav className={classes} {...ariaLabelMaybe}>
-      {tabs.map((tab, index) => {
-        const key = typeof tab.text === 'string' ? tab.text : index;
-        return <Tab key={key} className={classNames(tabClasses)} {...tab} isDark={isDark} />;
-      })}
-    </nav>
+  return (    
+    <nav className={classes2} {...ariaLabelMaybe}>
+      <div className={classes} >
+        {tabs.map((tab, index) => {
+          const key = typeof tab.text === 'string' ? tab.text : index;
+          return <Tab key={key} className={classNames(tabClasses)} {...tab} isDark={isDark} />;
+        })}
+      </div>
+    </nav>    
   );
 };
 

@@ -321,9 +321,6 @@ export const ListingPageComponent = props => {
   );
   };
 
-  console.log('publicData');
-  console.log(publicData);
-
   return (
     <Page
       title={schemaTitle}
