@@ -33,10 +33,9 @@ import css from './PasswordRecoveryPage.module.css';
 
 const PasswordRecovery = props => {
   const { initialEmail, onChange, onSubmitEmail, recoveryInProgress, recoveryError } = props;
-  const classes = classNames(props.modalTitle, css.ebgaramond);
+  const classes = classNames(props.modalTitle, css.title, css.cousine);
   return (
-    <div className={css.submitEmailContent}>
-      <IconKeys className={css.modalIcon} />
+    <div className={classNames(css.defaultUserFields, css.submitEmailContent)}>
       <Heading as="h1" rootClassName={classes}>
         <FormattedMessage id="PasswordRecoveryPage.forgotPasswordTitle" />
       </Heading>

@@ -13,12 +13,12 @@
 .locationSearchHeader {
   color: var(--colorBlack);
   font-size: 18px;
-  font-weight: var(--fontWeightMedium);
-  line-height: 24px;
+  font-weight: var(--fontWeightRegular);
+  line-height: 28px;
   text-transform: uppercase;
   padding: 0;
   margin: 0;
-  margin-right: 90px;
+  margin-right: 100px;
 
 
   @media (--viewportMedium) {
@@ -66,12 +66,14 @@
   white-space: nowrap;
   text-transform: uppercase;
   font-size: 14px;
-  line-height: 24px;
+  line-height: 28px;
 }
 
 .sortyByWrapper {
   display: inline-flex;
   margin-left: auto;
+  margin-top: -4px;
+  position: relative;
 }
 
 .sortyBy {
@@ -79,10 +81,11 @@
   font-weight: var(--fontWeightRegular);
   padding: 8px 8px 8px 0;
 
-  position: relative;
-  left: 40px;
+  position: absolute;
+  right: 0;
   z-index: 1;
   pointer-events: none;
+  line-height: 20px;
 }
 
 

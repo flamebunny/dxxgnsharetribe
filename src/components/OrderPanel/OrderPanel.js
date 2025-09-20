@@ -150,7 +150,7 @@ const PriceMaybe = props => {
   // Get formatted price or currency code if the currency does not match with marketplace currency
   const { formattedPrice, priceTitle } = priceData(price, marketplaceCurrency, intl);
   const priceValue = (
-    <span className={css.priceValue}>{formatMoneyIfSupportedCurrency(price, intl)}</span>
+    <span className={css.priceValue}>{formatMoneyIfSupportedCurrency(price, intl)}*</span>
   );
   const pricePerUnit = (
     <span className={css.perUnit}>

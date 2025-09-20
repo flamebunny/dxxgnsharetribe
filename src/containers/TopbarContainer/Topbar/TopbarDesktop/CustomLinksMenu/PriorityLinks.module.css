@@ -12,11 +12,11 @@
   border-bottom: 0px solid;
   transition: var(--transitionStyleButton);
 
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   flex-shrink: 0;
   height: 100%;
@@ -51,7 +51,6 @@ a >  span > span{
 }
 
 .priorityLinkLabel {
-  composes: textSmall from global;
   display: inline-block;
   margin: 28px 0;
   text-decoration: inherit;

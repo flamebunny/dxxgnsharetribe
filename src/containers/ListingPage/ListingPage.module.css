@@ -317,13 +317,13 @@
     display: block;
     margin: 0;
     margin-left: 36px;
-    flex-basis: 40%;
+    flex-basis: calc(38%);
     flex-shrink: 0;
   }
   @media (--viewportXLarge) {
     display: block;
     margin-left: 36px;
-    flex-basis: 512px;
+    flex-basis: calc(38%);
     flex-shrink: 0;
   }  
 }

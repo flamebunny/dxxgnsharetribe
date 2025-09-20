@@ -23,7 +23,7 @@
   }
 
   @media (min-width: 1440px) {
-    padding: 0 24px 0 0;
+    padding: 0 0 0 0;
   }
 }
 
@@ -216,7 +216,6 @@
 }
 
 .menuLink {
-  composes: textSmall from global;
   position: relative;
   display: block;
 
@@ -227,7 +226,7 @@
   padding: 4px 24px;
 
   /* Layout details */
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   text-align: left;
   transition: var(--transitionStyleButton);
 
@@ -247,7 +246,6 @@
 }
 
 .menuLinkLabel {
-  composes: textSmall from global;
   display: inline-block;
   margin: 0;
   text-decoration: inherit;
@@ -261,10 +259,11 @@
   text-decoration: none;
 
   /* Font is specific to this component */
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0;
+  text-transform: uppercase;
 
   /* Dimensions */
   position: relative;

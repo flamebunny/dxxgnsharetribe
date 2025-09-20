@@ -24,9 +24,9 @@
 
 .optionBtn {
   composes: h4 from global;
-  font-weight: var(--fontWeightMedium);
-  font-size: 16px;
-  line-height: 24px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
   color: var(--colorBlack);
   text-align: left;
   text-transform: uppercase;

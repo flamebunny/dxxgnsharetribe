@@ -53,6 +53,7 @@
 
 .breakdownWrapper {
   padding: 0 24px;
+  display: none;
 
   @media (--viewportMedium) {
     padding: 0;
@@ -71,9 +72,9 @@
 }
 
 .finePrint {
-  composes: marketplaceTinyFontStyles from global;
-  text-align: center;
+  text-align: left;
   text-transform: uppercase;
+  color: var(--colorGrey300);
 }
 
 .error {

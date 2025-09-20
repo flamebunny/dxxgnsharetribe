@@ -99,11 +99,11 @@
 
   @media (--viewportLarge) {
     width: 100%;
-    padding: 8px 36px 24px 0;
+    padding: 8px 22px 24px 0;
   }
 
   @media (min-width: 1440px) {
-    padding: 8px 60px 24px 0;
+    padding: 8px 0px 24px 0;
   }
 }
 .filter:first-child {
@@ -239,7 +239,7 @@
   }
 
   @media (min-width: 1440px) {
-    padding: 40px 40px 0 0;
+    padding: 40px 0 0 0;
   }
 }
 

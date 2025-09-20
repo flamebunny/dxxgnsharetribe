@@ -27,5 +27,5 @@
   top: 50%;
   margin-top: -4px;
   height: 8px;
-  background-color: #5D2BC0;
+  background-color: var(--colorBlack);
 }

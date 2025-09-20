@@ -2,7 +2,7 @@
 }
 
 .selectError {
-  border: var(--borderErrorField);
+  border-bottom: var(--borderErrorField);
 }
 
 .labelDisabled {

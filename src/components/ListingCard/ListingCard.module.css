@@ -56,6 +56,7 @@
   @media (--viewportSmall) {
     bottom: -6px;
     height: auto;
+    font-size: 14px;
   }
 
   @media (--viewportMedium) {
@@ -65,26 +66,67 @@
 }
 
 .infoAuthor {
-  max-width: 40%;
+  max-width: 21%;
   display: inline-block;
 
   @media (--viewportSmall) {
-    max-width: 28%;
-  /* display: none !important; */
-
-    + .slash {
-    /* display: none !important; */
-    }
+ 
   }
+  @media (--viewportSmall) {
+  }
+  
+  
+  @media (min-width: 550px) {
+  max-width: 28%;
+  }
+
+  @media (--viewportMedium) {
+
+  }
+
+  @media (--viewportLarge) {    
+    max-width: 21%;
+  }
+
+  @media (min-width: 1120px) {
+    
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 28%;
+  }  
 }
 
 .infoTitle {
-  max-width: 40%;
+  max-width: 21%;
   display: inline-block;
 
   @media (--viewportSmall) {
-    max-width: 28%;
+ 
   }
+  @media (--viewportSmall) {
+  }
+  
+  
+  @media (min-width: 550px) {
+  max-width: 28%;
+  }
+
+  @media (--viewportMedium) {
+
+  }
+
+  @media (--viewportLarge) {    
+    max-width: 21%;
+  }
+
+  @media (min-width: 1120px) {
+    
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 28%;
+  }  
 }
 
 .infoPrice {

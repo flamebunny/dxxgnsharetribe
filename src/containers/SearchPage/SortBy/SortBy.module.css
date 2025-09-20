@@ -22,33 +22,32 @@
   cursor: pointer;
 
   /* Font */
-  font-weight: var(--fontWeightSemiBold);
-  font-size: 13px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
   line-height: 18px;
-  letter-spacing: 0.2px;
 
   /* Button text styles */
   /* Default button text is centered without decorations */
   text-align: center;
   text-decoration: none;
+  text-transform: uppercase;
 
   /* Button borders */
-  border: 1px solid var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
+  border: 1px solid var(--colorBlack);
 
   background-color: var(--colorWhite);
 
   /* transparent sort */
   border: 1px solid transparent;
 
-  padding-left: 30px;
+  padding-right: 30px;
   
   &:focus,
   &:hover {
     outline: none;
-    box-shadow: var(--boxShadowFilterButton);
+    /* box-shadow: var(--boxShadowFilterButton); */
     text-decoration: none;
-    border-color: var(--colorGrey300);
+    border-color: var(--colorBlack);
   }
 
   &:disabled {
@@ -62,14 +61,14 @@
     padding: var(--marketplaceButtonSmallDesktopPadding);
     margin: 0;
 
-    font-weight: var(--fontWeightMedium);
-    font-size: 13px;
-    line-height: 20px;
-    padding-left: 30px;
+    font-weight: var(--fontWeightRegular);
+    font-size: 14px;
+    line-height: 18px;
+    padding-right: 30px;
 
     &:hover,
     &:focus {
-      border-color: transparent;
+      border-color: var(--colorBlack);
     }
   }
 

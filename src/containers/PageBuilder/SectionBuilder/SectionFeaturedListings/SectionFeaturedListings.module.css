@@ -108,6 +108,7 @@
 .title {
   color: var(--marketplaceColor);
   font-size: 14px;
+  line-height: 18px;
   margin: 0px 0px 10px 0;
   font-weight: normal;
 }

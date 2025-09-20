@@ -209,7 +209,7 @@ const renderForm = formRenderProps => {
 
   const contactSellerLink = (
     <InlineTextButton onClick={onClickContactUser}>
-      <FormattedMessage id="ProductOrderForm.finePrintNoStockLinkText" />
+      <FormattedMessage id="ProductOrderForm.finePrintNoStockLinkText" />      
     </InlineTextButton>
   );
   const quantityRequiredMsg = intl.formatMessage({ id: 'ProductOrderForm.quantityRequired' });
@@ -287,18 +287,6 @@ const renderForm = formRenderProps => {
 
       <FetchLineItemsError error={fetchLineItemsError} />
 
-      <p className={css.finePrint}>
-        {payoutDetailsWarning ? (
-          payoutDetailsWarning
-        ) : hasStock && isOwnListing ? (
-          <FormattedMessage id="ProductOrderForm.ownListing" />
-        ) : hasStock ? (
-          <FormattedMessage id="ProductOrderForm.finePrint" />
-        ) : showContactUser ? (
-          <FormattedMessage id="ProductOrderForm.finePrintNoStock" values={{ contactSellerLink }} />
-        ) : null}
-      </p>
-
       <div className={css.submitButton}>
         <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
           {hasStock ? (
@@ -308,6 +296,23 @@ const renderForm = formRenderProps => {
           )}
         </PrimaryButton>
       </div>
+
+      <p className={css.finePrint}>
+        {payoutDetailsWarning ? (
+          payoutDetailsWarning
+        ) : hasStock && isOwnListing ? (
+          <FormattedMessage id="ProductOrderForm.ownListing" />
+        ) : hasStock ? (
+          <>
+            <FormattedMessage id="ProductOrderForm.finePrint" /><br/>
+            <span>Shipping calculated at checkout</span>
+          </>
+        ) : showContactUser ? (
+          <FormattedMessage id="ProductOrderForm.finePrintNoStock" values={{ contactSellerLink }} />
+        ) : null}
+      </p>
+
+      
       
     </Form>
   );

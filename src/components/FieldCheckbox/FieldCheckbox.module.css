@@ -14,7 +14,7 @@
   &:hover + label .box,
   &:focus + label .box,
   &:checked + label .box {
-    stroke: #5D2BC0;
+    stroke: var(--colorBlack);
     /* stroke: var(--marketplaceColor); */
   }
 
@@ -29,30 +29,30 @@
   &:hover + label .boxDisabled,
   &:focus + label .boxDisabled,
   &:checked + label .boxDisabled {
-    stroke: var(--colorGrey300);
+    stroke: var(--colorBlack);
   }
 
   /* Display the "check" when checked */
   &:checked + label .checked {
     display: inline;
-    stroke: #5D2BC0;
+    stroke: var(--colorBlack);
     /* stroke: var(--marketplaceColor); */
-    stroke-width: 1px;
+    stroke-width: 0px;
   }
 
   /* Display the "check" when checked */
   &:checked + label .checkedSuccess {
     display: inline;
-    stroke: #5D2BC0;
+    stroke: var(--colorBlack);
     /* stroke: var(--colorSuccess); */
-    stroke-width: 1px;
+    stroke-width: 0px;
   }
 
   /* Display the disabled when checked */
   &:checked + label .checkedDisabled {
     display: inline;
-    stroke: var(--colorGrey300);
-    stroke-width: 1px;
+    stroke: var(--colorBlack);
+    stroke-width: 0px;
   }
 
   /* Hightlight the text on checked, hover and focus */
@@ -88,7 +88,7 @@
 
 .checked {
   display: none;
-  fill: #5D2BC0;
+  fill: var(--colorBlack);
   /* fill: var(--marketplaceColor); */
 }
 .checkedSuccess {
@@ -98,13 +98,13 @@
 
 .checkedDisabled {
   display: none;
-  fill: var(--colorGrey300);
+  fill: var(--colorBlack);
 }
 
 .boxDisabled,
 .boxSuccess,
 .box {
-  stroke: var(--colorGrey300);
+  stroke: var(--colorBlack);
 }
 
 .text {

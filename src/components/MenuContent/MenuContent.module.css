@@ -1,11 +1,8 @@
 .root {
   position: absolute;
   z-index: var(--zIndexPopup);
-
   background-color: var(--colorWhite);
-  border-top: 1px solid var(--colorGrey100);
-  box-shadow: var(--boxShadowPopup);
-  border-radius: 0 0 2px 2px;
+  border: 1px solid var(--colorBlack);
   transition: var(--transitionStyleButton);
 }
 
