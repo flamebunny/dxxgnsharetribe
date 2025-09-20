@@ -16,7 +16,7 @@
   background-color: var(--colorWhite);
 
   /* shadows */
-  box-shadow: var(--boxShadow);
+  /* box-shadow: var(--boxShadow); */
 
   @media (--viewportMedium) {
     height: var(--topbarHeightDesktop);
@@ -135,11 +135,10 @@
   margin-bottom: 7px;
 
 
-  font-family: "EB Garamond", serif;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 54px;
-  line-height: 0.8;
+  font-family: "Cousine", serif;
+  font-weight: var(--fontWeightBold);
+  font-size: 14px;
+  line-height: 18px;
   word-break: auto-phrase;
 
   @media (--viewportMedium) {
@@ -296,8 +295,8 @@
 .detailsHeadings {
   display: none;
 
-  font-family: 'Inter';
-  font-size: 24px;
+  font-family: 'Cousine';
+  font-size: 14px;
   text-transform: uppercase;
 
   @media (--viewportLarge) {

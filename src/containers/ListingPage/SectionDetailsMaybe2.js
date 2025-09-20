@@ -50,30 +50,28 @@ const SectionDetailsMaybe2 = props => {
   return existingListingFields.length > 0 ? (
     <>  
       {existingListingFields.map(detail => {
-          if(detail.key === 'depth') {
-            depthwidthheight.depth = detail.value            
-          } else if (detail.key === 'width') {
-            depthwidthheight.width = detail.value   
-          } else if (detail.key === 'height') {
-            depthwidthheight.height = detail.value   
-          } else {
+        if(detail.key === 'depth') {
+          depthwidthheight.depth = detail.value            
+        } else if (detail.key === 'width') {
+          depthwidthheight.width = detail.value   
+        } else if (detail.key === 'height') {
+          depthwidthheight.height = detail.value   
+        } else {
 
-          }
+        }
       })}
       
       <div className={css.dimensions}><span>Dimensions: </span><span>D {depthwidthheight.width} x W {depthwidthheight.width} x H {depthwidthheight.height} cm</span></div>
       
-      {existingListingFields.map(detail => {
+      {existingListingFields.map((detail, i) => {
 
       // checking for Depth, width, height in custom fields
       if(detail.key == 'depth' || detail.key === 'width' || detail.key === 'height') {
-        return (
-          <></>
-        )
+        
       } else {
 
       return (
-        <ul className={css.details}>
+        <ul key={i} className={css.details}>
           <li key={detail.key} className={css.detailsRow}>
             <div className={css.detailstext}><span>{detail.label}: </span><span>{detail.value}</span></div>
           </li>

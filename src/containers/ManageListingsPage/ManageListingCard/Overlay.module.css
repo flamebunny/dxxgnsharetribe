@@ -73,10 +73,10 @@
   display: unset;  
 
   font-weight: var(--fontWeightRegular);
-  line-height: 24px;
+  line-height: 18px;
 
-  font-family: 'Inter';
-  font-size: 18px;
+  font-family: 'Cousine', sans-serif;
+  font-size: 14px;
   text-transform: uppercase;
   color: #000;  
   position: relative;

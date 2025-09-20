@@ -597,10 +597,10 @@
   margin-top: 0;
 
   /* Font */
-  font-weight: var(--fontWeightMedium);
-  font-family: 'Inter';
-  font-size: 30px;
-  line-height: 36px;
+  font-weight: var(--fontWeightRegular);
+  font-family: 'Cousine', sans-serif;
+  font-size: 14px;
+  line-height: 18px;
   text-transform: uppercase;
 
   @media (--viewportSmall) {

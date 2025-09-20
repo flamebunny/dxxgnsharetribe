@@ -8,11 +8,12 @@
 
 .heading {
   composes: p from global;
-  font-weight: var(--fontWeightBold);
+  font-weight: var(--fontWeightRegular);
   margin: 0 0 12px 0;
 
-  font-family: 'Inter';
-  font-size: 24px;
+  font-family: 'Cousine', sans-serif;
+  font-size: 14px;
+  line-height: 18px;
   text-transform: uppercase;
 
   padding-top: 4px;
@@ -53,4 +54,11 @@
 .fieldFullWidth {
   width: 100%;
   margin-top: 24px;
+}
+
+
+.defaultUserFields {
+  label {
+    display: none;
+  }
 }

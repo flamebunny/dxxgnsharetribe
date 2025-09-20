@@ -118,9 +118,9 @@ export const LandingPageComponent = props => {
       const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
       const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
       
-      listing.attributes.price.priceCommission = calculatePriceCommission;
-      listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
-      //overwite amount including shipping and commission
+      listing.attributes.price.priceCommission = calculatePriceCommission; // commission
+      listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping; // commission + shipping
+      //overwite price
       listing.attributes.price.amount = listing.attributes.price.priceCommission;
 
       return listing;

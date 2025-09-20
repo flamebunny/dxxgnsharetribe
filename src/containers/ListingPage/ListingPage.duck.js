@@ -3,6 +3,7 @@ import pick from 'lodash/pick';
 import { types as sdkTypes, createImageVariantConfig } from '../../util/sdkLoader';
 import { storableError } from '../../util/errors';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
 import { denormalisedResponseEntities } from '../../util/data';
@@ -537,6 +538,11 @@ export const fetchTransactionLineItems = ({ orderData, listingId, isOwnListing }
 };
 
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
+
+  const pageAsset = { 
+    commission: `transactions/commission.json`,
+  };
+
   const listingId = new UUID(params.id);
   const state = getState();
   const currentUser = state.user?.currentUser;
@@ -564,9 +570,9 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   const hasNoViewingRights = currentUser && !hasPermissionToViewData(currentUser);
   const promises = hasNoViewingRights
     ? // If user has no viewing rights, only allow fetching their own listing without reviews
-      [dispatch(showListing(listingId, config, true))]
+      [dispatch(showListing(listingId, config, true)), dispatch(fetchPageAssets(pageAsset, true))]
     : // For users with viewing rights, fetch the listing and the associated reviews
-      [dispatch(showListing(listingId, config)), dispatch(fetchReviews(listingId))];
+      [dispatch(showListing(listingId, config)), dispatch(fetchPageAssets(pageAsset, true)), dispatch(fetchReviews(listingId))];
 
   return Promise.all(promises).then(response => {
     const listingResponse = response[0];

@@ -18,10 +18,10 @@
 
   h3{
     text-transform: uppercase;
-    font-family: "Inter", serif;
-    font-size: 36px;
+    font-family: "Cousine", sans-serif;
+    font-size: 14px;
     text-transform: uppercase;
-    font-weight: 600;
+    font-weight: var(--fontWeightRegular);
   }
 
   a{

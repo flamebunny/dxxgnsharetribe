@@ -390,9 +390,9 @@ export const setActiveListing = listingId => ({
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
   // Get Provider and Customer commission values for use in Listing Wizard
   const pageAsset = { 
-      landingPage: `content/pages/${ASSET_NAME}.json`,
-      commission: `transactions/commission.json`,
-    };
+    landingPage: `content/pages/${ASSET_NAME}.json`,
+    commission: `transactions/commission.json`,
+  };
 
 
   // In private marketplace mode, this page won't fetch data if the user is unauthorized

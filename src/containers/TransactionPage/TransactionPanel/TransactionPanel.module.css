@@ -148,23 +148,23 @@
 .headingOrder {
   margin: 30px 24px 0 24px;
 
-  font-family: "EB Garamond", serif;
-  font-weight: bold;
-  font-style: italic;
-  font-size: 54px;
-  line-height: 0.8;
+  font-family: "Cousine", sans-serif;
+  font-weight: var(--fontWeightBold);
+  font-style: normal;
+  font-size: 14px;
+  line-height: 18px;
   word-break: auto-phrase;
 
   @media (--viewportMedium) {
     max-width: 80%;
     margin: 24px 24px 0 24px;
     padding: 2px 0 6px 0;
-    margin-bottom: 100px;
+    margin-bottom: 40px;
   }
 
   @media (--viewportLarge) {
     max-width: 100%;
-    margin: 57px 0 100px 0;
+    margin: 57px 0 40px 0;
   }
 }
 

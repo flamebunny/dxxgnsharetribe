@@ -809,7 +809,7 @@ textarea {
 .textSmall {
   font-size: 14px;
   line-height: 18px;
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
   letter-spacing: -0.1px;
 
   @media (--viewportMedium) {
@@ -820,7 +820,7 @@ textarea {
 .textXSmall {
   font-size: 13px;
   line-height: 18px;
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
 
   @media (--viewportMedium) {
     line-height: 16px;
@@ -830,7 +830,7 @@ textarea {
 /* ================ Other fonts ================ */
 
 .marketplaceSmallFontStyles {
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
   font-size: 14px;
   line-height: 18px;
 }

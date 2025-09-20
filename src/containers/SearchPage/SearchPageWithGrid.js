@@ -398,6 +398,30 @@ export class SearchPageComponent extends Component {
       return finalPrice;
     }
 
+    const addCommissionToSinglePrice = (listing, commission) => {
+      if(listing.attributes.price === null){      
+          listing.attributes.price = {};  
+          listing.attributes.price.amount = 0;
+          listing.attributes.price.priceOriginal = 0;
+          listing.attributes.price.priceCommission = 0;
+          listing.attributes.price.priceCommissionShipping = 0;
+        }
+
+        //create safe backup of original price      
+        listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
+        listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
+
+        const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
+        const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
+        
+        listing.attributes.price.priceCommission = calculatePriceCommission; // commission
+        listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping; // commission + shipping
+        //overwite amount
+        listing.attributes.price.amount = listing.attributes.price.priceCommission;
+
+        return listing;
+    }
+
     const addCommissionShippingToListings = (listingsWithCommission, commission) => {
       listingsWithCommission.map((listing, i) => {
 
@@ -416,9 +440,9 @@ export class SearchPageComponent extends Component {
         const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
         const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
         
-        listing.attributes.price.priceCommission = calculatePriceCommission;
-        listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
-        //overwite amount including shipping and commission
+        listing.attributes.price.priceCommission = calculatePriceCommission; // commission
+        listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping; // commission + shipping
+        //overwite price
         listing.attributes.price.amount = listing.attributes.price.priceCommission;
 
         return listing;
@@ -431,7 +455,6 @@ export class SearchPageComponent extends Component {
     }
 
     // END COMMISSION
-
 
     function isNumericRegex(str) {
         // Matches integers, decimals, and optional sign

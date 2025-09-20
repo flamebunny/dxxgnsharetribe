@@ -59,10 +59,9 @@
 .totalPrice {
   composes: p from global;
   font-weight: var(--fontWeightBold);
-  letter-spacing: -0.2px;
 
-  font-family: 'Inter';
-  font-size: 24px;
+  font-family: 'Cousine', sans-serif;
+  font-size: 14px;
   text-transform: uppercase;
 
   margin: 0;

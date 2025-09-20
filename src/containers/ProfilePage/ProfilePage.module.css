@@ -134,10 +134,11 @@
   flex-shrink: 0;
   margin: 0 0 20px 0;
   text-transform: uppercase;
-  font-family:'Inter';
+  font-family:'Cousine', sans-serif;
+  font-weight: var(--fontWeightRegular);
 
-  font-size: 24px;
-  line-height: 30px;
+  font-size: 14px;
+  line-height: 18px;
   padding: 5px 0 3px 0;
 
   @media (--viewportLarge) {
@@ -374,8 +375,7 @@
 }
 
 .detailLabel {
-  font-weight: var(--fontWeightSemiBold);
-  letter-spacing: -0.09px;
+  font-weight: var(--fontWeightRegular);
 }
 
 .video {
@@ -394,7 +394,7 @@
 }
 
 .inter {
-  font-family: "Inter", serif;
+  font-family: "Inter", sans-serif;
   font-weight: 700;
   font-size: 24px;
   line-height: 24px;
@@ -403,5 +403,5 @@
 }
 
 .cousine {
-  font-family: "Inter", serif;
+  font-family: "Cousine", sans-serif;
 }

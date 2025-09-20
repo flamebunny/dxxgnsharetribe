@@ -34,7 +34,7 @@ const ShippingDetails = props => {
   const countryCodes = getCountryCodes(locale);
 
   return (
-    <div className={classes}>
+    <div className={classNames(css.defaultUserFields, {classes})}>
       <Heading as="h3" rootClassName={css.heading}>
         <FormattedMessage id="ShippingDetails.title" />
       </Heading>
