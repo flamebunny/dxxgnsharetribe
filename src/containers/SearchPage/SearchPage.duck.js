@@ -10,6 +10,10 @@ import {
   daysBetween,
   getStartOf,
 } from '../../util/dates';
+
+export const ASSET_NAME = 'landing-page';
+export const featuredSectionId = 'featured-listings';
+
 import { constructQueryParamName, isOriginInUse, isStockInUse } from '../../util/search';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
 import { parse } from '../../util/urlHelpers';
@@ -384,8 +388,11 @@ export const setActiveListing = listingId => ({
 });
 
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
-    // Get Provider and Customer commission values for use in Listing Wizard
-  const pageAsset = { commission: `transactions/commission.json` };
+  // Get Provider and Customer commission values for use in Listing Wizard
+  const pageAsset = { 
+      landingPage: `content/pages/${ASSET_NAME}.json`,
+      commission: `transactions/commission.json`,
+    };
 
 
   // In private marketplace mode, this page won't fetch data if the user is unauthorized
@@ -460,6 +467,80 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     config
   );
 
+  const featuredListingsCall = listingIds => {
+    
+    dispatch(searchListings(
+     {
+      ...rest,
+      ...originMaybe,
+      ...listingTypeVariantMaybe,
+      ids: listingIds,
+      page,
+      perPage: RESULT_PAGE_SIZE,
+      include: ['author', 'images'],
+      'fields.listing': [
+        'title',
+        'price',
+        'deleted',
+        'state',
+        'publicData.listingType',
+        'publicData.transactionProcessAlias',
+        'publicData.unitType',
+        // These help rendering of 'purchase' listings,
+        // when transitioning from search page to listing page
+        'publicData.pickupEnabled',
+        'publicData.shippingEnabled',
+        'publicData.shippingPriceInSubunitsOneItem',
+      ],
+      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
+      'fields.image': [
+        'variants.scaled-small',
+        'variants.scaled-medium',
+        `variants.${variantPrefix}`,
+        `variants.${variantPrefix}-2x`,
+      ],
+      ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
+      ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+      'limit.images': 1,
+      sort: "createdAt",      
+    },
+    config
+  ))};  
+
+  let featuredListingIds = [];
+
+  return Promise.all([   
+    // Get Featured lising IDS
+    dispatch(fetchPageAssets(pageAsset, true)).then(assetResp => {
+      assetResp.landingPage?.data?.sections.map((section, idx) =>{
+        
+        if (section.sectionId === featuredSectionId) {        
+          featuredListingIds = section?.blocks.map(b => b.blockName);
+        }else{
+
+        }
+      })
+      
+    }),    
+    
+    //dispatch(searchListingsCall),
+  ])
+  .then(response => {
+    // Call listings from Featured listing IDS
+    // Separate search paramaters for FEATURED
+    if(queryParams?.sort === 'featured') {
+      featuredListingsCall(featuredListingIds)      
+    } else {
+      dispatch(searchListingsCall)
+    }
+
+    return response;
+  })
+  .catch(e => {
+    throw e;
+  });
+
+  /*
   return Promise.all([
     dispatch(fetchPageAssets(pageAsset, true)),
     dispatch(searchListingsCall),
@@ -470,5 +551,6 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   .catch(e => {
     throw e;
   });
+  */
 
 };

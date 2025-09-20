@@ -397,6 +397,17 @@ export const searchParamsPicker = (
   );
 
   // Page transition might initially use values from previous search
+  
+
+
+  // overwrite the search sync for FEATURED listings
+  // as sort=featured is not valid and will cause errors
+  
+  if(queryParamsFromURL?.sort === 'featured') {
+    queryParamsFromSearchParams.sort = 'featured'
+  }
+  //-------------------------------
+
   const searchParamsAreInSync =
     stringify(queryParamsFromURL) === stringify(queryParamsFromSearchParams);
 

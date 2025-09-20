@@ -127,7 +127,7 @@
   margin-right: 16px;
   scroll-snap-align: center;
 
-  transform: translateX(10);
+  transform: translateX(0);
 
   @media (min-width: 550px) {
     transform: translateX(0);

@@ -197,9 +197,13 @@ export class SearchPageComponent extends Component {
     const { history, routeConfiguration, location } = this.props;
     const urlQueryParams = validUrlQueryParamsFromProps(this.props);
 
+    if(values === 'featured') {
+    //  values = 'createdAt'
+    }
+
     const queryParams = values
       ? { ...urlQueryParams, [urlParam]: values }
-      : omit(urlQueryParams, urlParam);
+      : omit(urlQueryParams, urlParam); 
 
     const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
       routeConfiguration,
@@ -321,6 +325,7 @@ export class SearchPageComponent extends Component {
         : pagination?.paginationUnsupported
         ? listings.length
         : 0;
+
     const listingsAreLoaded =
       !searchInProgress &&
       searchParamsAreInSync &&
@@ -369,63 +374,63 @@ export class SearchPageComponent extends Component {
     );
 
     // ADD COMMISSION to Listings
-  const commission = pageAssetsData?.commission === undefined ? 0 : pageAssetsData?.commission; 
+    const commission = pageAssetsData?.commission === undefined ? 0 : pageAssetsData?.commission; 
 
-  const providerCommissionPercentage = commission?.data?.providerCommission.percentage === undefined ? 0 : commission?.data?.providerCommission.percentage; 
-  // providerCommissionMinimum in cents
-  const providerCommissionMinimum = commission?.data?.providerCommission.minimum_amount === undefined ? 0 : commission?.data?.providerCommission.minimum_amount; 
+    const providerCommissionPercentage = commission?.data?.providerCommission.percentage === undefined ? 0 : commission?.data?.providerCommission.percentage; 
+    // providerCommissionMinimum in cents
+    const providerCommissionMinimum = commission?.data?.providerCommission.minimum_amount === undefined ? 0 : commission?.data?.providerCommission.minimum_amount; 
 
-  const customerCommissionPercentage = commission?.data?.customerCommission.percentage === undefined ? 0 : commission?.data?.customerCommission.percentage; 
-  // customerCommissionMinimum in cents
-  const customerCommissionMinimum = commission?.data?.customerCommission.minimum_amount === undefined ? 0 : commission?.data?.customerCommission.minimum_amount; 
+    const customerCommissionPercentage = commission?.data?.customerCommission.percentage === undefined ? 0 : commission?.data?.customerCommission.percentage; 
+    // customerCommissionMinimum in cents
+    const customerCommissionMinimum = commission?.data?.customerCommission.minimum_amount === undefined ? 0 : commission?.data?.customerCommission.minimum_amount; 
 
 
-  function calculatePricePlusPercentage(originalPrice, percentageIncrease) {
-    // Convert percentage to a decimal
-    const percentageDecimal = percentageIncrease / 100;
+    function calculatePricePlusPercentage(originalPrice, percentageIncrease) {
+      // Convert percentage to a decimal
+      const percentageDecimal = percentageIncrease / 100;
 
-    // Calculate the amount of the increase
-    const increaseAmount = originalPrice * percentageDecimal;
+      // Calculate the amount of the increase
+      const increaseAmount = originalPrice * percentageDecimal;
 
-    // Add the increase amount to the original price
-    const finalPrice = originalPrice + increaseAmount;
+      // Add the increase amount to the original price
+      const finalPrice = originalPrice + increaseAmount;
 
-    return finalPrice;
-  }
+      return finalPrice;
+    }
 
-  const addCommissionShippingToListings = (listingsWithCommission, commission) => {
-    listingsWithCommission.map((listing, i) => {
+    const addCommissionShippingToListings = (listingsWithCommission, commission) => {
+      listingsWithCommission.map((listing, i) => {
 
-      if(listing.attributes.price === null){      
-        listing.attributes.price = {};  
-        listing.attributes.price.amount = 0;
-        listing.attributes.price.priceOriginal = 0;
-        listing.attributes.price.priceCommission = 0;
-        listing.attributes.price.priceCommissionShipping = 0;
-      }
+        if(listing.attributes.price === null){      
+          listing.attributes.price = {};  
+          listing.attributes.price.amount = 0;
+          listing.attributes.price.priceOriginal = 0;
+          listing.attributes.price.priceCommission = 0;
+          listing.attributes.price.priceCommissionShipping = 0;
+        }
 
-      //create safe backup of original price      
-      listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
-      listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
+        //create safe backup of original price      
+        listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
+        listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
 
-      const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
-      const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-      
-      listing.attributes.price.priceCommission = calculatePriceCommission;
-      listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
-      //overwite amount including shipping and commission
-      listing.attributes.price.amount = listing.attributes.price.priceCommission;
+        const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
+        const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
+        
+        listing.attributes.price.priceCommission = calculatePriceCommission;
+        listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
+        //overwite amount including shipping and commission
+        listing.attributes.price.amount = listing.attributes.price.priceCommission;
 
-      return listing;
-    })
+        return listing;
+      })
 
-  } 
+    } 
 
-  if (commission != null) {
-    addCommissionShippingToListings(listings, customerCommissionPercentage);
-  }
+    if (commission != null) {
+      addCommissionShippingToListings(listings, customerCommissionPercentage);
+    }
 
-  // END COMMISSION
+    // END COMMISSION
 
 
     function isNumericRegex(str) {
@@ -435,8 +440,11 @@ export class SearchPageComponent extends Component {
 
     // check if no search filter selected, default to New+
     let locationParams = Object.values(parse(location.search));
+
     if(locationParams.length === 0)
-      locationParams = ['createdAt'];    
+      locationParams = ['createdAt'];  
+      
+    locationParams[0] = locationParams[0].toString();
 
     // check if price range is selected, default to New+
     const testnum = isNumericRegex(locationParams?.[0].replace(/,/g, ""));
@@ -444,11 +452,12 @@ export class SearchPageComponent extends Component {
       locationParams = ['createdAt'];
 
     const searchOptions = [
+      { key: 'featured', labelTranslationKey: 'Featured' },
       { key: 'createdAt', labelTranslationKey: 'New+' },
       { key: '-createdAt', labelTranslationKey: 'New+' },
       { key: '-price', labelTranslationKey: 'New+' },
       { key: 'price', labelTranslationKey: 'New+' },
-      { key: 'relevance', labelTranslationKey: 'New+' },
+      { key: 'relevance', labelTranslationKey: 'New+' },      
     ];
 
     const targetType = "createdAt";
@@ -456,8 +465,7 @@ export class SearchPageComponent extends Component {
 
     if(!firstMatchingObject) {
       firstMatchingObject = searchOptions[0];
-    }
- 
+    } 
 
     const labelHeading = searchOptions.find(obj => obj.key === locationParams[0]) ? firstMatchingObject.labelTranslationKey : locationParams[0].charAt(0).toUpperCase() + locationParams[0].slice(1)
 

@@ -85,6 +85,7 @@ export const sortConfig = {
 
   options: [
     // These are default sort options
+    { key: 'featured', labelTranslationKey: 'SortBy.featured' },
     { key: 'createdAt', labelTranslationKey: 'SortBy.newest' },
     { key: '-createdAt', labelTranslationKey: 'SortBy.oldest' },
     { key: '-price', labelTranslationKey: 'SortBy.lowestPrice' },
