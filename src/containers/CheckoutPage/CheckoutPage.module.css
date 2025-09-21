@@ -329,13 +329,10 @@
 }
 .orderBreakdownTitle {
   /* Font */
-  letter-spacing: 1px;
-  font-weight: var(--fontWeightMedium);
-
+  font-weight: var(--fontWeightRegular);
   font-family: "Cousine", serif;
-  font-weight: 400;
-  font-size: 16px;
-  text-transform: none;
+  font-size: 14px;
+  text-transform: upperfase;
 
   /* Layout spacing */
   margin: 5px 24px 35px 24px;
