@@ -74,20 +74,23 @@ export const AsideContent = props => {
   
   return (
     <div className={css.asideContent}>
-      <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+      <H2 as="h1" className={css.mobileHeading}>
+        <FormattedMessage id="ProfilePage.mobileHeading" values={{ name: displayName }} />
+      </H2>
       {showLinkToProfileSettingsPage ? (
         <>
           <NamedLink className={css.editLinkDesktop} name="ProfileSettingsPage">
             <FormattedMessage id="ProfilePage.editProfileLinkDesktop" />
           </NamedLink>
         </>
-      ) : null}     
-      <H2 as="h1" className={css.mobileHeading}>
-        <FormattedMessage id="ProfilePage.mobileHeading" values={{ name: displayName }} />
-      </H2>
-              
-      {hasBio ? <p className={css.bio}>{bioWithLinks}</p> : null}
-      
+      ) : null}    
+
+      <div className={css.profileGrid}>        
+        <AvatarLarge className={css.avatar} user={user} disableProfileLink />        
+        <div>
+          {hasBio ? <p className={css.bio}>{bioWithLinks}</p> : null}
+        </div>
+      </div>
     </div>
   );
 };
@@ -280,7 +283,8 @@ export const MainContent = props => {
       {hasListings ? (
         <div className={listingsContainerClasses}>
           <H4 as="h2" className={css.listingsTitle}>
-            <FormattedMessage id="ProfilePage.listingsTitle" values={{ count: listings.length }} />
+            <FormattedMessage id="ProfilePage.listingsTitle" values={{ count: listings.length }} /> 
+            &nbsp;<span>{displayName}</span>
           </H4>
           <ul className={css.listings}>
             {listings.map(l => (

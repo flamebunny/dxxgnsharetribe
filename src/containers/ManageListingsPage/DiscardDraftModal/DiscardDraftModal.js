@@ -43,8 +43,7 @@ const DiscardDraftModal = props => {
       onManageDisableScrolling={onManageDisableScrolling}
       usePortal
       closeButtonMessage={intl.formatMessage({ id: 'DiscardDraftModal.close' })}
-    >
-      <IconAlert className={css.modalIcon} />
+    >      
       <p className={css.modalTitle}>
         <FormattedMessage id="DiscardDraftModal.title" />
       </p>

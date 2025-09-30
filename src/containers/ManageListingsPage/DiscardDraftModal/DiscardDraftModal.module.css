@@ -3,6 +3,7 @@
 .root {
   composes: marketplaceModalBaseStyles from global;
   padding-top: 70px;
+  background-color: var(--colorFail);
 
   @media (--viewportMedium) {
     flex-basis: 567px;
@@ -21,11 +22,15 @@
 /* Title of the modal */
 .modalTitle {
   composes: marketplaceModalTitleStyles from global;
+  color: #FFF;
 }
 
 /* Paragraph for the Modal */
 .modalMessage {
   composes: marketplaceModalParagraphStyles from global;
+  color: #FFF;
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .formRoot {
@@ -63,6 +68,7 @@
   margin-bottom: 96px;
   flex-shrink: 0;
   background-color: var(--colorFail);
+  color: #FFF;
 
   @media (--viewportMedium) {
     display: inline-block;

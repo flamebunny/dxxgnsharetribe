@@ -55,7 +55,7 @@ const SectionArticleAbout = props => {
   return (
     <SectionContainer
       id={sectionId}
-      className={classNames(className, css.root, textSmall)}
+      className={classNames(className, css.root, textSmall, css.sectionContent2)}
       rootClassName={rootClassName}
       appearance={appearance}
       options={fieldOptions}

@@ -1,7 +1,7 @@
 @import '../../../../styles/customMediaQueries.css';
 
 .baseColumn {
-  max-width: var(--contentMaxWidthPages);
+  max-width: 600px;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 0;
@@ -46,12 +46,15 @@
 }
 
 .root {
-  & .sectionContent {
-    padding-top: 0;
-    padding: 0 !important;
-  }
- 
+
 }
+
+.sectionContent2 {
+  > div {
+    padding: 30px 0 !important
+  }
+}
+
 
 .articleMain {
   /* 720px + (2 * 32px) == 784 */
@@ -78,24 +81,19 @@
 .heading h2 {
   margin: 0 auto;
   color: var(--colorBlack);
-  font-family: "EB Garamond", serif;
-  font-weight: 500;
-  font-style: italic;
-  font-size: 54px;
-  line-height: 26px;
-  letter-spacing: -3px;
+  font-family: "Cousine", serif;
+  font-weight: var(--fontWeightBold);
+  font-size: 14px;
+  line-height: 18px;
   word-break: auto-phrase;
   text-align: center;
 
 
   @media (--viewportSmall) {
-    font-size: 75px;
-    line-height: 24px;
+
   }
 
   @media (--viewportMedium) {
-    font-size: 125px;
-    line-height: 32px;
     margin: 0 24px 32px 24px;
   }
 
@@ -106,24 +104,18 @@
 
 }
 
+.paragraph {
+  padding: 0 !important;
+}
+
+
 .paragraph p {
   color: var(--colorBlack);
-  font-family: "EB Garamond", serif;
-  font-style: italic;
-  font-weight: 400;
-  font-size: 24px;
-  line-height: 24px;
-  letter-spacing: -1px;
-  
-  @media (--viewportSmall) {
-    font-size: 30px;
-    line-height: 30px;
-  }
-
-  @media (--viewportMedium) {
-    font-size: 40px;
-    line-height: 40px;
-  }
+  font-family: "Cousine", serif;
+  font-style: normal;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
 }
 
 .textSmall p {
@@ -144,3 +136,7 @@
     line-height: 16px;
   }
 }
+
+ .span2 {
+    grid-column: span 2;
+  }

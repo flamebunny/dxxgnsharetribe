@@ -93,3 +93,9 @@
 .customfields div:nth-child(4) {
   margin-top: 24px;
 }
+
+.defaultListingFields {
+  label {
+    display: none;
+  }
+}

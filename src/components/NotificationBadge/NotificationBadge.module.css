@@ -5,6 +5,9 @@
   composes: h6 from global;
   color: var(--colorWhite);
   text-align: center;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
 
   background-color: var(--colorFail);
 

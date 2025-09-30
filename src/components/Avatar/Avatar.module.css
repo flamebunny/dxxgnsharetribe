@@ -1,7 +1,7 @@
 @import '../../styles/customMediaQueries.css';
 
 .avatarBase {
-  border-radius: 50%;
+  border-radius: 0;
 
   /* Position possible initials to the center of the component */
   display: flex;
@@ -39,7 +39,6 @@
 .avatarImage {
   width: 100%;
   height: 100%;
-  border-radius: inherit;
 }
 
 .smallAvatar {

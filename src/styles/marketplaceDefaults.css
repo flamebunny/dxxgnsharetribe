@@ -1283,8 +1283,8 @@ textarea {
   color: var(--colorBlack);
 
   /* Borders */
-  border-radius: var(--borderRadius);
-  border: 1px solid var(--colorGrey100);
+  border-radius: 0;
+  border: 1px solid var(--colorWhite);
   background: var(--colorWhite);
 
   cursor: pointer;
