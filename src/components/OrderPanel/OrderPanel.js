@@ -423,7 +423,7 @@ const OrderPanel = props => {
         usePortal
       >
         <div className={css.modalHeading}>
-          <H1 className={css.heading}>{title} by</H1>
+          <H2 className={css.heading}>{title} by</H2>
         </div>        
 
         {showListingImage && (

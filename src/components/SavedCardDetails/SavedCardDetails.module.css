@@ -84,18 +84,19 @@
   text-align: left;
   font-weight: var(--fontWeightMedium);
   padding: 0;
-  border-radius: 6px;
-  border: 1px solid #d8dce6;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #000;
   transition: all 0.2s ease-out;
   z-index: calc(var(--zIndexPopup) + 1);
   position: relative;
 
   background-color: #fff;
-  box-shadow: 0 2px 3px 0 rgba(216, 220, 230, 0.7);
+  box-shadow: none;
 
   &:hover {
     border: 1px solid #b8bfd1;
-    box-shadow: 0 2px 3px 0 rgba(216, 220, 230, 0.7);
+    box-shadow: 0;
   }
 
   &:focus {

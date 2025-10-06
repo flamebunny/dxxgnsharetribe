@@ -24,3 +24,9 @@
 .stripeConnectAccountForm {
   margin-top: 0;
 }
+
+.defaultFields {
+  label {
+      display: none;
+  }
+}

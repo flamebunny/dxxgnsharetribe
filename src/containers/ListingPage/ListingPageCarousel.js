@@ -471,20 +471,18 @@ export const ListingPageComponent = props => {
             )}
             </div>
             <div className={css.orderColumnForProductLayout}>
-              <div
-              className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
-            >
-              {showListingImage ? (
-                <div>
-                <div className={css.breadcrumbs}>
-                  <a className={css.breadcrumbLink} href="/s/">All</a>
-                  <span className={css.spacer}>·</span>
-                  <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
-                </div>
+            
+              <div className={css.breadcrumbs}>
+                <a className={css.breadcrumbLink} href="/s/">All</a>
+                <span className={css.spacer}>·</span>
+                <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
+              </div>                  
+          
+              <div className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}>
+              {showListingImage ? (             
                 <H4 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-                </H4>
-                </div>
+                </H4>          
               ) : (
                 <H3 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
@@ -496,7 +494,7 @@ export const ListingPageComponent = props => {
                 By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
               </span>             
             </div>
-
+            
             <OrderPanel
               className={classNames(css.productOrderPanel, {
                 [css.imagesEnabled]: showListingImage,

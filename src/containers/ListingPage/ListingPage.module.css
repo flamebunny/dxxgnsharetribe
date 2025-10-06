@@ -308,10 +308,12 @@
 }
 
 .orderColumnForProductLayout {
-  margin: 0 16px;
+  margin: 0;
+  padding: 0 20px;
 
   @media (--viewportMedium) {
     margin: 0;
+
   }
   @media (--viewportLarge) {
     display: block;
@@ -319,6 +321,7 @@
     margin-left: 36px;
     flex-basis: calc(38%);
     flex-shrink: 0;
+    padding: 0;
   }
   @media (--viewportXLarge) {
     display: block;
@@ -403,12 +406,6 @@
   font-family: "Cousine", serif;
   font-weight: 400;
   font-size: 14px;  
-
-  @media (--viewportSmall) {
-    padding: 0;
-    margin-bottom: 0;
-    margin-top: 0;
-  }
 }
 
 
@@ -604,8 +601,11 @@
   text-transform: uppercase;
 
   @media (--viewportSmall) {
-    font-size: 36px;
-    line-height: 44px;
+
+  }
+
+  @media (--viewportMedium) {
+
   }
  
   @media (--viewportLarge) {
@@ -724,7 +724,7 @@
 .sectionDetails,
 .sectionMultiEnum,
 .sectionEmbeddedYoutubeVideo {
-  padding: 0 24px;
+  padding: 0;
   margin-bottom: 32px;
 
   @media (--viewportMedium) {

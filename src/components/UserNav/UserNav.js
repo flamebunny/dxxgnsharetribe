@@ -32,17 +32,8 @@ const UserNav = props => {
       ]
     : [];
 
-  const tabs = [
-    ...manageListingsTabMaybe,
-    {
-      text: <FormattedMessage id="UserNav.profileSettings" />,
-      selected: currentPage === 'ProfileSettingsPage',
-      disabled: false,
-      linkProps: {
-        name: 'ProfileSettingsPage',
-      },
-    },
-    {
+  const tabs = [    
+     {
       text: <FormattedMessage id="UserNav.inbox" />,
       selected: currentPage === 'InboxPage',
       disabled: false,
@@ -51,6 +42,14 @@ const UserNav = props => {
       },
     },
     {
+      text: <FormattedMessage id="UserNav.profileSettings" />,
+      selected: currentPage === 'ProfileSettingsPage',
+      disabled: false,
+      linkProps: {
+        name: 'ProfileSettingsPage',
+      },
+    },   
+    {
       text: <FormattedMessage id="UserNav.accountSettings" />,
       selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
       disabled: false,
@@ -58,10 +57,11 @@ const UserNav = props => {
         name: 'ContactDetailsPage',
       },
     },
+    ...manageListingsTabMaybe,
   ];
 
   return (
-    <LinkTabNavHorizontal className={classes} tabRootClassName={css.tab} tabs={tabs} skin="dark" />
+    <LinkTabNavHorizontal className={classes} tabRootClassName={css.tab} tabs={tabs} skin="light" />
   );
 };
 

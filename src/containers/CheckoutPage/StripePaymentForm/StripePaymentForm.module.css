@@ -11,7 +11,7 @@
 
 .heading {
   composes: p from global;
-  font-weight: var(--fontWeightRegular);
+  font-weight: var(--fontWeightBold);
   padding: 0;
   margin-bottom: 16px;
   margin-top: 40px;
@@ -103,11 +103,19 @@
 
 .billingDetails {
   margin-bottom: 48px;
+
+  label {
+    display: none;
+  }
 }
 
 .sameAddressCheckbox {
   display: block;
   margin: 24px 0;
+
+  label {
+    display: block;
+  }
 }
 
 .messageLabel {
@@ -124,6 +132,10 @@
 
 .message {
   border-bottom-color: var(--colorGrey300);
+
+  label {
+    display: none;
+  }
 }
 
 .submitContainer {

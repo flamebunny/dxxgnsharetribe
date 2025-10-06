@@ -144,3 +144,9 @@
     margin: 24px 0;
   }
 }
+
+.defaultFields {
+    label {
+        display: none;
+    }
+}

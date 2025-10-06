@@ -9,6 +9,7 @@ import { formatMoney } from '../../util/currency';
 import {
   AspectRatioWrapper,
   AvatarMedium,
+  H3,
   H4,
   H6,
   NamedLink,
@@ -81,14 +82,14 @@ const DetailsSideCard = props => {
         <div
           className={classNames(css.detailsHeadings, { [css.noListingImage]: !showListingImage })}
         >
-          <H4 as="h2">
+          <H3 as="h1">
             <NamedLink
               name="ListingPage"
               params={{ id: listing?.id?.uuid, slug: createSlug(listingTitle) }}
             >
               {listingTitle}
             </NamedLink>
-          </H4>
+          </H3>
           {showPrice ? (
             <div className={css.priceContainer}>
               <p className={css.price}>{formatMoney(intl, price)}</p>
@@ -110,12 +111,8 @@ const DetailsSideCard = props => {
             <div className={css.bookingPriceVariant}>
               <p>{priceVariantName}</p>
             </div>
-          ) : null}
-
-          <H6 as="h3" className={css.orderBreakdownTitle}>
-            <FormattedMessage id={`CheckoutPage.${processName}.orderBreakdown`} />
-          </H6>
-          <hr className={css.totalDivider} />
+          ) : null}          
+         
         </div>
       ) : null}
       {breakdown}

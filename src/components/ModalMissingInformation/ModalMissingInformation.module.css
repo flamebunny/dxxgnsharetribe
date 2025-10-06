@@ -39,6 +39,8 @@
 
 .modalIcon {
   composes: marketplaceModalIconStyles from global;
+
+  display: none;
 }
 
 .reminderModalLinkButton {

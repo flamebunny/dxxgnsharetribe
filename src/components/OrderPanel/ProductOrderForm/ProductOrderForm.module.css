@@ -20,6 +20,7 @@
 
 .quantityField {
   padding: 0 24px;
+  margin-top: 50px;
 
   @media (--viewportMedium) {
     padding: 0;
@@ -72,6 +73,7 @@
 }
 
 .finePrint {
+  padding: 0 24px;
   text-align: left;
   text-transform: uppercase;
   color: var(--colorGrey300);

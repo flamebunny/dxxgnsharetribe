@@ -127,3 +127,9 @@
 .field {
   margin-top: 24px;
 }
+
+.defaultFields {
+  label {
+      display: none;
+  }
+}

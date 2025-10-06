@@ -10,7 +10,7 @@ import classNames from 'classnames';
 import { useConfiguration } from '../../../context/configurationContext';
 import { FormattedMessage, useIntl } from '../../../util/reactIntl';
 
-import { Form, PrimaryButton, FieldTextInput, StripePaymentAddress, H4 } from '../../../components';
+import { Form, PrimaryButton, FieldTextInput, StripePaymentAddress, H3 } from '../../../components';
 
 import css from './PaymentMethodsForm.module.css';
 
@@ -233,51 +233,53 @@ class PaymentMethodsForm extends Component {
 
     return hasStripeKey ? (
       <Form className={classes} onSubmit={handleSubmit}>
-        <label className={css.paymentLabel} htmlFor={`${formId}-card`}>
-          <FormattedMessage id="PaymentMethodsForm.paymentCardDetails" />
-        </label>
+        <div className={css.defaultFields}>
+          <label className={css.paymentLabel} htmlFor={`${formId}-card`}>
+            <FormattedMessage id="PaymentMethodsForm.paymentCardDetails" />
+          </label>
 
-        <div
-          className={cardClasses}
-          id={`${formId}-card`}
-          ref={el => {
-            this.cardContainer = el;
-          }}
-        />
-        <div className={css.infoText}>{infoText}</div>
-        {hasCardError ? <span className={css.error}>{this.state.error}</span> : null}
-        <div className={css.paymentAddressField}>
-          <H4 as="h3">
-            <FormattedMessage id="PaymentMethodsForm.billingDetails" />
-          </H4>
-
-          <FieldTextInput
-            className={css.field}
-            type="text"
-            id="name"
-            name="name"
-            autoComplete="cc-name"
-            label={billingDetailsNameLabel}
-            placeholder={billingDetailsNamePlaceholder}
+          <div
+            className={cardClasses}
+            id={`${formId}-card`}
+            ref={el => {
+              this.cardContainer = el;
+            }}
           />
+          <div className={css.infoText}>{infoText}</div>
+          {hasCardError ? <span className={css.error}>{this.state.error}</span> : null}
+          <div className={css.paymentAddressField}>
+            <H3 as="h1">
+              <FormattedMessage id="PaymentMethodsForm.billingDetails" />
+            </H3>
 
-          {billingAddress}
-        </div>
+            <FieldTextInput
+              className={css.field}
+              type="text"
+              id="name"
+              name="name"
+              autoComplete="cc-name"
+              label={billingDetailsNameLabel}
+              placeholder={billingDetailsNamePlaceholder}
+            />
 
-        <div className={css.submitContainer}>
-          {hasErrors ? (
-            <span className={css.errorMessage}>
-              {hasErrors.message ? hasErrors.message : errorMessage}
-            </span>
-          ) : null}
-          <PrimaryButton
-            className={css.submitButton}
-            type="submit"
-            inProgress={submitInProgress}
-            disabled={submitDisabled}
-          >
-            <FormattedMessage id="PaymentMethodsForm.submitPaymentInfo" />
-          </PrimaryButton>
+            {billingAddress}
+          </div>
+
+          <div className={css.submitContainer}>
+            {hasErrors ? (
+              <span className={css.errorMessage}>
+                {hasErrors.message ? hasErrors.message : errorMessage}
+              </span>
+            ) : null}
+            <PrimaryButton
+              className={css.submitButton}
+              type="submit"
+              inProgress={submitInProgress}
+              disabled={submitDisabled}
+            >
+              <FormattedMessage id="PaymentMethodsForm.submitPaymentInfo" />
+            </PrimaryButton>
+          </div>
         </div>
       </Form>
     ) : (

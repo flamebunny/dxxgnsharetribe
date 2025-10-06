@@ -366,56 +366,58 @@ class ContactDetailsFormComponent extends Component {
                 handleSubmit(e);
               }}
             >
-              <div className={css.contactDetailsSection}>
-                <FieldTextInput
-                  type="email"
-                  name="email"
-                  id={formId ? `${formId}.email` : 'email'}
-                  label={emailLabel}
-                  placeholder={emailPlaceholder}
-                  validate={validators.composeValidators(emailRequired, emailValid)}
-                  customErrorText={emailTouched ? null : emailTakenErrorText}
-                />
-                {emailVerifiedInfo}
-
-                <PhoneNumberMaybe formId={formId} userTypeConfig={userTypeConfig} intl={intl} />
-              </div>
-
-              <div className={confirmClasses}>
-                <H4 as="h3" className={css.confirmChangesTitle}>
-                  <FormattedMessage id="ContactDetailsForm.confirmChangesTitle" />
-                </H4>
-                <p className={css.confirmChangesInfo}>
-                  <FormattedMessage id="ContactDetailsForm.confirmChangesInfo" />
-                  <br />
-                  <FormattedMessage
-                    id="ContactDetailsForm.resetPasswordInfo"
-                    values={{ resetPasswordLink }}
+              <div className={css.defaultFields}>
+                <div className={css.contactDetailsSection}>
+                  <FieldTextInput
+                    type="email"
+                    name="email"
+                    id={formId ? `${formId}.email` : 'email'}
+                    label={emailLabel}
+                    placeholder={emailPlaceholder}
+                    validate={validators.composeValidators(emailRequired, emailValid)}
+                    customErrorText={emailTouched ? null : emailTakenErrorText}
                   />
-                </p>
+                  {emailVerifiedInfo}
 
-                <FieldTextInput
-                  className={css.password}
-                  type="password"
-                  name="currentPassword"
-                  id={formId ? `${formId}.currentPassword` : 'currentPassword'}
-                  autoComplete="current-password"
-                  label={passwordLabel}
-                  placeholder={passwordPlaceholder}
-                  validate={passwordValidators}
-                  customErrorText={passwordTouched ? null : passwordErrorText}
-                />
-              </div>
-              <div className={css.bottomWrapper}>
-                {genericError}
-                <PrimaryButton
-                  type="submit"
-                  inProgress={inProgress}
-                  ready={pristineSinceLastSubmit}
-                  disabled={submitDisabled}
-                >
-                  <FormattedMessage id="ContactDetailsForm.saveChanges" />
-                </PrimaryButton>
+                  <PhoneNumberMaybe formId={formId} userTypeConfig={userTypeConfig} intl={intl} />
+                </div>
+
+                <div className={confirmClasses}>
+                  <H4 as="h3" className={css.confirmChangesTitle}>
+                    <FormattedMessage id="ContactDetailsForm.confirmChangesTitle" />
+                  </H4>
+                  <p className={css.confirmChangesInfo}>
+                    <FormattedMessage id="ContactDetailsForm.confirmChangesInfo" />
+                    <br />
+                    <FormattedMessage
+                      id="ContactDetailsForm.resetPasswordInfo"
+                      values={{ resetPasswordLink }}
+                    />
+                  </p>
+
+                  <FieldTextInput
+                    className={css.password}
+                    type="password"
+                    name="currentPassword"
+                    id={formId ? `${formId}.currentPassword` : 'currentPassword'}
+                    autoComplete="current-password"
+                    label={passwordLabel}
+                    placeholder={passwordPlaceholder}
+                    validate={passwordValidators}
+                    customErrorText={passwordTouched ? null : passwordErrorText}
+                  />
+                </div>
+                <div className={css.bottomWrapper}>
+                  {genericError}
+                  <PrimaryButton
+                    type="submit"
+                    inProgress={inProgress}
+                    ready={pristineSinceLastSubmit}
+                    disabled={submitDisabled}
+                  >
+                    <FormattedMessage id="ContactDetailsForm.saveChanges" />
+                  </PrimaryButton>
+                </div>
               </div>
             </Form>
           );

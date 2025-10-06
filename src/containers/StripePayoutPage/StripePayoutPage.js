@@ -212,51 +212,53 @@ export const StripePayoutPageComponent = props => {
           ) : returnedAbnormallyFromStripe && !getAccountLinkError ? (
             <FormattedMessage id="StripePayoutPage.redirectingToStripe" />
           ) : (
-            <StripeConnectAccountForm
-              rootClassName={css.stripeConnectAccountForm}
-              disabled={formDisabled}
-              inProgress={payoutDetailsSaveInProgress}
-              ready={payoutDetailsSaved}
-              currentUser={ensuredCurrentUser}
-              stripeBankAccountLastDigits={getBankAccountLast4Digits(stripeAccountData)}
-              savedCountry={savedCountry}
-              savedAccountType={savedAccountType}
-              submitButtonText={intl.formatMessage({
-                id: 'StripePayoutPage.submitButtonText',
-              })}
-              stripeAccountError={
-                createStripeAccountError || updateStripeAccountError || fetchStripeAccountError
-              }
-              stripeAccountLinkError={getAccountLinkError}
-              stripeAccountFetched={stripeAccountFetched}
-              onChange={onPayoutDetailsChange}
-              onSubmit={onPayoutDetailsSubmit}
-              onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink}
-              stripeConnected={stripeConnected}
-              authScopes={authScopes}
-            >
-              {stripeConnected && !returnedAbnormallyFromStripe && showVerificationNeeded ? (
-                <StripeConnectAccountStatusBox
-                  type="verificationNeeded"
-                  inProgress={getAccountLinkInProgress}
-                  onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
-                    'custom_account_verification'
-                  )}
-                  disabled={limitedRights}
-                  title={stripeButtonTitle}
-                />
-              ) : stripeConnected && savedCountry && !returnedAbnormallyFromStripe ? (
-                <StripeConnectAccountStatusBox
-                  type="verificationSuccess"
-                  inProgress={getAccountLinkInProgress}
-                  disabled={payoutDetailsSaveInProgress || limitedRights}
-                  onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
-                    'custom_account_update'
-                  )}
-                  title={stripeButtonTitle}
-                />
-              ) : null}
-            </StripeConnectAccountForm>
+             <div className={css.defaultFields}>
+              <StripeConnectAccountForm
+                rootClassName={css.stripeConnectAccountForm}
+                disabled={formDisabled}
+                inProgress={payoutDetailsSaveInProgress}
+                ready={payoutDetailsSaved}
+                currentUser={ensuredCurrentUser}
+                stripeBankAccountLastDigits={getBankAccountLast4Digits(stripeAccountData)}
+                savedCountry={savedCountry}
+                savedAccountType={savedAccountType}
+                submitButtonText={intl.formatMessage({
+                  id: 'StripePayoutPage.submitButtonText',
+                })}
+                stripeAccountError={
+                  createStripeAccountError || updateStripeAccountError || fetchStripeAccountError
+                }
+                stripeAccountLinkError={getAccountLinkError}
+                stripeAccountFetched={stripeAccountFetched}
+                onChange={onPayoutDetailsChange}
+                onSubmit={onPayoutDetailsSubmit}
+                onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink}
+                stripeConnected={stripeConnected}
+                authScopes={authScopes}
+              >            
+                {stripeConnected && !returnedAbnormallyFromStripe && showVerificationNeeded ? (
+                  <StripeConnectAccountStatusBox
+                    type="verificationNeeded"
+                    inProgress={getAccountLinkInProgress}
+                    onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
+                      'custom_account_verification'
+                    )}
+                    disabled={limitedRights}
+                    title={stripeButtonTitle}
+                  />
+                ) : stripeConnected && savedCountry && !returnedAbnormallyFromStripe ? (
+                  <StripeConnectAccountStatusBox
+                    type="verificationSuccess"
+                    inProgress={getAccountLinkInProgress}
+                    disabled={payoutDetailsSaveInProgress || limitedRights}
+                    onGetStripeConnectAccountLink={handleGetStripeConnectAccountLink(
+                      'custom_account_update'
+                    )}
+                    title={stripeButtonTitle}
+                  />
+                ) : null}          
+              </StripeConnectAccountForm>
+            </div>
           )}
         </div>
       </LayoutSideNavigation>

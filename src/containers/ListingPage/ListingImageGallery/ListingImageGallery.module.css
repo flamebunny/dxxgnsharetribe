@@ -2,7 +2,7 @@
 
 :global(.image-gallery-thumbnails-container) {
   text-align: left !important;  
-  padding: 0 0 72px 0;
+  padding: 0 0 0 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
@@ -13,7 +13,7 @@
   }
 
   @media (--viewportMedium) {
-    padding: 0 0 96px 0;
+    padding: 0 0 0 0;
     grid-template-columns: repeat(4, 1fr);
   }
 
@@ -54,11 +54,15 @@
   
   @media (--viewportMedium) {
     width: calc(100vw - 48px);
-    padding-left: 0;
-    padding-right: 0;
+    
   }
   @media (--viewportLarge) {
     width: unset;
+  }
+
+  @media (min-width: 1440px) {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 :global(.image-gallery-thumbnail) {

@@ -42,9 +42,7 @@ const EmailReminder = props => {
   return (
     <div className={className}>
       <IconEmailAttention className={css.modalIcon} />
-      <p className={css.modalTitle}>
-        <FormattedMessage id="ModalMissingInformation.verifyEmailTitle" />
-      </p>
+      
       <p className={css.modalMessage}>
         <FormattedMessage id="ModalMissingInformation.verifyEmailText" />
       </p>
