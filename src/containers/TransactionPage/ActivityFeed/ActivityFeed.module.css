@@ -138,6 +138,10 @@
   margin: 0;
 }
 
+.bold {
+  font-weight: var(--fontWeightBold);
+}
+
 .transitionDate {
 
   color: var(--colorGrey300);

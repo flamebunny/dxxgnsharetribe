@@ -1223,7 +1223,7 @@ textarea {
   /*
    * Font
    */
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightBold);
   font-size: 14px;
   line-height: 18px;
   letter-spacing: 0;
@@ -1231,26 +1231,36 @@ textarea {
   /* Button text styles */
   /* Secondary button text is centered without decorations */
   text-align: center;
-  text-decoration: none;
+  text-decoration: line-through;
+  text-transform: uppercase;
 
   /* Secondary button has clear borders */
+  /*
   border-width: 1px;
   border-style: solid;
   border-color: var(--colorGrey100);
   border-radius: var(--borderRadiusMedium);
+  */
+  border: none;
 
   /* Button colors: secondary */
   background-color: var(--colorSecondaryButton);
   color: var(--colorBlack);
+  box-shadow: none;
 
   @media (--viewportMedium) {
     height: 40px;
   }
+
+  svg {
+    display: none;
+  }
+
 }
 .buttonSecondaryInline:focus,
 .buttonSecondaryInline:hover {
   outline: none;
-  box-shadow: var(--boxShadowButton);
+  /* box-shadow: var(--boxShadowButton); */
   border-color: var(--colorGrey300);
   background-color: var(--colorSecondaryButton);
 }

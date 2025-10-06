@@ -163,7 +163,7 @@ export const CheckoutPageWithInquiryProcess = props => {
             <H3 as="h1" className={css.heading}>
               {title}
             </H3>
-            <H4 as="h2" className={css.detailsHeadingMobile}>
+            <H3 as="h1" className={css.detailsHeadingMobile}>
               <FormattedMessage
                 id="CheckoutPage.listingTitle"
                 values={{ listingTitle: listingTitleLink }}
@@ -175,7 +175,7 @@ export const CheckoutPageWithInquiryProcess = props => {
                   <span className={css.inquiryPrice}>{formatMoney(intl, price)}</span>
                 </>
               ) : null}
-            </H4>
+            </H3>
           </div>
 
           <section className={css.paymentContainer}>

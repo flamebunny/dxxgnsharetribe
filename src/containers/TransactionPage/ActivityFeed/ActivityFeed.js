@@ -155,7 +155,7 @@ const Transition = props => {
   return (
     <div className={css.transition}>
       <div className={css.bullet}>
-        <p className={css.transitionContent}>•</p>
+        <p className={classNames(css.transitionContent, css.bold)}>X</p>
       </div>
       <div>
         <p className={css.transitionContent}>{transitionMessageComponent}</p>

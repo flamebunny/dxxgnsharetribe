@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { H4 } from '../../../components';
+import { H3, H4 } from '../../../components';
 
 import css from './TransactionPanel.module.css';
 import { formatMoney } from '../../../util/currency';
@@ -22,7 +22,7 @@ const DetailCardHeadingsMaybe = props => {
     <div
       className={classNames(css.detailCardHeadings, { [css.noListingImage]: !showListingImage })}
     >
-      <H4 as="h2" className={css.detailCardTitle}>
+      <H3 as="h1" className={css.detailCardTitle}>
         {listingTitle}
 
         {showPrice && price ? (
@@ -31,7 +31,7 @@ const DetailCardHeadingsMaybe = props => {
             <span className={css.inquiryPrice}>{formatMoney(intl, price)}</span>
           </>
         ) : null}
-      </H4>
+      </H3>
       {subTitle ? <p className={css.detailCardSubtitle}>{subTitle}</p> : null}
     </div>
   ) : null;

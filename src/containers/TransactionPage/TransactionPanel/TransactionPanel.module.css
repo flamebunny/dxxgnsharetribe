@@ -515,22 +515,27 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  padding: 18px 24px 18px 24px;
+  padding: 10px 20px;
 
   /* Contain repainting to this component only */
   /* 3D painting container helps scrolling */
   transform: translate3d(0, 0, 0);
 
-  box-shadow: var(--boxShadowTop);
+  box-shadow: none;
   background-color: white;
+  border-top: 1px solid var(--colorBlack);
+
+  @media (--viewportLarge) {
+    border-top: none;
+  }
 
   @media (--viewportLarge) {
     z-index: unset;
     position: static;
     box-shadow: none;
     width: auto;
-    margin: 0 48px 0 48px;
-    padding: 0;
+    margin: 0;
+    padding: 10px 20px;
   }
 }
 
@@ -590,12 +595,36 @@
   }
 }
 
+.mobileOrderActionText {
+  color: var(--colorGrey300);
+  text-align: center;
+  /* display: block; */
+  display: none;
+  margin: 4px 48px 32px 48px;
+
+  @media (--viewportLarge) {    
+    display: none;
+  }
+}
+
+
+
 .desktopActionButtons {
   display: none;
 
   @media (--viewportLarge) {
     display: block;
-    margin-bottom: 48px;
+  }
+}
+
+.desktopOrderActionText {
+  color: var(--colorGrey300);
+  text-align: center;
+  display: none;
+  margin: 4px 48px 32px 48px;
+
+  @media (--viewportLarge) {    
+    display: block;
   }
 }
 

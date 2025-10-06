@@ -195,6 +195,10 @@ export class TransactionPanelComponent extends Component {
       id: 'TransactionPanel.deletedListingTitle',
     });
 
+    const actionText = intl.formatMessage({
+      id: 'TransactionPage.ActivityFeed.default-purchase.actiontext',
+    });
+
     const listingTitle = listingDeleted ? deletedListingTitle : listing?.attributes?.title;
     const firstImage = listing?.images?.length > 0 ? listing?.images[0] : null;
 
@@ -225,6 +229,8 @@ export class TransactionPanelComponent extends Component {
     const priceVariantName = protectedData?.priceVariantName;
 
     const classes = classNames(rootClassName || css.root, className);
+
+    
 
     return (
       <div className={classes}>
@@ -345,6 +351,7 @@ export class TransactionPanelComponent extends Component {
               <>
                 <div className={css.mobileActionButtonSpacer}></div>
                 <div className={css.mobileActionButtons}>{actionButtons}</div>
+                <p className={css.mobileOrderActionText}>{actionText}</p>
               </>
             ) : null}
           </div>
@@ -386,12 +393,16 @@ export class TransactionPanelComponent extends Component {
                   className={css.breakdownContainer}
                   orderBreakdown={orderBreakdown}
                   processName={stateData.processName}
-                  priceVariantName={priceVariantName}
+                  priceVariantName={priceVariantName} 
                 />
 
                 {stateData.showActionButtons ? (
-                  <div className={css.desktopActionButtons}>{actionButtons}</div>
+                  <>
+                    <div className={css.desktopActionButtons}>{actionButtons}</div>
+                    <p className={css.desktopOrderActionText}>{actionText}</p>
+                  </>
                 ) : null}
+                
               </div>
               <DiminishedActionButtonMaybe
                 showDispute={stateData.showDispute}

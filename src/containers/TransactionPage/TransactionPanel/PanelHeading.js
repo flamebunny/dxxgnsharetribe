@@ -64,7 +64,7 @@ const PanelHeading = props => {
           />
         </span>
       </H4>
-      <H2 className={css.listingTitleMobile}>
+      <H3 as="h1" className={css.listingTitleMobile}>
         <FormattedMessage id="TransactionPage.listingTitleMobile" values={{ listingLink }} />
 
         {showPriceOnMobile && price ? (
@@ -73,7 +73,7 @@ const PanelHeading = props => {
             <span className={css.inquiryPrice}>{formatMoney(intl, price)}</span>
           </>
         ) : null}
-      </H2>
+      </H3>
       {isCustomer && listingDeleted ? (
         <p className={css.transactionInfoMessage}>
           <FormattedMessage id="TransactionPanel.messageDeletedListing" />
