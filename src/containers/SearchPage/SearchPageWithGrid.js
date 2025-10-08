@@ -197,10 +197,6 @@ export class SearchPageComponent extends Component {
     const { history, routeConfiguration, location } = this.props;
     const urlQueryParams = validUrlQueryParamsFromProps(this.props);
 
-    if(values === 'featured') {
-    //  values = 'createdAt'
-    }
-
     const queryParams = values
       ? { ...urlQueryParams, [urlParam]: values }
       : omit(urlQueryParams, urlParam); 
@@ -463,6 +459,14 @@ export class SearchPageComponent extends Component {
 
     // check if no search filter selected, default to New+
     let locationParams = Object.values(parse(location.search));
+    //let locationObject = Object.fromEntries(location.search);
+
+    const params = Object.fromEntries(new URLSearchParams(location.search));
+
+    console.log('locationParams');
+    console.log(location.search);
+    console.log(params);
+    //console.log(locationObject);
 
     if(locationParams.length === 0)
       locationParams = ['createdAt'];  
@@ -470,8 +474,8 @@ export class SearchPageComponent extends Component {
     locationParams[0] = locationParams[0].toString();
 
     // check if price range is selected, default to New+
-    const testnum = isNumericRegex(locationParams?.[0].replace(/,/g, ""));
-    if(testnum)
+    //const testnum = isNumericRegex(locationParams?.[0].replace(/,/g, ""));
+    if(params?.price !== undefined)
       locationParams = ['createdAt'];
 
     const searchOptions = [
@@ -490,7 +494,16 @@ export class SearchPageComponent extends Component {
       firstMatchingObject = searchOptions[0];
     } 
 
-    const labelHeading = searchOptions.find(obj => obj.key === locationParams[0]) ? firstMatchingObject.labelTranslationKey : locationParams[0].charAt(0).toUpperCase() + locationParams[0].slice(1)
+    let labelHeading = '';
+    labelHeading = searchOptions.find(obj => obj.key === locationParams[0]) ? firstMatchingObject.labelTranslationKey : locationParams[0].charAt(0).toUpperCase() + locationParams[0].slice(1)
+
+
+    // Author Name in Label
+    // TODO: get Authorname from U id
+    // TODO: reset all params when clicking 'Reset All' button
+    if(params?.u !== undefined){
+      labelHeading = "Author Name"
+    }
 
 
     // Set topbar class based on if a modal is open in

@@ -469,7 +469,6 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   ); 
 
   const authorListingsCall = listingIds => {
-    console.log(listingIds);
     
     dispatch(searchListings(
      {
@@ -503,14 +502,12 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       ],
       ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
       ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
-      'limit.images': 1,
-      sort: "createdAt",      
+      'limit.images': 1,   
     },
     config
   ))};  
 
   const featuredListingsCall = listingIds => {
-    console.log(listingIds);
     
     dispatch(searchListings(
      {
@@ -575,9 +572,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       authorListingIds = assetResp.data.data.reduce((accumulator, currentItem) => {
         accumulator.push(currentItem.id.uuid);
         return accumulator;
-      }, []);
-   
-      console.log(authorListingIds);        
+      }, []);   
     })
     
     //dispatch(searchListingsCall),
@@ -598,14 +593,18 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
      *    }
      */
 
-    
+      console.log(featuredListingIds);
+      console.log(authorListingIds);
 
     if(queryParams?.sort === 'featured') {
       console.log('======= Featured search =======');
+      
       featuredListingsCall(featuredListingIds);
     } else if(queryParams?.u ) {
-      console.log('======= User search =======');    
+      console.log('======= User search =======');          
+
       authorListingsCall(authorListingIds);
+     // dispatch(searchListingsCall);
     } else {
       console.log('======= Default search =======');
       dispatch(searchListingsCall);
