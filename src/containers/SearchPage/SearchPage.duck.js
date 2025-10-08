@@ -19,6 +19,7 @@ import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelper
 import { parse } from '../../util/urlHelpers';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { queryUserListings } from '../ProfilePage/ProfilePage.duck';
 
 // Pagination page size might need to be dynamic on responsive page layouts
 // Current design has max 3 columns 12 is divisible by 2 and 3
@@ -44,7 +45,7 @@ const initialState = {
   searchParams: null,
   searchInProgress: false,
   searchListingsError: null,
-  currentPageResultIds: [],
+  currentPageResultIds: [],  
 };
 
 const resultIds = data => {
@@ -465,9 +466,51 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       'limit.images': 1,
     },
     config
-  );
+  ); 
+
+  const authorListingsCall = listingIds => {
+    console.log(listingIds);
+    
+    dispatch(searchListings(
+     {
+      ...rest,
+      ...originMaybe,
+      ...listingTypeVariantMaybe,
+      ids: listingIds,
+      page,
+      perPage: RESULT_PAGE_SIZE,
+      include: ['author', 'images'],
+      'fields.listing': [
+        'title',
+        'price',
+        'deleted',
+        'state',
+        'publicData.listingType',
+        'publicData.transactionProcessAlias',
+        'publicData.unitType',
+        // These help rendering of 'purchase' listings,
+        // when transitioning from search page to listing page
+        'publicData.pickupEnabled',
+        'publicData.shippingEnabled',
+        'publicData.shippingPriceInSubunitsOneItem',
+      ],
+      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
+      'fields.image': [
+        'variants.scaled-small',
+        'variants.scaled-medium',
+        `variants.${variantPrefix}`,
+        `variants.${variantPrefix}-2x`,
+      ],
+      ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
+      ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+      'limit.images': 1,
+      sort: "createdAt",      
+    },
+    config
+  ))};  
 
   const featuredListingsCall = listingIds => {
+    console.log(listingIds);
     
     dispatch(searchListings(
      {
@@ -508,6 +551,10 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   ))};  
 
   let featuredListingIds = [];
+  let authorListingIds = [];
+
+  //const authorId = "673936b3-fe19-41ef-8f0d-4b5475adc146";
+  const authorId = "679eccf8-fd03-4fdf-9177-e21b45971e58";
 
   return Promise.all([   
     // Get Featured lising IDS
@@ -522,16 +569,46 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       })
       
     }),    
+
+    dispatch(queryUserListings(authorId, config)).then(assetResp => {
+
+      authorListingIds = assetResp.data.data.reduce((accumulator, currentItem) => {
+        accumulator.push(currentItem.id.uuid);
+        return accumulator;
+      }, []);
+   
+      console.log(authorListingIds);        
+    })
     
     //dispatch(searchListingsCall),
   ])
   .then(response => {
-    // Call listings from Featured listing IDS
-    // Separate search paramaters for FEATURED
+    /**
+     * HOW TO GET FEATURED LISTINGS TO WORK IN SEARCHPAGE
+     * 1. Get Featured lising IDS
+     * 2. Get listings from featuredListingIds 
+     *    A new function featuredListingsCall(featuredListingIds) is called with featured specific parameters such as
+     *    searching from ids 'ids: listingIds'
+     *    and overwrting sort: "createdAt",  as sort: "featured" does not exist
+     * 3. In SearchPage.shared.js
+     *    Overwrite the search sync for FEATURED listings
+     *    as sort=featured is not valid and will cause errors
+     *    if(queryParamsFromURL?.sort === 'featured') {
+     *      queryParamsFromSearchParams.sort = 'featured'
+     *    }
+     */
+
+    
+
     if(queryParams?.sort === 'featured') {
-      featuredListingsCall(featuredListingIds)      
+      console.log('======= Featured search =======');
+      featuredListingsCall(featuredListingIds);
+    } else if(queryParams?.u ) {
+      console.log('======= User search =======');    
+      authorListingsCall(authorListingIds);
     } else {
-      dispatch(searchListingsCall)
+      console.log('======= Default search =======');
+      dispatch(searchListingsCall);
     }
 
     return response;

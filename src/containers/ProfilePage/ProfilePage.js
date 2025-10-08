@@ -354,6 +354,7 @@ export const ProfilePageComponent = props => {
   // To remedy the situation, we redirect Stripe's crawler to the landing page of the marketplace.
   // TODO: When there's more content on the profile page, we should consider by-passing this redirection.
   const searchParams = rest?.location?.search;
+
   const isStorefront = searchParams
     ? new URLSearchParams(searchParams)?.get('mode') === 'storefront'
     : false;
@@ -501,9 +502,6 @@ const mapStateToProps = state => {
   const isCurrentUser = userId?.uuid === currentUser?.id?.uuid;
   const useCurrentUser =
     isCurrentUser && !(isUserAuthorized(currentUser) && hasPermissionToViewData(currentUser));
-
-
-  
 
   return {
     scrollingDisabled: isScrollingDisabled(state),

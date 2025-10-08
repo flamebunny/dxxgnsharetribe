@@ -131,6 +131,7 @@ export const queryUserListings = (userId, config, ownProfileOnly = false) => (
   getState,
   sdk
 ) => {
+
   dispatch(queryListingsRequest(userId));
 
   const {
