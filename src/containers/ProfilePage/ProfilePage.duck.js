@@ -196,11 +196,24 @@ export const showUser = (userId, config) => (dispatch, getState, sdk) => {
       'fields.image': ['variants.square-small', 'variants.square-small2x'],
     })
     .then(response => {
+      console.log(response)
       const userFields = config?.user?.userFields;
       const sanitizeConfig = { userFields };
       dispatch(addMarketplaceEntities(response, sanitizeConfig));
       dispatch(showUserSuccess());
       return response;
+    })
+    .catch(e => dispatch(showUserError(storableError(e))));
+};
+
+export const showUserNameFromId = (userId) => (dispatch, getState, sdk) => {
+  dispatch(showUserRequest(userId));
+  return sdk.users
+    .show({
+      id: userId,
+    })
+    .then(response => {
+      return response.data.data.attributes.profile.displayName;
     })
     .catch(e => dispatch(showUserError(storableError(e))));
 };

@@ -19,7 +19,7 @@ import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelper
 import { parse } from '../../util/urlHelpers';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
-import { queryUserListings } from '../ProfilePage/ProfilePage.duck';
+import { queryUserListings, showUserNameFromId } from '../ProfilePage/ProfilePage.duck';
 
 // Pagination page size might need to be dynamic on responsive page layouts
 // Current design has max 3 columns 12 is divisible by 2 and 3
@@ -38,6 +38,9 @@ export const SEARCH_MAP_LISTINGS_ERROR = 'app/SearchPage/SEARCH_MAP_LISTINGS_ERR
 
 export const SEARCH_MAP_SET_ACTIVE_LISTING = 'app/SearchPage/SEARCH_MAP_SET_ACTIVE_LISTING';
 
+export const SEARCH_AUTHOR_NAME_SUCCESS = 'app/SearchPage/SEARCH_AUTHOR_NAME_SUCCESS'; 
+
+
 // ================ Reducer ================ //
 
 const initialState = {
@@ -45,7 +48,8 @@ const initialState = {
   searchParams: null,
   searchInProgress: false,
   searchListingsError: null,
-  currentPageResultIds: [],  
+  currentPageResultIds: [], 
+  searchAuthorName: 'Seller Not Found',
 };
 
 const resultIds = data => {
@@ -86,6 +90,13 @@ const listingPageReducer = (state = initialState, action = {}) => {
         ...state,
         activeListingId: payload,
       };
+
+    case SEARCH_AUTHOR_NAME_SUCCESS:
+        return {
+          ...state,
+          searchAuthorName: payload,
+        };
+
     default:
       return state;
   }
@@ -110,6 +121,14 @@ export const searchListingsError = e => ({
   error: true,
   payload: e,
 });
+
+export const searchAuthorNameSuccess = e => ({
+  type: SEARCH_AUTHOR_NAME_SUCCESS,
+  error: true,
+  payload: e,
+});
+
+
 
 export const searchListings = (searchParams, config) => (dispatch, getState, sdk) => {
 
@@ -549,9 +568,35 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   let featuredListingIds = [];
   let authorListingIds = [];
+  let authorName = '';
 
-  //const authorId = "673936b3-fe19-41ef-8f0d-4b5475adc146";
-  const authorId = "679eccf8-fd03-4fdf-9177-e21b45971e58";
+  //let authorId = "673936b3-fe19-41ef-8f0d-4b5475adc146";
+  //let authorId2 = "679eccf8-fd03-4fdf-9177-e21b45971e58";
+  let authorId = "";
+
+  //------------------
+  // Get AuthorID from URL eg 679eccf8-fd03-4fdf-9177-e21b45971e58
+  const paramsAuthorId = Object.fromEntries(new URLSearchParams(location.search));
+
+  if(paramsAuthorId?.u !== undefined){
+    authorId = paramsAuthorId?.u;
+  }
+  //------------------
+
+  /*
+  const promises = hasNoViewingRights
+    ? // If user has no viewing rights, only allow fetching their own listing without reviews
+      [dispatch(showListing(listingId, config, true)), dispatch(fetchPageAssets(pageAsset, true))]
+    : // For users with viewing rights, fetch the listing and the associated reviews
+      [dispatch(showListing(listingId, config)), dispatch(fetchPageAssets(pageAsset, true)), dispatch(fetchReviews(listingId))];
+
+  return Promise.all(promises).then(response => {
+
+  })
+  .catch(e => {
+    throw e;
+  });
+*/
 
   return Promise.all([   
     // Get Featured lising IDS
@@ -566,14 +611,22 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       })
       
     }),    
-
+/*
     dispatch(queryUserListings(authorId, config)).then(assetResp => {
 
-      authorListingIds = assetResp.data.data.reduce((accumulator, currentItem) => {
+      authorListingIds = assetResp.data?.data?.reduce((accumulator, currentItem) => {
         accumulator.push(currentItem.id.uuid);
         return accumulator;
       }, []);   
+    }),
+
+    dispatch(showUserNameFromId(authorId)).then(assetResp => {
+      console.log('=== Author Name ===');
+      console.log(assetResp);
+      authorName = assetResp;
     })
+*/
+
     
     //dispatch(searchListingsCall),
   ])
@@ -595,6 +648,8 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
       console.log(featuredListingIds);
       console.log(authorListingIds);
+
+    dispatch(searchAuthorNameSuccess(authorName));
 
     if(queryParams?.sort === 'featured') {
       console.log('======= Featured search =======');

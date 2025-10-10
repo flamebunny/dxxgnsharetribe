@@ -64,6 +64,10 @@ const SelectSingleFilter = props => {
   };
 
   const handleSubmit = queryParamNames => values => {
+    console.log('SelectSingleFilter handleSubmit');
+    console.log(values);
+
+
     const isArray = Array.isArray(queryParamNames);
     const hasMultipleQueryParams = isArray && queryParamNames.length > 1;
     const hasSingleQueryParam = isArray && queryParamNames.length === 1;
@@ -82,6 +86,9 @@ const SelectSingleFilter = props => {
       : hasSingleQueryParam
       ? { [firstQueryParamName]: values?.[name]?.[`${name}1`] || null }
       : values;
+
+    console.log(usedValue);
+
     onSubmit(usedValue);
   };
 

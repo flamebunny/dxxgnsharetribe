@@ -103,7 +103,7 @@ class KeywordFilter extends Component {
       trailing: true,
     });
     // Use timeout for shart queries and debounce for queries with any length
-    const handleChangeWithDebounce = values => {
+    const handleChangeWithDebounce = values => {''
       // handleSubmit gets values as params.
       // If this field ("keyword") is short, create timeout
       const hasKeywordValue = values && values[name];

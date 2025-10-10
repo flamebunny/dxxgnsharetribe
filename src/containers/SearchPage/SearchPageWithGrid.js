@@ -126,6 +126,7 @@ export class SearchPageComponent extends Component {
   }
 
   getHandleChangedValueFn(useHistoryPush) {
+
     const {
       history,
       routeConfiguration,
@@ -173,6 +174,9 @@ export class SearchPageComponent extends Component {
         };
       };
 
+      console.log(filterConfigs);
+      
+
       const callback = () => {
         if (useHistoryPush) {
           const searchParams = this.state.currentQueryParams;
@@ -190,6 +194,8 @@ export class SearchPageComponent extends Component {
       };
 
       this.setState(updater, callback);
+
+      console.log(this.state.currentQueryParams);
     };
   }
 
@@ -233,6 +239,7 @@ export class SearchPageComponent extends Component {
       searchInProgress,
       searchListingsError,
       searchParams = {},
+      searchAuthorName,
       routeConfiguration,
       config,
       params: currentPathParams = {},
@@ -463,11 +470,6 @@ export class SearchPageComponent extends Component {
 
     const params = Object.fromEntries(new URLSearchParams(location.search));
 
-    console.log('locationParams');
-    console.log(location.search);
-    console.log(params);
-    //console.log(locationObject);
-
     if(locationParams.length === 0)
       locationParams = ['createdAt'];  
       
@@ -499,10 +501,11 @@ export class SearchPageComponent extends Component {
 
 
     // Author Name in Label
+    // IF author search, always set label to AuthorName
     // TODO: get Authorname from U id
     // TODO: reset all params when clicking 'Reset All' button
     if(params?.u !== undefined){
-      labelHeading = "Author Name"
+      labelHeading = searchAuthorName
     }
 
 
@@ -719,6 +722,7 @@ const mapStateToProps = state => {
     searchInProgress,
     searchListingsError,
     searchParams,
+    searchAuthorName,
   } = state.SearchPage;
   const listings = getListingsById(state, currentPageResultIds);
 
@@ -731,6 +735,7 @@ const mapStateToProps = state => {
     searchInProgress,
     searchListingsError,
     searchParams,
+    searchAuthorName,
   };
 };
 
