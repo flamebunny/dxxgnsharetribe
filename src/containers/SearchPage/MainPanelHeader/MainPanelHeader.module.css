@@ -7,7 +7,6 @@
 .searchOptions {
   display: flex;
   flex-direction: row;
-  margin-bottom: 8px;
 }
 
 .locationSearchHeader {
@@ -88,5 +87,23 @@
   line-height: 20px;
 }
 
+.breadcrumbs {
+  padding: 0;
+  margin-bottom: 10px;
+  margin-top: 0;
+
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  font-size: 14px;  
+}
+
+.breadcrumbLink {
+  color: var(--colorGrey700);
+  text-transform: uppercase;
+}
+
+.spacer{
+  margin: 0 7px;
+}
 
 

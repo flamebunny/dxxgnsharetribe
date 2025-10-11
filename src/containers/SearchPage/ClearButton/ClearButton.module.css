@@ -1,0 +1,35 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+  padding-top: 24px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid var(--colorGrey100);
+
+  @media (--viewportMedium) {
+    padding-top: 16px;
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.clearButton {
+  margin: 0;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
+  line-height: 18px;
+  color: var(--colorBlack);
+  text-transform: uppercase;
+  text-decoration: line-through;
+  margin: 0;
+  padding: 0;
+
+  /* Override button styles */
+  outline: none;
+  text-align: left;
+  border: none;
+  cursor: pointer;
+
+  display: inline-block;
+
+}

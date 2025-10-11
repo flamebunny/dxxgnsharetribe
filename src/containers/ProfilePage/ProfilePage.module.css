@@ -153,6 +153,8 @@
   font-size: 14px;
   line-height: 18px;
   padding: 5px 0 3px 0;
+  position: relative;
+  z-index: 2;
 
   @media (--viewportLarge) {
     display: block;
@@ -206,10 +208,11 @@
   color: var(--colorBlack);
   margin-bottom: 0;
   font-size: 14px;
-  font-weight: var(--fontWeightBold);
+  font-weight: var(--fontWeightRegular);
   line-height: 18px;
   text-transform: uppercase;
   text-align: center;
+  display: block;
 
   @media (--viewportMedium) {
     margin-top: 0px;
@@ -453,4 +456,8 @@
   }
 
 
+}
+
+.profileSectionCarouselNew {
+  margin-top: -64px;
 }

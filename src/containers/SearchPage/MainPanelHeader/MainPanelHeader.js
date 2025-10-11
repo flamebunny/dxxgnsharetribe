@@ -1,7 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { FormattedMessage } from '../../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../../util/reactIntl';
+
+// component imports
+import ClearButton from '../ClearButton/ClearButton';
 
 import css from './MainPanelHeader.module.css';
 
@@ -33,14 +36,32 @@ const MainPanelHeader = props => {
     searchInProgress = false,
     noResultsInfo,
     labelHeading,
+    getHandleChangedValueFn,
+    ...rest
   } = props;
 
+  const intl = useIntl();
+
   const classes = classNames(rootClassName || css.root, className);
+  const clear = intl.formatMessage({ id: 'PriceFilterForm.clear' });
+
+  const { liveEdit, showAsPopup } = rest;
+  const useHistoryPush = liveEdit || showAsPopup;
 
   return (
     <div className={classes}>
+
+      <div className={css.breadcrumbs}>
+        <ClearButton
+          onSubmit={getHandleChangedValueFn(useHistoryPush)}
+          {...rest}
+        />
+        <span className={css.spacer}>·</span>
+        <span>{labelHeading}</span>
+      </div>
+      
       <div className={css.searchOptions}>
-        <h2 className={css.locationSearchHeader}>"{labelHeading}"</h2>
+
         <div className={css.searchResultSummary}>
           <span className={css.resultsFound}>
             {searchInProgress ? (

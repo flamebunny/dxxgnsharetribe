@@ -49,6 +49,8 @@ import {
   NamedRedirect,
 } from '../../components';
 
+import SectionCarouselNew from '../../containers/PageBuilder/SectionBuilder/SectionCarouselNew';
+
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 import NotFoundPage from '../../containers/NotFoundPage/NotFoundPage';
@@ -241,7 +243,10 @@ export const MainContent = props => {
     intl,
     hideReviews,
     userTypeRoles,
+    location
   } = props;
+
+  let AuthorId = location.pathname.replace('/u/', '');
 
   const hasListings = listings.length > 0;
   const hasMatchMedia = typeof window !== 'undefined' && window?.matchMedia;
@@ -278,21 +283,24 @@ export const MainContent = props => {
           userFieldConfig={userFieldConfig}
           intl={intl}
         />
-      ) : null}
+      ) : null}      
 
       {hasListings ? (
-        <div className={listingsContainerClasses}>
-          <H4 as="h2" className={css.listingsTitle}>
-            <FormattedMessage id="ProfilePage.listingsTitle" values={{ count: listings.length }} /> 
-            &nbsp;<span>{displayName}</span>
-          </H4>
-          <ul className={css.listings}>
-            {listings.map(l => (
-              <li className={css.listing} key={l.id.uuid}>
-                <ListingCard listing={l} showAuthorInfo={false} />
-              </li>
-            ))}
-          </ul>
+        <div className={listingsContainerClasses}>      
+          <H2 as="h1" className={css.desktopHeading}>
+            <a className={css.listingsTitle} href={'/s?u='+AuthorId}>
+              <FormattedMessage id="ProfilePage.listingsTitle" values={{ count: listings.length }} /> 
+              &nbsp;<span>{displayName}</span>
+            </a>   
+          </H2>
+       
+          <SectionCarouselNew
+            key={`profileListings1`}
+            listings={listings}
+            sectionId={`carousel-new-listings_i`}
+            numColumns={4}
+            className={css.profileSectionCarouselNew}
+          />
         </div>
       ) : null}
       {hideReviews ? null : isMobileLayout ? (

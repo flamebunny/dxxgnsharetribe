@@ -70,12 +70,15 @@ class PriceFilterPlainComponent extends Component {
   handleChange(values) {
     const { onSubmit, queryParamNames } = this.props;
     const priceQueryParamName = getPriceQueryParamName(queryParamNames);
+
     onSubmit(format(values, priceQueryParamName));
   }
 
   handleClear() {
     const { onSubmit, queryParamNames } = this.props;
     const priceQueryParamName = getPriceQueryParamName(queryParamNames);
+
+    // onSubmit(format(null, 'u'));
     onSubmit(format(null, priceQueryParamName));
   }
 

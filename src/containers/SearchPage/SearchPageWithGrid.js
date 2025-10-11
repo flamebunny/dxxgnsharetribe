@@ -172,10 +172,7 @@ export class SearchPageComponent extends Component {
             filterConfigs
           ),
         };
-      };
-
-      console.log(filterConfigs);
-      
+      };      
 
       const callback = () => {
         if (useHistoryPush) {
@@ -194,8 +191,6 @@ export class SearchPageComponent extends Component {
       };
 
       this.setState(updater, callback);
-
-      console.log(this.state.currentQueryParams);
     };
   }
 
@@ -537,6 +532,9 @@ export class SearchPageComponent extends Component {
             searchListingsError={searchListingsError}
             noResultsInfo={noResultsInfo}
             labelHeading={labelHeading}
+            getHandleChangedValueFn={this.getHandleChangedValueFn}
+            liveEdit
+            showAsPopup={false}
           />
           <aside className={css.layoutWrapperFilterColumn} data-testid="filterColumnAside">
             <div className={css.filterColumnContent}>

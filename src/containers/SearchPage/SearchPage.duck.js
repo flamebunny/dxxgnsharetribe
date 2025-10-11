@@ -572,7 +572,8 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   //let authorId = "673936b3-fe19-41ef-8f0d-4b5475adc146";
   //let authorId2 = "679eccf8-fd03-4fdf-9177-e21b45971e58";
-  let authorId = "";
+  let authorId = '';
+  let authorCheck = '';
 
   //------------------
   // Get AuthorID from URL eg 679eccf8-fd03-4fdf-9177-e21b45971e58
@@ -611,18 +612,27 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       })
       
     }),    
-/*
+
     dispatch(queryUserListings(authorId, config)).then(assetResp => {
 
-      authorListingIds = assetResp.data?.data?.reduce((accumulator, currentItem) => {
-        accumulator.push(currentItem.id.uuid);
-        return accumulator;
-      }, []);   
+      if(assetResp !== undefined) {
+
+        authorListingIds = assetResp.data?.data?.reduce((accumulator, currentItem) => {
+          accumulator.push(currentItem.id.uuid);
+          return accumulator;
+        }, []);          
+
+        authorName = assetResp.data?.included   
+          .filter(l => {
+            return l.type === 'user'
+          })  
+          .map(l => l.attributes.profile.displayName);    
+      }
+
     }),
 
+/*
     dispatch(showUserNameFromId(authorId)).then(assetResp => {
-      console.log('=== Author Name ===');
-      console.log(assetResp);
       authorName = assetResp;
     })
 */
@@ -646,22 +656,17 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
      *    }
      */
 
-      console.log(featuredListingIds);
-      console.log(authorListingIds);
-
     dispatch(searchAuthorNameSuccess(authorName));
 
     if(queryParams?.sort === 'featured') {
-      console.log('======= Featured search =======');
-      
+      // console.log('======= Featured search =======');      
       featuredListingsCall(featuredListingIds);
     } else if(queryParams?.u ) {
-      console.log('======= User search =======');          
-
+      // console.log('======= User search =======');
       authorListingsCall(authorListingIds);
      // dispatch(searchListingsCall);
     } else {
-      console.log('======= Default search =======');
+      // console.log('======= Default search =======');
       dispatch(searchListingsCall);
     }
 

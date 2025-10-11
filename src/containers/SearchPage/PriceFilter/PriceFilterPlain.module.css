@@ -85,8 +85,9 @@
   composes: h5 from global;
   margin: 0;
   display: block;
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
   color: var(--colorGrey300);
+  text-transform: uppercase;
 
   /* Override button styles */
   outline: none;
@@ -94,7 +95,7 @@
   border: none;
   cursor: pointer;
 
-  display: none;
+  display: block;
 
   &:focus,
   &:hover {
