@@ -769,7 +769,7 @@ textarea {
 .marketplaceBodyFontStyles,
 .marketplaceDefaultFontStyles {
   font-family: var(--fontFamily);
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightRegular);
 
   /* No margins for default font */
   font-size: 14px;

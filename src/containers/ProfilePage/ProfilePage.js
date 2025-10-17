@@ -287,7 +287,7 @@ export const MainContent = props => {
 
       {hasListings ? (
         <div className={listingsContainerClasses}>      
-          <H2 as="h1" className={css.desktopHeading}>
+          <H2 as="h1" className={css.heading}>
             <a className={css.listingsTitle} href={'/s?u='+AuthorId}>
               <FormattedMessage id="ProfilePage.listingsTitle" values={{ count: listings.length }} /> 
               &nbsp;<span>{displayName}</span>

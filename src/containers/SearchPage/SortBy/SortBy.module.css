@@ -1,7 +1,7 @@
 @import '../../../styles/customMediaQueries.css';
 
 .sortBy {
-  margin-right: 9px;
+  margin: 0 10px;
   z-index: 0;
 }
 
@@ -15,8 +15,8 @@
   height: 35px;
   min-height: 35px;
 
-  padding: 0 18px;
-  margin: 0 9px 0 0;
+  padding: 0;
+  margin: 0;
 
   transition: all var(--transitionStyleButton);
   cursor: pointer;
@@ -29,16 +29,16 @@
   /* Button text styles */
   /* Default button text is centered without decorations */
   text-align: center;
-  text-decoration: none;
+  text-decoration: line-through;
   text-transform: uppercase;
 
   /* Button borders */
-  border: 1px solid var(--colorBlack);
+  
 
   background-color: var(--colorWhite);
 
   /* transparent sort */
-  border: 1px solid transparent;
+  border: none;
 
   padding-right: 30px;
   
@@ -47,7 +47,7 @@
     outline: none;
     /* box-shadow: var(--boxShadowFilterButton); */
     text-decoration: none;
-    border-color: var(--colorBlack);
+
   }
 
   &:disabled {

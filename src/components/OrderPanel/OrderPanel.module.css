@@ -232,6 +232,10 @@
   align-items: center;
   justify-content: center;
   gap: unset;
+  margin-left: 15px;
+  margin-right: 0;
+  padding: 0;
+  display: inline-block;
 }
 
 .priceValueInCTA {

@@ -47,7 +47,6 @@
   border-top-color: var(--colorGrey100);
   border-top-style: solid;
   background-color: var(--colorWhite);
-  box-shadow: var(--boxShadow);
 
   @media (--viewportMedium) {
     padding: 24px 24px 0 24px;

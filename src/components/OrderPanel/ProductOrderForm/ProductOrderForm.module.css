@@ -64,9 +64,9 @@
 
 .submitButton {
   padding: 0 24px;
-  margin-top: 0;
+  margin-top: 20px;
 
-  @media (--viewportMedium) {
+  @media (--viewportLarge) {
     padding: 0;
     margin-top: 0;
   }

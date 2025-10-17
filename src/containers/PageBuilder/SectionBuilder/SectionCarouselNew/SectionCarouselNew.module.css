@@ -405,13 +405,17 @@
 }
 
 .navRight {
-  right: 0;
+  right: 40px;
 
   & .navArrowWrapper {
     padding-left: 2px;
   }
 
   @media (--viewportMedium) {
+    
+  }
+
+  @media (min-width: 1440px) {
     right: 0px;
   }
 }

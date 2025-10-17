@@ -60,9 +60,20 @@
 }
 
 .mobileReviewRating {
-  display: block;
+  display: inline-flex;
   margin-top: 3px;
   margin-bottom: 9px;
+  font-weight: var(--fontWeightBold);
+
+  @media (--viewportMedium) {
+    display: none;
+  }
+}
+
+.mobileReviewRatingWrapper {
+    /* For aligning rating starts in the middle
+   * of a paragraph line */
+  display: block;
 
   @media (--viewportMedium) {
     display: none;
@@ -73,6 +84,7 @@
   /* For aligning rating starts in the middle
    * of a paragraph line */
   display: none;
+  
 
   @media (--viewportMedium) {
     display: inline-flex;
@@ -118,3 +130,5 @@
 .reviewStarsSVG {
   display: none;
 }
+
+

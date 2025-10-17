@@ -520,14 +520,7 @@ const OrderPanel = props => {
         ) : null}
       </ModalInMobile>
       <div className={css.openOrderForm}>
-        <PriceMaybe
-          price={price}
-          publicData={publicData}
-          validListingTypes={validListingTypes}
-          intl={intl}
-          marketplaceCurrency={marketplaceCurrency}
-          showCurrencyMismatch
-        />
+        
 
         {isClosed ? (
           <div className={css.closedListingButton}>
@@ -544,7 +537,7 @@ const OrderPanel = props => {
               location
             )}
             disabled={isOutOfStock}
-          >
+          >           
             {isBooking ? (
               <FormattedMessage id="OrderPanel.ctaButtonMessageBooking" />
             ) : isOutOfStock ? (
@@ -554,6 +547,14 @@ const OrderPanel = props => {
             ) : (
               <FormattedMessage id="OrderPanel.ctaButtonMessageInquiry" />
             )}
+             <PriceMaybe
+              price={price}
+              publicData={publicData}
+              validListingTypes={validListingTypes}
+              intl={intl}
+              marketplaceCurrency={marketplaceCurrency}
+              showCurrencyMismatch
+            />
           </PrimaryButton>
         )}
       </div>

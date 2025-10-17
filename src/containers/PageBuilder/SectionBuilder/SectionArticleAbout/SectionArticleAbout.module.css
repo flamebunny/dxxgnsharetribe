@@ -87,10 +87,11 @@
   line-height: 18px;
   word-break: auto-phrase;
   text-align: center;
+  margin: 0px auto 32px auto;
 
 
   @media (--viewportSmall) {
-
+    
   }
 
   @media (--viewportMedium) {
@@ -105,7 +106,19 @@
 }
 
 .paragraph {
-  padding: 0 !important;
+  padding: 0 20px !important;
+
+  media (--viewportSmall) {
+
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 !important;
+  }
+
+  @media (--viewportLarge) {
+
+  }
 }
 
 

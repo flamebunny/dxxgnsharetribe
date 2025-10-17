@@ -18,11 +18,13 @@ const Review = props => {
     <div className={css.review}>
       <Avatar className={css.avatar} user={review.author} />
       <div>
+        <span className={css.mobileReviewRatingWrapper}>
         <ReviewRating
           rating={review.attributes.rating}
           className={css.mobileReviewRating}
           reviewStarClassName={css.reviewRatingStar}
         />
+        </span>
         <p className={css.reviewContent}>{review.attributes.content}</p>
         <p className={css.reviewInfo}>
           <UserDisplayName user={review.author} intl={intl} />

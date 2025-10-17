@@ -6,18 +6,18 @@
   width: auto;
   height: 35px;
   min-height: 35px;
+  border: none;
 
-  padding: 0 18px;
-  margin: 0 9px 0 0;
+  padding: 0;
+  margin: 0px 10px 0px 0px;
 
   transition: all var(--transitionStyleButton);
   cursor: pointer;
 
   /* Font */
-  font-weight: var(--fontWeightSemiBold);
-  font-size: 13px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
   line-height: 18px;
-  letter-spacing: 0.2px;
 
   /* Button text styles */
   /* Default button text is centered without decorations */
@@ -27,7 +27,6 @@
   &:focus,
   &:hover {
     outline: none;
-    box-shadow: var(--boxShadowFilterButton);
     text-decoration: none;
   }
 
@@ -42,25 +41,26 @@
     padding: var(--marketplaceButtonSmallDesktopPadding);
     margin: 0;
 
-    font-weight: var(--fontWeightMedium);
-    font-size: 13px;
-    line-height: 20px;
+    font-weight: var(--fontWeightRegular);
+    font-size: 14px;
+    line-height: 18px;
   }
 }
 
 .label {
   /* Button borders */
-  border: 1px solid var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
-
   background-color: var(--colorWhite);
+  text-transform: uppercase;
+  font-family: "Cousine", serif;
+  text-decoration: line-through;
+
 
   &:hover,
   &:focus {
-    border-color: var(--colorGrey300);
+
   }
   &:disabled {
-    border-color: var(--colorGrey100);
+
   }
 
   @media (--viewportMedium) {
@@ -73,16 +73,17 @@
 
 .labelSelected {
   /* Button borders */
-  border-radius: var(--borderRadiusMedium);
-  border: 1px solid var(--marketplaceColor);
+  text-transform: uppercase;
+  font-family: "Cousine", serif;
+  text-decoration: line-through;
 
   /* Button colors: secondary */
-  background-color: var(--marketplaceColor);
-  color: var(--colorWhite);
+  background-color: var(--colorWhite);
+  color: var(--colorBlack);
 
   &:hover,
   &:focus {
-    border: 1px solid var(--marketplaceColorDark);
+
   }
   &:disabled {
     background-color: var(--colorGrey100);
