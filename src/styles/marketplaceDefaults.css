@@ -882,7 +882,7 @@ textarea {
 
 .marketplaceSearchFilterSublabelFontStyles {
   font-weight: var(--fontWeightMedium);
-  font-size: 18px;
+  font-size: 14px;
   line-height: 18px;
 }
 
@@ -939,13 +939,13 @@ textarea {
 
 .marketplaceTabNavFontStyles {
   font-weight: var(--fontWeightMedium);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 18px;
 
   @media (--viewportLarge) {
     font-weight: var(--fontWeightSemiBold);
-    font-size: 20px;
-    line-height: 24px;
+    font-size: 14px;
+    line-height: 18px;
   }
 }
 
@@ -1402,8 +1402,8 @@ textarea {
 
 /* Modal message */
 .marketplaceModalParagraphStyles {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 18px;
   font-weight: var(--fontWeightMedium);
   margin: 18px 0 0 0;
 
@@ -1435,23 +1435,21 @@ textarea {
 
 .marketplaceModalHelperText {
   font-weight: var(--fontWeightRegular);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 18px;
 
   -webkit-font-smoothing: subpixel-antialiased;
 
   color: var(--colorGrey300);
   margin: 0;
+  padding: 0;
 
-  @media (--viewportMedium) {
-    line-height: 16px;
-    margin: 0;
-  }
 }
 
 .marketplaceModalHelperLink {
   color: var(--colorBlack);
   margin: 0;
+
   margin-left: 10px;
   font-weight: var(--fontWeightRegular);
   font-size: 14px;

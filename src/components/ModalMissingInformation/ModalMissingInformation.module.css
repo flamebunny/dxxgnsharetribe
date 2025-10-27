@@ -43,6 +43,10 @@
   display: none;
 }
 
+.headerText {
+  display: none;
+}
+
 .reminderModalLinkButton {
   composes: buttonPrimary from global;
 }

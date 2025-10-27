@@ -26,7 +26,7 @@ import {
   LISTING_PAGE_PARAM_TYPE_EDIT,
   createSlug,
 } from '../../../util/urlHelpers';
-import { createResourceLocatorString, findRouteByRouteName } from '../../../util/routes';
+import { pathByRouteName, createResourceLocatorString, findRouteByRouteName } from '../../../util/routes';
 import { isBookingProcessAlias, isPurchaseProcessAlias } from '../../../transactions/transaction';
 
 import {
@@ -146,27 +146,7 @@ const ShowFinishDraftOverlayMaybe = props => {
         >
           <FormattedMessage id="ManageListingCard.finishListingDraft" />
         </NamedLink>
-        <div className={css.alternativeActionText}>
-          {intl.formatMessage(
-            { id: 'ManageListingCard.discardDraftText' },
-            {
-              discardDraftLink: (
-                <InlineTextButton
-                  key="discardDraftLink"
-                  rootClassName={css.alternativeActionLink}
-                  disabled={!!actionsInProgressListingId}
-                  onClick={() => {
-                    if (!actionsInProgressListingId) {
-                      onDiscardDraft(currentListingId);
-                    }
-                  }}
-                >
-                  <FormattedMessage id="ManageListingCard.discardDraftLinkText" />
-                </InlineTextButton>
-              ),
-            }
-          )}
-        </div>
+        
       </Overlay>
     </React.Fragment>
   ) : null;
@@ -488,6 +468,9 @@ export const ManageListingCard = props => {
     ? Object.keys(firstImage?.attributes?.variants).filter(k => k.startsWith(variantPrefix))
     : [];
 
+
+  const { formattedPrice } = priceData(price, config.currency, intl);
+
   return (
     <div className={classes}>
       <div
@@ -614,28 +597,13 @@ export const ManageListingCard = props => {
       </div>
 
       <div className={css.info}>
-        <PriceMaybe
-          price={price}
-          publicData={publicData}
-          config={config}
-          intl={intl}
-          foundListingTypeConfig={foundListingTypeConfig}
-        />
+        <div className={classNames(css.info2, css.cousine)}>   
+          <a className={classNames(css.infoTitle, css.elipsis)} href={createListingURL(routeConfiguration, listing)}>{formatTitle(title, MAX_LENGTH_FOR_WORDS_IN_TITLE)}</a>
+          <span className={css.slash}>{' / '}</span>
+          <span className={classNames(css.infoPrice)}><b>{formattedPrice === '()' ? '-' : formattedPrice}</b></span>
+        </div>      
 
-        <div className={css.mainInfo}>
-          <div className={css.titleWrapper}>
-            <InlineTextButton
-              rootClassName={titleClasses}
-              onClick={event => {
-                event.preventDefault();
-                event.stopPropagation();
-                history.push(createListingURL(routeConfiguration, listing));
-              }}
-            >
-              {formatTitle(title, MAX_LENGTH_FOR_WORDS_IN_TITLE)}
-            </InlineTextButton>
-          </div>
-        </div>
+        <div><span>Quantity: {currentStock === undefined ? 0 : currentStock}</span></div>       
 
         <div className={css.manageLinks}>
           <NamedLink
@@ -645,17 +613,31 @@ export const ManageListingCard = props => {
           >
             <FormattedMessage id="ManageListingCard.editListing" />
           </NamedLink>
+          
+          <span className={css.manageLinksSeparator}>{' • '}</span>
+    
+          {intl.formatMessage(
+            { id: 'ManageListingCard.discardDraftText' },
+            {
+              discardDraftLink: (
+                <InlineTextButton
+                  key="discardDraftLink"
+                  rootClassName={css.alternativeActionLink}
+                  disabled={!!actionsInProgressListingId}
+                  onClick={() => {
+                    if (!actionsInProgressListingId) {
+                      onDiscardDraft(currentListing.id);
+                    }
+                  }}
+                >
+                  <FormattedMessage id="ManageListingCard.discardDraftLinkText" />
+                </InlineTextButton>
+              ),
+            }
+          )}
+       
 
-          <LinkToStockOrAvailabilityTab
-            id={id}
-            slug={slug}
-            editListingLinkType={editListingLinkType}
-            isBookable={isBookable}
-            currentStock={currentStock}
-            hasListingType={hasListingType}
-            hasStockManagementInUse={hasStockManagementInUse}
-            intl={intl}
-          />
+          
         </div>
       </div>
     </div>

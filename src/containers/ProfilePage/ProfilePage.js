@@ -246,6 +246,8 @@ export const MainContent = props => {
     location
   } = props;
 
+  let hideReviews2 = true;
+
   let AuthorId = location.pathname.replace('/u/', '');
 
   const hasListings = listings.length > 0;
@@ -303,7 +305,7 @@ export const MainContent = props => {
           />
         </div>
       ) : null}
-      {hideReviews ? null : isMobileLayout ? (
+      {hideReviews2 ? null : isMobileLayout ? (
         <MobileReviews
           reviews={reviews}
           queryReviewsError={queryReviewsError}
