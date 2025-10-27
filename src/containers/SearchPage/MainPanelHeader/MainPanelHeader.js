@@ -56,7 +56,7 @@ const MainPanelHeader = props => {
           onSubmit={getHandleChangedValueFn(useHistoryPush)}
           {...rest}
         />
-        <span className={css.spacer}>·</span>
+        <span className={css.spacer}>{' • '}</span>
         <span>{labelHeading}</span>
       </div>
       
