@@ -56,7 +56,7 @@
 }
 
 .message {
-  composes: textXSmall from global;
+  composes: textSmall from global;
   max-width: 220px;
   text-align: center;
   position: absolute;
@@ -67,7 +67,7 @@
 }
 
 .messageClass {
-  composes: textXSmall from global;
+  composes: textSmall from global;
   max-width: 220px;
   text-align: center;
   display: unset;  

@@ -32,7 +32,7 @@
 }
 
 .initials {
-  composes: textXSmall from global;
+  composes: textSmall from global;
   padding: 0;
 }
 

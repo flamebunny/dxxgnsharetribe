@@ -49,11 +49,11 @@
   cursor: pointer;
 
   .finishListingDraftLink {
-    color: #474747;
+    color: #000;
   }
 
   .openListingButton{
-    color: #474747;
+    color: #000;
   }
 
   &:hover {
@@ -356,9 +356,9 @@
   justify-content: center;
   align-items: center;
   border-radius: 0;
-  color: #474747;
+  color: #000;
   font-family: 'Cousine', sans-serif;
-  font-size: 24px;
+  font-size: 14px;
   text-transform: uppercase;
 
   @media (--viewportMedium) {
