@@ -21,6 +21,8 @@
 /* Title of the modal */
 .modalTitle {
   composes: marketplaceModalTitleStyles from global;
+  
+  display: none;
 }
 
 .reviewee {

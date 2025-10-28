@@ -44,6 +44,10 @@
 
 .selectCountry {
   margin-bottom: 24px;
+
+  label {
+    display: none;
+  }
 }
 
 .error {

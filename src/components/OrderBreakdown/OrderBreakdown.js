@@ -114,18 +114,6 @@ export const OrderBreakdownComponent = props => {
       />
 
       <LineItemBasePriceMaybe lineItems={lineItems} code={lineItemUnitType} intl={intl} />
-      <LineItemShippingFeeMaybe lineItems={lineItems} intl={intl} />
-      <LineItemPickupFeeMaybe lineItems={lineItems} intl={intl} />
-      <LineItemUnknownItemsMaybe lineItems={lineItems} isProvider={isProvider} intl={intl} />
-
-      <LineItemSubTotalMaybe
-        lineItems={lineItems}
-        code={lineItemUnitType}
-        userRole={userRole}
-        intl={intl}
-        marketplaceCurrency={currency}
-      />
-      <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />
 
       <LineItemCustomerCommissionMaybe
         lineItems={lineItems}
@@ -139,7 +127,6 @@ export const OrderBreakdownComponent = props => {
         marketplaceName={marketplaceName}
         intl={intl}
       />
-
       <LineItemProviderCommissionMaybe
         lineItems={lineItems}
         isProvider={isProvider}
@@ -151,7 +138,20 @@ export const OrderBreakdownComponent = props => {
         isProvider={isProvider}
         marketplaceName={marketplaceName}
         intl={intl}
+      />     
+      
+      <LineItemUnknownItemsMaybe lineItems={lineItems} isProvider={isProvider} intl={intl} />
+
+      <LineItemSubTotalMaybe
+        lineItems={lineItems}
+        code={lineItemUnitType}
+        userRole={userRole}
+        intl={intl}
+        marketplaceCurrency={currency}
       />
+      <LineItemShippingFeeMaybe lineItems={lineItems} intl={intl} />
+      <LineItemPickupFeeMaybe lineItems={lineItems} intl={intl} />
+      <LineItemRefundMaybe lineItems={lineItems} intl={intl} marketplaceCurrency={currency} />      
 
       <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
 

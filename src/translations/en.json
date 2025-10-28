@@ -864,6 +864,7 @@
   "ShippingDetails.recipientPhoneNumberPlaceholder": "+358 123456789",
   "ShippingDetails.stateLabel": "State {optionalText}",
   "ShippingDetails.statePlaceholder": "Enter your state",
+  "ShippingDetails.contact": "Contact",
   "ShippingDetails.title": "Shipping address",
   "SignupForm.displayNameLabel": "Display name",
   "SignupForm.displayNamePlaceholder": "Jane D",

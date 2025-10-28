@@ -64,7 +64,7 @@ const FieldReviewRatingComponent = props => {
           htmlFor={inputId}
           title={intl.formatMessage({ id: `FieldReviewRating.${starId}` })}
         >
-          <IconReviewStar rootClassName={css.star} />
+          <span className={css.reviewRatingStar}>X</span>
         </label>
       );
     }

@@ -36,8 +36,9 @@ const ShippingDetails = props => {
   return (
     <div className={classNames(css.defaultUserFields, {classes})}>
       <Heading as="h3" rootClassName={css.heading}>
-        <FormattedMessage id="ShippingDetails.title" />
+        <FormattedMessage id="ShippingDetails.contact" />
       </Heading>
+  
       <FieldTextInput
         id={`${fieldId}.recipientName`}
         name="recipientName"
@@ -70,12 +71,16 @@ const ShippingDetails = props => {
         })}
         onUnmount={() => formApi.change('recipientPhoneNumber', undefined)}
       />
+   
+      <Heading as="h3" rootClassName={css.headingSecondary}>
+        <FormattedMessage id="ShippingDetails.title" />
+      </Heading>
       <div className={css.formRow}>
         <FieldTextInput
           id={`${fieldId}.recipientAddressLine1`}
           name="recipientAddressLine1"
           disabled={disabled}
-          className={css.field}
+          className={css.fieldFullWidth}
           type="text"
           autoComplete="shipping address-line1"
           label={intl.formatMessage({ id: 'ShippingDetails.addressLine1Label' })}
@@ -86,13 +91,15 @@ const ShippingDetails = props => {
             intl.formatMessage({ id: 'ShippingDetails.addressLine1Required' })
           )}
           onUnmount={() => formApi.change('recipientAddressLine1', undefined)}
-        />
+        />        
+      </div>
 
+      <div className={css.formRow}>
         <FieldTextInput
           id={`${fieldId}.recipientAddressLine2`}
           name="recipientAddressLine2"
           disabled={disabled}
-          className={css.field}
+          className={css.fieldFullWidth}
           type="text"
           autoComplete="shipping address-line2"
           label={intl.formatMessage(
@@ -105,7 +112,21 @@ const ShippingDetails = props => {
           onUnmount={() => formApi.change('recipientAddressLine2', undefined)}
         />
       </div>
+      
       <div className={css.formRow}>
+        <FieldTextInput
+          id={`${fieldId}.recipientCity`}
+          name="recipientCity"
+          disabled={disabled}
+          className={css.field}
+          type="text"
+          autoComplete="shipping address-level2"
+          label={intl.formatMessage({ id: 'ShippingDetails.cityLabel' })}
+          placeholder={intl.formatMessage({ id: 'ShippingDetails.cityPlaceholder' })}
+          validate={validators.required(intl.formatMessage({ id: 'ShippingDetails.cityRequired' }))}
+          onUnmount={() => formApi.change('recipientCity', undefined)}
+        />
+
         <FieldTextInput
           id={`${fieldId}.recipientPostalCode`}
           name="recipientPostal"
@@ -121,20 +142,7 @@ const ShippingDetails = props => {
             intl.formatMessage({ id: 'ShippingDetails.postalCodeRequired' })
           )}
           onUnmount={() => formApi.change('recipientPostal', undefined)}
-        />
-
-        <FieldTextInput
-          id={`${fieldId}.recipientCity`}
-          name="recipientCity"
-          disabled={disabled}
-          className={css.field}
-          type="text"
-          autoComplete="shipping address-level2"
-          label={intl.formatMessage({ id: 'ShippingDetails.cityLabel' })}
-          placeholder={intl.formatMessage({ id: 'ShippingDetails.cityPlaceholder' })}
-          validate={validators.required(intl.formatMessage({ id: 'ShippingDetails.cityRequired' }))}
-          onUnmount={() => formApi.change('recipientCity', undefined)}
-        />
+        />        
       </div>
       <div className={css.formRow}>
         <FieldTextInput

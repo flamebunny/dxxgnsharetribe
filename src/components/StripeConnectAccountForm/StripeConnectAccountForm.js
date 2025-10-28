@@ -11,7 +11,7 @@ import { isStripeError } from '../../util/errors';
 import * as validators from '../../util/validators';
 import { propTypes } from '../../util/types';
 
-import { H4, Button, ExternalLink, FieldSelect, FieldRadioButton, Form } from '../../components';
+import { H3, Button, ExternalLink, FieldSelect, FieldRadioButton, Form } from '../../components';
 
 import css from './StripeConnectAccountForm.module.css';
 
@@ -79,9 +79,9 @@ const CreateStripeAccountFields = props => {
 
   return (
     <div className={css.sectionContainer}>
-      <H4 as="h3">
+      <H3 as="h1">
         <FormattedMessage id="StripeConnectAccountForm.accountTypeTitle" />
-      </H4>
+      </H3>
       <div className={css.radioButtonRow}>
         <FieldRadioButton
           id="individual"

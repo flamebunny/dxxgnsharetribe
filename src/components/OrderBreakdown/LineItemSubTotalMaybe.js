@@ -8,6 +8,7 @@ import {
   propTypes,
   LINE_ITEM_CUSTOMER_COMMISSION,
   LINE_ITEM_PROVIDER_COMMISSION,
+  LINE_ITEM_SHIPPING_FEE,
 } from '../../util/types';
 
 import css from './OrderBreakdown.module.css';
@@ -36,10 +37,26 @@ const isCommission = lineItem => {
 };
 
 /**
+ * Checks if line item represents commission
+ */
+const isShipping = lineItem => {
+  return (
+    lineItem.code === LINE_ITEM_SHIPPING_FEE
+  );
+};
+
+/**
  * Returns non-commission, non-reversal line items
  */
 const nonCommissionNonReversalLineItems = lineItems => {
   return lineItems.filter(item => !isCommission(item) && !item.reversal);
+};
+
+/**
+ * Returns non-shipping line items
+ */
+const nonShippingLineItems = lineItems => {
+  return lineItems.filter(item => !isShipping(item));
 };
 
 /**
@@ -71,6 +88,7 @@ const hasCommission = (lineItems, userRole) => {
 const LineItemSubTotalMaybe = props => {
   const { lineItems, code, userRole, intl, marketplaceCurrency } = props;
 
+ 
   const refund = lineItems.find(item => item.code === code && item.reversal);
 
   // Show subtotal only if commission line-item is applicable to user or refund is issued.
@@ -78,8 +96,12 @@ const LineItemSubTotalMaybe = props => {
 
   // all non-reversal, non-commission line items
   const subTotalLineItems = nonCommissionNonReversalLineItems(lineItems);
+
+  // all non-shipping line items
+  const subTotalLineItems2 = nonShippingLineItems(lineItems);
+
   // line totals of those line items combined
-  const subTotal = lineItemsTotal(subTotalLineItems, marketplaceCurrency);
+  const subTotal = lineItemsTotal(subTotalLineItems2, marketplaceCurrency);
 
   const formattedSubTotal = subTotalLineItems.length > 0 ? formatMoney(intl, subTotal) : null;
 

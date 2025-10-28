@@ -29,15 +29,15 @@
 }
 
 .submitContainer {
-  display: flex;
-  flex-direction: row;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .errorContainer {
   display: block;
-  flex: 1;
-  text-align: right;
-  padding: 26px 24px 0 0;
+  text-align: center;
+  padding: 26px 0 0 0;
+  color: var(--colorFail);
 }
 
 .error {
@@ -49,7 +49,6 @@
 }
 
 .submitButton {
-  float: right;
   min-width: 150px;
 }
 

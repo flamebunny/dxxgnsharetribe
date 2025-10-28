@@ -97,20 +97,22 @@ const StripePaymentAddress = props => {
           id={`${fieldId}.addressLine1`}
           name="addressLine1"
           disabled={disabled}
-          className={css.field}
+          className={css.fieldFullWidth}
           type="text"
           autoComplete="billing address-line1"
           label={addressLine1Label}
           placeholder={addressLine1Placeholder}
           validate={addressLine1Required}
           onUnmount={() => form.change('addressLine1', undefined)}
-        />
-
+        />        
+      </div>
+      
+      <div className={css.formRow}>
         <FieldTextInput
           id={`${fieldId}.addressLine2`}
           name="addressLine2"
           disabled={disabled}
-          className={css.field}
+          className={css.fieldFullWidth}
           type="text"
           autoComplete="billing address-line2"
           label={addressLine2Label}
@@ -118,21 +120,8 @@ const StripePaymentAddress = props => {
           onUnmount={() => form.change('addressLine2', undefined)}
         />
       </div>
-      <div className={css.formRow}>
-        <FieldTextInput
-          id={`${fieldId}.postalCode`}
-          name="postal"
-          disabled={disabled}
-          className={css.field}
-          type="text"
-          autoComplete="billing postal-code"
-          label={postalCodeLabel}
-          placeholder={postalCodePlaceholder}
-          validate={postalCodeRequired}
-          onUnmount={() => form.change('postal', undefined)}
-          onChange={event => handleOnChange(event)}
-        />
 
+      <div className={css.formRow}>
         <FieldTextInput
           id={`${fieldId}.city`}
           name="city"
@@ -145,6 +134,19 @@ const StripePaymentAddress = props => {
           validate={cityRequired}
           onUnmount={() => form.change('city', undefined)}
         />
+        <FieldTextInput
+          id={`${fieldId}.postalCode`}
+          name="postal"
+          disabled={disabled}
+          className={css.field}
+          type="text"
+          autoComplete="billing postal-code"
+          label={postalCodeLabel}
+          placeholder={postalCodePlaceholder}
+          validate={postalCodeRequired}
+          onUnmount={() => form.change('postal', undefined)}
+          onChange={event => handleOnChange(event)}
+        />        
       </div>
       <div className={css.formRow}>
         <FieldTextInput
