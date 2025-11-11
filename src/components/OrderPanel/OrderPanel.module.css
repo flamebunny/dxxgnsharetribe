@@ -187,9 +187,9 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 10px 20px;
+  padding: 5px 20px;
   background-color: var(--colorWhite);
-  border-top: 1px solid var(--colorBlack);
+  border-top: none;
   display: flex;
 
   /* Contain repainting to this component only */
@@ -236,7 +236,39 @@
   margin-right: 0;
   padding: 0;
   display: inline-block;
+
+
 }
+
+
+.priceContainerInCTA:after {
+    content: '';
+    height: 1px;
+    background: black;
+    display: block;
+    padding: 0;
+    margin-top: -10px;
+    width: calc(100% + 40px);
+    margin-left: -20px;
+  }
+
+  .priceContainerInCTA:hover:after  {
+    background: #FFF;
+    color: var(--colorBlack);
+  }
+
+  .priceContainerInCTA:last-child:after { 
+    margin-left: -20px; 
+    width: calc(100% + 20px);
+  }
+
+  .priceContainerInCTA:last-child:hover:after {
+    margin-left: 0; 
+    width: 100%;
+  }
+
+
+
 
 .priceValueInCTA {
   /* Font */

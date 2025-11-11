@@ -95,7 +95,6 @@ const EmailSubmittedContent = props => {
 
   return (
     <div className={css.emailSubmittedContent}>
-      <IconKeys className={css.modalIcon} />
       <Heading as="h1" rootClassName={css.modalTitle}>
         <FormattedMessage id="PasswordRecoveryPage.emailSubmittedTitle" />
       </Heading>

@@ -9,7 +9,7 @@
 }
 
 .priorityLink {
-  border-bottom: 0px solid;
+  /* border-bottom: 0px solid; */
   transition: var(--transitionStyleButton);
 
   font-weight: var(--fontWeightRegular);
@@ -27,7 +27,7 @@
 
   &:hover {
     color: var(--colorBlack);
-    border-bottom: 4px solid var(--marketplaceColor);
+    /* border-bottom: 4px solid var(--marketplaceColor); */
     border-radius: 0;
     text-decoration: none;
   }
@@ -46,7 +46,7 @@ a >  span > span{
 .highlight {
   color: var(--marketplaceColor);
   &:hover {
-    color: var(--marketplaceColorDark);
+    color: var(--marketplaceColor);
   }
 }
 

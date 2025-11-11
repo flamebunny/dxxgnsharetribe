@@ -29,12 +29,13 @@
 
 /* logo */
 .logoLink {
-  border-bottom: 0px solid;
+  /* border-bottom: 0px solid; */
   transition: var(--transitionStyleButton);
 }
 .logoLink:hover {
-  border-bottom: 4px solid var(--marketplaceColor);
+  /* border-bottom: 4px solid var(--marketplaceColor); */
   border-radius: 0;
+  opacity: 0.7;
 }
 
 /* Search */
@@ -107,7 +108,7 @@
 
   &:hover {
     color: var(--colorBlack);
-    border-bottom: 4px solid var(--marketplaceColor);
+    /* border-bottom: 4px solid var(--marketplaceColor); */
     border-radius: 0;
     text-decoration: none;
   }
@@ -180,9 +181,10 @@
   padding: 0 12px 0 12px;
 
   &:hover {
-    border-bottom: 4px solid var(--marketplaceColor);
+    /* border-bottom: 4px solid var(--marketplaceColor); */
     border-radius: 0;
     text-decoration: none;
+    opacity: 0.7;
   }
 
   &:active {
@@ -235,7 +237,7 @@
     text-decoration: none;
 
     & .menuItemBorder {
-      width: 6px;
+      /* width: 6px; */
       background-color: var(--marketplaceColor);
     }
   }
@@ -291,7 +293,7 @@
 
     & .menuItemBorder {
       height: 100%;
-      width: 6px;
+      /* width: 6px; */
       top: 0;
       background-color: var(--marketplaceColor);
     }

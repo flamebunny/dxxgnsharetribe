@@ -6,7 +6,7 @@
   margin: 0;
 
   & legend {
-    font-weight: var(--fontWeightRegular);
+    font-weight: var(--fontWeightBold);
     font-size: 14px;
     line-height: 18px;
     color: var(--colorBlack);
@@ -29,6 +29,7 @@
   flex-direction: row-reverse;
   justify-content: flex-end;
   margin-top: 0px;
+  margin-left: 16px;
 }
 
 .rateInput {
@@ -74,7 +75,7 @@
 .reviewRatingStar {
   color: var(--colorGrey300);
   transition: var(--transitionStyleButton);
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
 }
 

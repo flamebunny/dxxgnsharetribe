@@ -523,7 +523,7 @@
 
   box-shadow: none;
   background-color: white;
-  border-top: 1px solid var(--colorBlack);
+  border-top: none;
 
   @media (--viewportLarge) {
     border-top: none;

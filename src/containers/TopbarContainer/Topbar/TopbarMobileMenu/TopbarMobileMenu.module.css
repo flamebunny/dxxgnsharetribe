@@ -33,7 +33,6 @@
   width: 100vw;
   padding: 10px 0;
   background-color: var(--colorWhite);
-  border-top: 1px solid;
 
   /* box-shadow: var(--boxShadowTop); */
 }
@@ -150,6 +149,8 @@
 
 .createNewListingLink {
   composes: buttonPrimary from global;
+
+  font-weight: var(--fontWeightRegular);
 }
 
 .authenticationGreeting {
@@ -164,12 +165,14 @@
 }
 
 .signupLink {
-  text-decoration: none;
+  text-decoration: line-through;
+  font-weight: normal;
   white-space: nowrap;
   color: var(--marketplaceColor);
 }
 .loginLink {
-  text-decoration: none;
+  text-decoration: line-through;
+  font-weight: normal;
   white-space: nowrap;
   color: var(--marketplaceColor);
 }

@@ -66,9 +66,10 @@
   padding: 0;
   flex-shrink: 0;
   background-color: var(--colorWhite);
-  box-shadow: var(--boxShadowLight);
-  border-top: 1px solid var(--colorGrey100);
+
   overflow-x: scroll;
+  padding-top: 29px;
+
 
   @media (--viewportLarge) {
     padding: 72px 0 82px 36px;
@@ -101,6 +102,7 @@
 
   @media (--viewportLarge) {
     margin-left: 0;
+        margin-bottom: 10px;
 
     &:first-child {
       padding-left: 0;

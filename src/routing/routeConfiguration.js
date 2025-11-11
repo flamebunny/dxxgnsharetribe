@@ -227,14 +227,14 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       component: PasswordRecoveryPage,
     },
     {
-      path: '/inbox',
+      path: '/history',
       name: 'InboxBasePage',
       auth: true,
       authPage: 'LoginPage',
       component: () => <NamedRedirect name="InboxPage" params={{ tab: 'sales' }} />,
     },
     {
-      path: '/inbox/:tab',
+      path: '/history/:tab',
       name: 'InboxPage',
       auth: true,
       authPage: 'LoginPage',

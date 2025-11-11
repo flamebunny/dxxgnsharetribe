@@ -119,12 +119,16 @@ const TopbarMobileMenu = props => {
       <nav className={css.root}>
         <div className={css.content}>
           <div className={css.authenticationGreeting}>
-            <FormattedMessage
-              id="TopbarMobileMenu.unauthorizedGreeting"
-              values={{ lineBreak: <br />, signupOrLogin }}
-            />
+            <div className={css.accountLinksWrapper}>
+              <NamedLink name="SignupPage" className={classNames(css.navigationLink, css.signupLink)}>
+                <FormattedMessage id="TopbarMobileMenu.signupLink" />
+              </NamedLink>
+            
+              <NamedLink name="LoginPage" className={classNames(css.navigationLink, css.loginLink)}>
+                <FormattedMessage id="TopbarMobileMenu.loginLink" />
+              </NamedLink>               
+            </div>
           </div>
-
           <div className={css.customLinksWrapper}>{extraLinks}</div>
 
           <div className={css.spacer} />

@@ -31,7 +31,7 @@
   box-shadow: none;
 
   @media (--viewportLarge) {
-    box-shadow: var(--boxShadowLight);
+  /*  box-shadow: var(--boxShadowLight); */
   }
 }
 
@@ -112,6 +112,7 @@
   }
 
   @media (--viewportLarge) {
+    margin-bottom: 10px;
     margin-left: 0;
   }
 }
@@ -343,7 +344,7 @@
 }
 
 .stateNoActionNeeded {
-  color: var(--colorGrey700);
+  color: var(--colorGrey300);
 }
 
 .stateConcluded {
@@ -351,7 +352,7 @@
 }
 
 .bookingActionNeeded {
-  color: var(--colorGrey700);
+  color: var(--colorGrey300);
   margin-top: 4px;
 
   @media (--viewportMedium) {

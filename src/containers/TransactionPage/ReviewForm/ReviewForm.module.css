@@ -39,7 +39,7 @@
   }
 
   label {
-    display: none;
+    font-weight: var(--fontWeightBold);
   }
 }
 
