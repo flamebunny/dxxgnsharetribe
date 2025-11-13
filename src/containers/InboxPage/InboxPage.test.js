@@ -156,12 +156,12 @@ describe('InboxPage', () => {
         // Has links to orders tab
         const ordersTabTitle = screen.getByRole('link', { name: 'InboxPage.ordersTabTitle' });
         expect(ordersTabTitle).toBeInTheDocument();
-        expect(ordersTabTitle.getAttribute('href')).toContain('/history/orders');
+        expect(ordersTabTitle.getAttribute('href')).toContain('/inbox/orders');
 
         // Has links to sales tab
         const salesTabTitle = screen.getByRole('link', { name: 'InboxPage.salesTabTitle' });
         expect(salesTabTitle).toBeInTheDocument();
-        expect(salesTabTitle.getAttribute('href')).toContain('/history/sales');
+        expect(salesTabTitle.getAttribute('href')).toContain('/inbox/sales');
 
         // Has 2 items
         const items = screen.queryAllByRole('link', { name: /listing1/i });
@@ -253,12 +253,12 @@ describe('InboxPage', () => {
         // Has links to orders tab
         const ordersTabTitle = screen.getByRole('link', { name: 'InboxPage.ordersTabTitle' });
         expect(ordersTabTitle).toBeInTheDocument();
-        expect(ordersTabTitle.getAttribute('href')).toContain('/history/orders');
+        expect(ordersTabTitle.getAttribute('href')).toContain('/inbox/orders');
 
         // Has links to sales tab
         const salesTabTitle = screen.getByRole('link', { name: 'InboxPage.salesTabTitle' });
         expect(salesTabTitle).toBeInTheDocument();
-        expect(salesTabTitle.getAttribute('href')).toContain('/history/sales');
+        expect(salesTabTitle.getAttribute('href')).toContain('/inbox/sales');
 
         // Has 2 items
         const items = screen.queryAllByRole('link', { name: /listing1/i });
