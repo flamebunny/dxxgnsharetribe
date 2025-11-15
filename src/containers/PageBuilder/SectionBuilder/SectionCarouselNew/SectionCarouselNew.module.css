@@ -407,7 +407,7 @@
 }
 
 .navRight {
-  right: 40px;
+  right: 0;
 
   & .navArrowWrapper {
     padding-left: 2px;
