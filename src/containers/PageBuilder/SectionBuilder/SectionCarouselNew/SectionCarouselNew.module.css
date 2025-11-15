@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   scroll-behavior: smooth;
-  padding: 0 10px;
+  padding: 0;
   margin: 0 auto;
   position: relative;
 
@@ -18,27 +18,7 @@
     &:hover .carouselArrows {
 
     }
-  }
-
-  @media (min-width: 550px) {
-    padding: 0 10px; 
-  }
-
-  @media (--viewportMedium) {
-    padding: 0 24px;
-  }
-
-  @media (--viewportLarge) {    
-
-  }
-
-  @media (min-width: 1120px) {
-    padding: 0 24px;
-  }
-
-  @media (min-width: 1440px) {
-    padding: 0;
-  }
+  }  
 }
 
 
@@ -99,6 +79,7 @@
   display: flex;
   flex-wrap: nowrap;
   width: var(--carouselWidth);
+  padding: 0 10px;
   padding-bottom: 24px;
 
   overflow-x: auto;
@@ -109,6 +90,26 @@
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media (min-width: 550px) {
+    padding: 0 10px; 
+  }
+
+  @media (--viewportMedium) {
+    padding: 0 24px;
+  }
+
+  @media (--viewportLarge) {    
+
+  }
+
+  @media (min-width: 1120px) {
+    padding: 0 24px;
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0;
   }
 }
 
@@ -131,6 +132,7 @@
 
   @media (min-width: 550px) {
     transform: translateX(0);
+    margin-right: 10px;
   }
 
 
@@ -194,12 +196,12 @@
     
 
   @media (min-width: 550px) {
-    width: calc((100% -  16px) / 2);  
+    width: calc((100% -  10px) / 2);  
   }
 
   @media (--viewportMedium) {
     margin-right: 24px;
-    width: calc((100% -  26px) / 2);
+    width: calc((100% -  24px) / 2);
   }
 
   @media (--viewportLarge) {
