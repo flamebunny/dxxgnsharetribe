@@ -71,7 +71,7 @@
   --colorSecondaryButtonLight: var(--colorWhite);
 
   /* ================ Font ================ */
-  --fontFamily: -apple-system, BlinkMacSystemFont, 'Cousine', 'Inter', Helvetica, Arial, sans-serif,
+  --fontFamily: 'Cousine', 'Inter', Helvetica, Arial, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'EB Garamond';
 
   --fontWeightRegular: 400;
