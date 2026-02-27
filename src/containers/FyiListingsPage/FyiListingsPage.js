@@ -15,6 +15,9 @@ import { H1 } from '../PageBuilder/Primitives/Heading';
 import FallbackPage, { fallbackSections } from './FallbackPage';
 import { ASSET_NAME, fyiListingsSectionId } from './FyiListingsPage.duck';
 
+
+export const FYI_LISTINGS_ASSET_NAME = 'article-about';
+
 import {
   H2,
   H3,
@@ -105,6 +108,10 @@ const FyiListingsPageComponent = props => {
   // Construct custom page data
   const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
 
+
+  console.log('FYI Listings PageData');
+  console.log(pageData);
+
   // ArticleFyi Section
   const fyiListingsSectionIdx = pageData?.sections.findIndex(s => s.sectionId === fyiListingsSectionId);
   const fyiListingsSection = pageData?.sections[fyiListingsSectionIdx];
@@ -152,6 +159,12 @@ const FyiListingsPageComponent = props => {
     />
   );
 
+  const hasContent = data => typeof data?.content === 'string';
+  const exposeContentAsChildren = data => {
+    return hasContent(data) ? { children: data.content } : {};
+  };
+  const CustomHeading1 = props => <H1 as="h2" {...props} />;
+
   return (
     <>
     <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -171,10 +184,17 @@ const FyiListingsPageComponent = props => {
           footer={<FooterContainer />}
         >
           <div className={css.content}>
-            <H3 as="h1">
-              <FormattedMessage id="ContactDetailsPage.heading" />
-            </H3>
-            {fyiOverfiewInfo}
+            
+            <SectionBuilder
+              {...pageData}
+              options={{
+                fieldComponents: {
+                  heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
+                },
+                isInsideContainer: true,
+              }}
+            />          
+
           </div>
         </LayoutSideNavigationFyi>
       </Page>    
@@ -189,9 +209,11 @@ FyiListingsPageComponent.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
-  return { pageAssetsData, inProgress, error };
+  const  { pageAssetsData, inProgress, error} = state.hostedAssets || {};
+  return { pageAssetsData, inProgress, error};
 };
+
+
 
 // Note: it is important that the withRouter HOC is **outside** the
 // connect HOC, otherwise React Router won't rerender any Route

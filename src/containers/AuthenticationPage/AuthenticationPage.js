@@ -634,6 +634,10 @@ export const AuthenticationPageComponent = props => {
     </p>
   ) : null;
 
+  console.log('Authentication Page');
+  console.log(tosAssetsData);  
+  console.log(tosAssetsData?.[camelize(TOS_ASSET_NAME)]?.data);
+
   return (
     <Page
       title={schemaTitle}
