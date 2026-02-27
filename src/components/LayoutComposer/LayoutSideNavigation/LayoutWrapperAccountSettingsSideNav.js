@@ -135,7 +135,7 @@ const LayoutWrapperAccountSettingsSideNav = props => {
       linkProps: {
         name: 'PasswordChangePage',
       },
-    },
+    },    
     ...payoutDetailsMaybe,
     ...paymentMethodsMaybe,
   ];

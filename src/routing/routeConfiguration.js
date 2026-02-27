@@ -19,6 +19,8 @@ const CMSPage = loadable(() => import(/* webpackChunkName: "CMSPage" */ '../cont
 const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDetailsPage" */ '../containers/ContactDetailsPage/ContactDetailsPage'));
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ '../containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ '../containers/EmailVerificationPage/EmailVerificationPage'));
+const FyiPage = loadable(() => import(/* webpackChunkName: "FyiPage" */ '../containers/FyiPage/FyiPage'));
+const FyiListingsPage = loadable(() => import(/* webpackChunkName: "FyiListingsPage" */ '../containers/FyiListingsPage/FyiListingsPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ '../containers/InboxPage/InboxPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ '../containers/LandingPage/LandingPage'));
 const ListingPageCoverPhoto = loadable(() => import(/* webpackChunkName: "ListingPageCoverPhoto" */ /* webpackPrefetch: true */ '../containers/ListingPage/ListingPageCoverPhoto'));
@@ -35,6 +37,7 @@ const SearchPageWithMap = loadable(() => import(/* webpackChunkName: "SearchPage
 const SearchPageWithGrid = loadable(() => import(/* webpackChunkName: "SearchPageWithGrid" */ /* webpackPrefetch: true */  '../containers/SearchPage/SearchPageWithGrid'));
 const StripePayoutPage = loadable(() => import(/* webpackChunkName: "StripePayoutPage" */ '../containers/StripePayoutPage/StripePayoutPage'));
 const TermsOfServicePage = loadable(() => import(/* webpackChunkName: "TermsOfServicePage" */ '../containers/TermsOfServicePage/TermsOfServicePage'));
+
 const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionPage" */ '../containers/TransactionPage/TransactionPage'));
 const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" */ '../containers/NoAccessPage/NoAccessPage'));
 
@@ -345,6 +348,42 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       path: '/about',
       name: 'AboutPage',
       component: AboutPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+    {
+      path: '/fyi',
+      name: 'FyiPage',
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+      {
+      path: '/fyilistings',
+      name: 'FyiListingsPage',
+      component: FyiListingsPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+      {
+      path: '/fyiselling',
+      name: 'FyiSellingPage',
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+      {
+      path: '/fyibuying',
+      name: 'FyiBuyingPage',
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+      {
+      path: '/fyishipping',
+      name: 'FyiShippingPage',
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadData,
+    },
+      {
+      path: '/fyireturn',
+      name: 'FyiReturnPage',
+      component: FyiPage,
       loadData: pageDataLoadingAPI.AboutPage.loadData,
     },
     {

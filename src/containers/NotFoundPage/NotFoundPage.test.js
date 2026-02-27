@@ -21,6 +21,11 @@ const routeConfiguration = [
     name: 'AboutPage',
     component: props => <div />,
   },
+  {
+    path: '/fyi',
+    name: 'FyiPage',
+    component: props => <div />,
+  },
 ];
 
 describe('NotFoundPage', () => {
