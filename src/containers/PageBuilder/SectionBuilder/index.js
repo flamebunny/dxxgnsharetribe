@@ -11,6 +11,7 @@ import SectionCarouselNew from './SectionCarouselNew';
 import SectionHero from './SectionHero';
 import SectionMasonary from './SectionMasonary';
 import SectionTextblurb from './SectionTextblurb';
+import SectionTextAccordion from './SectionTextAccordion';
 import SectionNewListings from './SectionNewListings';
 import SectionFeaturedListings from './SectionFeaturedListings';
 import SectionHeroImgCustom from './SectionHeroImgCustom';
@@ -22,6 +23,6 @@ import SectionColumnsCategories from './SectionColumnsCategories';
 // Main component: SectionBuilder
 import SectionBuilder from './SectionBuilder';
 
-export { SectionContainer, SectionColumns, SectionArticle, SectionFeatures, SectionCarousel, SectionCarouselNew, SectionMasonary, SectionTextblurb, SectionNewListings, SectionFeaturedListings, SectionHeroImgCustom, SectionColumnsText, SectionColumnsCategories, SectionArticleAbout };
+export { SectionContainer, SectionColumns, SectionArticle, SectionFeatures, SectionCarousel, SectionCarouselNew, SectionMasonary, SectionTextblurb, SectionTextAccordion, SectionNewListings, SectionFeaturedListings, SectionHeroImgCustom, SectionColumnsText, SectionColumnsCategories, SectionArticleAbout };
 
 export default SectionBuilder;

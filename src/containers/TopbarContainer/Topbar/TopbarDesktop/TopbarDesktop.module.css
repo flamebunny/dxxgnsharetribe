@@ -178,7 +178,7 @@
   align-items: center;
   height: 100%;
   margin: 0;
-  padding: 0 12px 0 12px;
+  padding: 0 0 0 12px;
 
   &:hover {
     /* border-bottom: 4px solid var(--marketplaceColor); */

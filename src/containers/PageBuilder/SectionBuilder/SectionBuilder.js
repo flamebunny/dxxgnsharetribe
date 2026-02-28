@@ -9,6 +9,7 @@ import SectionMasonary from './SectionMasonary';
 import SectionFeatures from './SectionFeatures';
 import SectionHero from './SectionHero';
 import SectionTextblurb from './SectionTextblurb';
+import SectionTextAccordion from './SectionTextAccordion';
 import SectionHeroImgCustom from './SectionHeroImgCustom';
 import SectionColumnsText from './SectionColumnsText';
 
@@ -45,6 +46,7 @@ const defaultSectionComponents = {
   footer: { component: SectionFooter },
   hero: { component: SectionHero },
   textblurb: { component: SectionTextblurb },
+  textaccordion: { component: SectionTextAccordion },
   sectionheroimgcustom: { component: SectionHeroImgCustom },  
   columnsText: { component: SectionColumnsText },  
 };

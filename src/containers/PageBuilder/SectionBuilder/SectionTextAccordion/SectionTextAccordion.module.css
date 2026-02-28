@@ -1,0 +1,164 @@
+@import '../../../../styles/customMediaQueries.css';
+
+.container {
+  padding: 0 10px;
+  
+  @media (min-width: 550px) {   
+    padding: 0 10px;    
+  }
+
+  @media (--viewportMedium) {  
+    padding: 0 24px;   
+  }
+
+  @media (--viewportLarge) {    
+   padding: 0 24px; 
+  }
+
+  @media (min-width: 1120px) {
+    padding: 0 24px; 
+  }
+
+  @media (min-width: 1440px) {
+    padding: 0 0px 0 0px;
+  }
+
+}
+
+.accordion {
+  > :first-child {
+    padding: 0px 0 40px 0;
+  }
+}
+
+.root {
+  max-width: var(--contentMaxWidthPages);
+  text-align: left;
+  justify-content: center;
+  margin: 0 auto;
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.header {
+  max-width: 80ch;
+  margin: 0;
+  cursor: pointer;
+}
+
+.noSidePaddings {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.title {
+  font-size: 14px !important;
+  padding: 5px 0 10px 0;
+  
+}
+
+.description {
+  font-size: 12px;   
+  
+  @media (min-width: 550px) {   
+  
+  }
+
+  @media (--viewportMedium) {  
+    font-size: 14px;
+    line-height: 120px;  
+    padding: 0 !important; 
+  }
+
+  @media (--viewportLarge) {    
+   
+  }
+}
+
+.articleMain {
+  max-width: var(--contentMaxWidthPages);
+  text-align: left;
+  justify-content: center;
+  margin: 0 auto;
+  text-transform: uppercase;
+  font-family: "Cousine", serif;
+  font-weight: 400;
+  text-transform: uppercase;
+
+
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  ol {
+    margin: 0;
+    padding-left: 30px;
+
+    li {
+      font-family: "Cousine", serif;
+      font-weight: 400;
+      padding: 0;
+    }
+  }
+  &.open {
+    max-height: 1000px;
+  }
+}
+
+.openSign{
+  float: right;
+  margin-top: -20px;
+  position: relative;
+}
+
+
+.textwide {
+  /* max-width: 100% !important; */
+  max-width: var(--contentMaxUltraWidthPages)  !important;
+}
+
+.textwidthunset {
+  /* max-width: 1680px !important; */
+  /* max-width: 100%; */
+  max-width: var(--contentMaxUltraWidthPages);
+}
+
+.ebgaramond {
+  font-family: EB Garamond, serif;
+  font-size: 44px !important;
+  line-height: .8 !important;
+  font-style: italic;
+  font-weight: 500 !important;
+  letter-spacing: -3px !important;
+  
+  word-break: auto-phrase !important;
+
+  @media (min-width: 550px) {
+    font-size: 44px !important;
+    line-height: .8 !important;
+  }
+
+  @media (--viewportMedium) {
+    font-size: 64px !important;
+    line-height: .8 !important;
+  }
+
+  @media (--viewportLarge) {
+    font-size: 90px !important;
+    line-height: .8 !important;
+    padding: 0;
+    /* margin-top + n * line-height + margin-bottom => x * 8px */
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 125px !important;
+    line-height: .8 !important;
+  }
+}
+
+.center {
+  text-align: center !important;
+}

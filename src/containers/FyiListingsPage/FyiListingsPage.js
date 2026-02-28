@@ -11,7 +11,7 @@ import { propTypes } from '../../util/types';
 
 import { H1 } from '../PageBuilder/Primitives/Heading';
 import FallbackPage, { fallbackSections } from './FallbackPage';
-import { ASSET_NAME, fyiListingsSectionId } from './FyiListingsPage.duck';
+import { ASSET_NAME, textAccordionSectionId } from './FyiListingsPage.duck';
 
 import {
   Page,
@@ -24,11 +24,13 @@ import NotFoundPage from '../NotFoundPage/NotFoundPage';
 
 import css from './FyiListingsPage.module.css';
 
+import SectionTextAccordion from '../../containers/PageBuilder/SectionBuilder/SectionTextAccordion';
+
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
 
-const fyiListingsSectionType = 'fyilistings';
+const textAccordionSectionType = 'textaccordion';
 
 const title = 'test';
 
@@ -54,26 +56,15 @@ const FyiListingsPageComponent = props => {
   // Construct custom page data
   const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
 
-  // FyiListings Section
-    const fyiListingsSectionIdx = pageData?.sections.findIndex(s => s.sectionId === fyiListingsSectionId);
-    const fyiListingsSection = pageData?.sections[fyiListingsSectionIdx];
-  
-    const customfyiListingsSection = {
-      ...fyiListingsSection,
-      sectionId: fyiListingsSectionId,
-      sectionType: fyiListingsSectionType,
-    //   listings: listings,
-    };
-
   const customSections = pageData
     ? [
         ...pageData.sections.map((section, idx) =>{
-          if  (idx === fyiListingsSectionIdx) {
-              return section;   
-          } else {
-            return {};
-          }
           
+            return {
+              ...section,
+              sectionType: textAccordionSectionType
+            };
+                   
         }),
       ]
     : null;
@@ -89,7 +80,8 @@ const FyiListingsPageComponent = props => {
     currentPage: 'FyiListingsPage',
   };
 
-  const hasContent = data => typeof data?.content === 'string';
+
+ const hasContent = data => typeof data?.content === 'string';
   const exposeContentAsChildren = data => {
     return hasContent(data) ? { children: data.content } : {};
   };
@@ -122,6 +114,9 @@ const FyiListingsPageComponent = props => {
                   heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
                 },
                 isInsideContainer: true,
+                sectionComponents: {
+                  [textAccordionSectionType]: { component: SectionTextAccordion },
+                },
               }}
             />          
 

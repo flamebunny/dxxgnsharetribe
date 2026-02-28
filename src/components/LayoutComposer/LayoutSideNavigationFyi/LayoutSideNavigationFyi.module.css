@@ -72,7 +72,7 @@
 
 
   @media (--viewportLarge) {
-    padding: 72px 0 82px 36px;
+    padding: 52px 0 82px 36px;
     flex-direction: column;
     overflow-x: auto;
     box-shadow: none;
@@ -80,7 +80,7 @@
   }
 
   @media (--viewportLargeWithPaddings) {
-    padding: 72px 0 82px 36px;
+    padding: 52px 0 82px 36px;
   }
 }
 

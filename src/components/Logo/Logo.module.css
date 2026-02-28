@@ -22,7 +22,7 @@
   max-width: min(calc(100vw - 132px), 100%, 370px);
   object-fit: contain;
   object-position: center;
-  margin: 0 auto;
+  margin: 0;
 
   @media (--viewportLarge) {
     max-width: min(100%, 370px);

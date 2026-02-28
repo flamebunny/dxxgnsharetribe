@@ -53,9 +53,6 @@ const AboutContent = props => {
   const hasData = error === null && data;
   const sectionsData = hasData ? data : fallbackSections;
 
-  console.log('About SectionData');
-  console.log(sectionsData);
-
   return (
     <SectionBuilder
       {...sectionsData}
