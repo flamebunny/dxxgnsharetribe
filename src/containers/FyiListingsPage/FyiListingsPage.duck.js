@@ -1,8 +1,8 @@
 import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
-export const ASSET_NAME = 'about';
+export const ASSET_NAME = 'fyi';
 
 
-export const fyiListingsSectionId = 'article-about';
+export const fyiListingsSectionId = 'fyi-listings';
 
 export const loadData = (params, search) => dispatch => {
   const pageAsset = { fyi: `content/pages/${ASSET_NAME}.json` };

@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 
 import { renderWithProviders as render, testingLibrary } from '../../util/testHelpers';
 
-import { FyiListingsPageComponent } from './FyiListingsPage';
+import { FyiPageComponent } from './FyiListingsPage';
 
 const { waitFor } = testingLibrary;
 
@@ -15,7 +15,7 @@ describe('FyiListingsPage', () => {
     e.name = 'Test';
 
     const { getByText } = render(
-      <FyiListingsPageComponent pageAssetsData={null} inProgress={false} error={e} />
+      <FyiPageComponent pageAssetsData={null} inProgress={false} error={e} />
     );
 
     await waitFor(() => {

@@ -360,7 +360,7 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       path: '/fyilistings',
       name: 'FyiListingsPage',
       component: FyiListingsPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadData,
     },
       {
       path: '/fyiselling',

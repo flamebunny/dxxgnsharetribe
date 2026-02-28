@@ -10,6 +10,7 @@ import { loadData as ContactDetailsPageLoader } from './ContactDetailsPage/Conta
 import { loadData as EditListingPageLoader } from './EditListingPage/EditListingPage.duck';
 import { loadData as EmailVerificationPageLoader } from './EmailVerificationPage/EmailVerificationPage.duck';
 import { loadData as FyiPageLoader } from './FyiPage/FyiPage.duck';
+import { loadData as FyiListingsPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
 import { loadData as InboxPageLoader } from './InboxPage/InboxPage.duck';
 import { loadData as ListingPageLoader } from './ListingPage/ListingPage.duck';
 import { loadData as ManageListingsPageLoader } from './ManageListingsPage/ManageListingsPage.duck';
@@ -52,6 +53,9 @@ const getPageDataLoadingAPI = () => {
     },
     FyiPage: {
       loadData: FyiPageLoader,
+    },
+    FyiListingsPage: {
+      loadData: FyiListingsPageLoader,
     },
     InboxPage: {
       loadData: InboxPageLoader,
