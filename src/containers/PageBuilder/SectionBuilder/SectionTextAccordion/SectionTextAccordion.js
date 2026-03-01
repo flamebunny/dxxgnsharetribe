@@ -43,8 +43,6 @@ const SectionTextAccordion = props => {
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
   const hasBlocks = blocks?.length > 0;
 
-  console.log(title);
-
   return (
     <SectionContainer
       id={sectionId}

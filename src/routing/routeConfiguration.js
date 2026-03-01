@@ -19,7 +19,7 @@ const CMSPage = loadable(() => import(/* webpackChunkName: "CMSPage" */ '../cont
 const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDetailsPage" */ '../containers/ContactDetailsPage/ContactDetailsPage'));
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ '../containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ '../containers/EmailVerificationPage/EmailVerificationPage'));
-const FyiPage = loadable(() => import(/* webpackChunkName: "FyiPage" */ '../containers/FyiPage/FyiPage'));
+const FyiPage = loadable(() => import(/* webpackChunkName: "FyiPage" */ '../containers/FyiListingsPage/FyiListingsPage'));
 const FyiListingsPage = loadable(() => import(/* webpackChunkName: "FyiListingsPage" */ '../containers/FyiListingsPage/FyiListingsPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ '../containers/InboxPage/InboxPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ '../containers/LandingPage/LandingPage'));
@@ -353,38 +353,38 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     {
       path: '/fyi',
       name: 'FyiPage',
-      component: FyiPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      component: FyiListingsPage,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadData,
     },
       {
       path: '/fyilistings',
       name: 'FyiListingsPage',
       component: FyiListingsPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadData,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataListings,
     },
       {
       path: '/fyiselling',
       name: 'FyiSellingPage',
-      component: FyiPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      component: FyiListingsPage,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataSelling,
     },
       {
       path: '/fyibuying',
       name: 'FyiBuyingPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataBuying,
     },
       {
       path: '/fyishipping',
       name: 'FyiShippingPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataShipping,
     },
       {
-      path: '/fyireturn',
-      name: 'FyiReturnPage',
+      path: '/fyireturns',
+      name: 'FyiReturnsPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.AboutPage.loadData,
+      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataReturns,
     },
     {
       path: '/styleguide',

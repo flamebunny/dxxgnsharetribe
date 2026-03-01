@@ -53,8 +53,35 @@ const FyiListingsPageComponent = props => {
     providerNotificationCount = 0,
   } = props;
 
+  //
+  const pathname = window.location.pathname;
+
+  const pageMap = {
+    '/fyi': 'FyiPage',
+    '/fyilistings': 'FyiListingsPage',
+    '/fyiselling': 'FyiSellingPage',
+    '/fyibuying': 'FyiBuyingPage',
+    '/fyishipping': 'FyiShippingPage',
+    '/fyireturns': 'FyiReturnsPage',
+  };
+
+  const assetPageMap = {
+    '/fyi': 'fyiOverview',
+    '/fyilistings': 'fyiListings',
+    '/fyiselling': 'fyiSelling',
+    '/fyibuying': 'fyiBuying',
+    '/fyishipping': 'fyiShipping',
+    '/fyireturns': 'fyiReturns',
+  };
+
+  const fyiNavProps = {
+    currentPage: pageMap[pathname] || '',
+  };
+  
+  const assetName = assetPageMap[pathname];
+
   // Construct custom page data
-  const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
+  const pageData = pageAssetsData?.[assetName]?.data;
 
   const customSections = pageData
     ? [
@@ -76,16 +103,22 @@ const FyiListingsPageComponent = props => {
       }
     : pageData;
 
-  const fyiNavProps = {
-    currentPage: 'FyiListingsPage',
-  };
-
-
- const hasContent = data => typeof data?.content === 'string';
+  const hasContent = data => typeof data?.content === 'string';
   const exposeContentAsChildren = data => {
     return hasContent(data) ? { children: data.content } : {};
   };
   const CustomHeading1 = props => <H1 as="h2" {...props} />;
+
+
+  console.log('pageAssetsData');
+  console.log(pageAssetsData);
+
+  console.log('pageData');
+  console.log(pageData);
+
+  console.log('customPageData');
+  console.log(customPageData);
+
 
   return (
     <>

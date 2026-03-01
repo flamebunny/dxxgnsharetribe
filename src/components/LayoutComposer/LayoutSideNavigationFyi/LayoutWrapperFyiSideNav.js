@@ -92,8 +92,6 @@ const LayoutWrapperFyiSideNav = props => {
 
   const { currentPage } = accountSettingsNavProps;
 
-  console.log(currentPage);
-
   const tabs = [
     {
       text: <FormattedMessage id="LayoutWrapperFyiSideNav.fyiOverviewTabTitle" />,
@@ -136,11 +134,11 @@ const LayoutWrapperFyiSideNav = props => {
       },
     },
     {
-      text: <FormattedMessage id="LayoutWrapperFyiSideNav.fyiReturnTabTitle" />,
-      selected: currentPage === 'FyiReturnPage',
-      id: 'FyiReturnPageTab',
+      text: <FormattedMessage id="LayoutWrapperFyiSideNav.fyiReturnsTabTitle" />,
+      selected: currentPage === 'FyiReturnsPage',
+      id: 'FyiReturnsPageTab',
       linkProps: {
-        name: 'FyiReturnPage',
+        name: 'FyiReturnsPage',
       },
     },
   ];
