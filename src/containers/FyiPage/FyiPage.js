@@ -1,5 +1,6 @@
 import React from 'react';
 import loadable from '@loadable/component';
+import { useLocation } from 'react-router-dom';
 
 
 import { bool, object } from 'prop-types';
@@ -54,7 +55,8 @@ const FyiPageComponent = props => {
   } = props;
 
   //
-  const pathname = window.location.pathname;
+  
+  const location = useLocation();
 
   const pageMap = {
     '/fyi': 'FyiPage',
@@ -75,10 +77,10 @@ const FyiPageComponent = props => {
   };
 
   const fyiNavProps = {
-    currentPage: pageMap[pathname] || '',
+    currentPage: pageMap[`${location.pathname}`] || '',
   };
   
-  const assetName = assetPageMap[pathname];
+  const assetName = assetPageMap[`${location.pathname}`];
 
   // Construct custom page data
   const pageData = pageAssetsData?.[assetName]?.data;
