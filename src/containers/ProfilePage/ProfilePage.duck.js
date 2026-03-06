@@ -196,7 +196,6 @@ export const showUser = (userId, config) => (dispatch, getState, sdk) => {
       'fields.image': ['variants.square-small', 'variants.square-small2x'],
     })
     .then(response => {
-      console.log(response)
       const userFields = config?.user?.userFields;
       const sanitizeConfig = { userFields };
       dispatch(addMarketplaceEntities(response, sanitizeConfig));

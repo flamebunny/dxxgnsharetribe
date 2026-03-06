@@ -9,12 +9,12 @@ import { loadData as CMSPageLoader } from './CMSPage/CMSPage.duck';
 import { loadData as ContactDetailsPageLoader } from './ContactDetailsPage/ContactDetailsPage.duck';
 import { loadData as EditListingPageLoader } from './EditListingPage/EditListingPage.duck';
 import { loadData as EmailVerificationPageLoader } from './EmailVerificationPage/EmailVerificationPage.duck';
-import { loadData as FyiPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
-import { loadDataListings as FyiListingsPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
-import { loadDataSelling as FyiSellingPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
-import { loadDataBuying as FyiBuyingPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
-import { loadDataShipping as FyiShippingPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
-import { loadDataReturns as FyiReturnsPageLoader } from './FyiListingsPage/FyiListingsPage.duck';
+import { loadData as FyiPageLoader } from './FyiPage/FyiPage.duck';
+import { loadDataListings as FyiListingsPageLoader } from './FyiPage/FyiPage.duck';
+import { loadDataSelling as FyiSellingPageLoader } from './FyiPage/FyiPage.duck';
+import { loadDataBuying as FyiBuyingPageLoader } from './FyiPage/FyiPage.duck';
+import { loadDataShipping as FyiShippingPageLoader } from './FyiPage/FyiPage.duck';
+import { loadDataReturns as FyiReturnsPageLoader } from './FyiPage/FyiPage.duck';
 import { loadData as InboxPageLoader } from './InboxPage/InboxPage.duck';
 import { loadData as ListingPageLoader } from './ListingPage/ListingPage.duck';
 import { loadData as ManageListingsPageLoader } from './ManageListingsPage/ManageListingsPage.duck';
@@ -55,14 +55,13 @@ const getPageDataLoadingAPI = () => {
     EmailVerificationPage: {
       loadData: EmailVerificationPageLoader,
     },
-    FyiListingsPage: {
+    FyiPage: {
       loadData: FyiPageLoader,
       loadDataListings: FyiListingsPageLoader,
       loadDataSelling: FyiSellingPageLoader,
       loadDataBuying: FyiBuyingPageLoader,
       loadDataShipping: FyiShippingPageLoader,
       loadDataReturns: FyiReturnsPageLoader,
-
     },
     InboxPage: {
       loadData: InboxPageLoader,

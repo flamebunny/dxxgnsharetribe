@@ -19,8 +19,7 @@ const CMSPage = loadable(() => import(/* webpackChunkName: "CMSPage" */ '../cont
 const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDetailsPage" */ '../containers/ContactDetailsPage/ContactDetailsPage'));
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ '../containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ '../containers/EmailVerificationPage/EmailVerificationPage'));
-const FyiPage = loadable(() => import(/* webpackChunkName: "FyiPage" */ '../containers/FyiListingsPage/FyiListingsPage'));
-const FyiListingsPage = loadable(() => import(/* webpackChunkName: "FyiListingsPage" */ '../containers/FyiListingsPage/FyiListingsPage'));
+const FyiPage = loadable(() => import(/* webpackChunkName: "FyiPage" */ '../containers/FyiPage/FyiPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ '../containers/InboxPage/InboxPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ '../containers/LandingPage/LandingPage'));
 const ListingPageCoverPhoto = loadable(() => import(/* webpackChunkName: "ListingPageCoverPhoto" */ /* webpackPrefetch: true */ '../containers/ListingPage/ListingPageCoverPhoto'));
@@ -353,38 +352,38 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     {
       path: '/fyi',
       name: 'FyiPage',
-      component: FyiListingsPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadData,
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.FyiPage.loadData,
     },
       {
       path: '/fyilistings',
       name: 'FyiListingsPage',
-      component: FyiListingsPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataListings,
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.FyiPage.loadDataListings,
     },
       {
       path: '/fyiselling',
       name: 'FyiSellingPage',
-      component: FyiListingsPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataSelling,
+      component: FyiPage,
+      loadData: pageDataLoadingAPI.FyiPage.loadDataSelling,
     },
       {
       path: '/fyibuying',
       name: 'FyiBuyingPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataBuying,
+      loadData: pageDataLoadingAPI.FyiPage.loadDataBuying,
     },
       {
       path: '/fyishipping',
       name: 'FyiShippingPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataShipping,
+      loadData: pageDataLoadingAPI.FyiPage.loadDataShipping,
     },
       {
       path: '/fyireturns',
       name: 'FyiReturnsPage',
       component: FyiPage,
-      loadData: pageDataLoadingAPI.FyiListingsPage.loadDataReturns,
+      loadData: pageDataLoadingAPI.FyiPage.loadDataReturns,
     },
     {
       path: '/styleguide',
