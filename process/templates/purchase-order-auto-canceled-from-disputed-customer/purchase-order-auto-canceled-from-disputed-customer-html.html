@@ -6,36 +6,73 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
   </head>{{#with transaction}}
-  <table style="background-color:#FFF;margin:0 auto;padding:24px 12px 0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif" align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+
+  <table style="background-color:#FFF;margin:0 auto;padding:24px 12px 0;font-family:monospace, -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif" align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%">
     <tbody>
       <tr>
         <td>
-          <table align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%" style="max-width:600px;margin:0 auto">
+          <table align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%" style="max-width:400px;margin:0 auto">
+            <tr>
+              <td style="font-family:Arial,sans-serif;color:#000000;font-weight:400">
+               <table cellpadding="0" cellspacing="0" border="0" align="left" width="400" style="font-family:Arial,sans-serif;color:#000000;font-weight:400">
+                <tbody>
+                 <tr>
+                  <td align="left" style="padding-top:50px;padding-bottom:140px;font-family:Arial,sans-serif;color:#000000;font-weight:400">
+                   <img src="https://sharetribe-assets.imgix.net/67389ca0-12be-4f0d-b876-22dde04423a0/raw/8f/b6381c6b21427ff05ed03ff0492dc7dbeca756?auto=format&fit=clip&h=3600&w=3600&s=bed1035436b5bc7e9a8a54cee91ea850" width="380" height="87" border="0" alt="desxgn" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none" class="CToWUd" data-bit="iit">
+                  </td>
+                 </tr>
+                </tbody>
+               </table>
+             </td>
+            </tr> 
             <tr style="width:100%">
-              <td>
-                <h1 style="color:#484848;font-size:26px;line-height:1.3;font-weight:700">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.Title" "An order you disputed has been canceled"}}</h1>
-                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#484848">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.Content" "You earlier disputed your order for {listingTitle}. The dispute has been resolved in your favor. The order has now been canceled. You will receive a full refund." listingTitle=listing.title }}</p>
-                <table style="padding:16px 0 0" align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
-                  <tbody>
-                    <tr>
-                      <td><a href="{{marketplace.url}}/order/{{url-encode id}}/" target="_blank" style="color:#FFF;background-color:{{asset "design/branding.json" "marketplaceColors.notificationPrimaryButton" "#6938EF"}};border-radius:4px;font-size:15px;text-decoration:none;text-align:center;display:inline-block;min-width:210px;padding:0px 0px;line-height:100%;max-width:100%"><span><!--[if mso]><i style="letter-spacing: undefinedpx;mso-font-width:-100%;mso-text-raise:0" hidden>&nbsp;</i><![endif]--></span><span style="color:#FFF;background-color:{{asset "design/branding.json" "marketplaceColors.notificationPrimaryButton" "#6938EF"}};border-radius:4px;font-size:15px;text-decoration:none;text-align:center;display:inline-block;min-width:210px;padding:16px 32px;max-width:100%;line-height:120%;text-transform:none;mso-padding-alt:0px;mso-text-raise:0">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.Cta" "View order details" }}</span><span><!--[if mso]><i style="letter-spacing: undefinedpx;mso-font-width:-100%" hidden>&nbsp;</i><![endif]--></span></a>
-                        <div>
-                          <p style="font-size:14px;line-height:1.5;margin:16px 0;color:#484848">{{t "TransactionEmails.AccessibleLinkText" "Can't click the button? Here's a link for your convenience:"}} <a target="_blank" style="color:{{asset "design/branding.json" "marketplaceColors.notificationPrimaryButton" "#6938EF"}};text-decoration:none" href="{{marketplace.url}}/order/{{url-encode id}}/">{{marketplace.url}}/order/{{url-encode id}}/</a></p>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                {{/with}}
-                <div>
-                  <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#E1E1E1;margin:20px 0" />
-                  <p style="font-size:12px;line-height:15px;margin:0 auto;color:#b7b7b7;text-align:left;margin-bottom:50px">{{t "TransactionEmails.MembershipParagraph" "You're a member of {marketplaceName}. If you no longer want to receive these emails, please contact {marketplaceName} team." marketplaceName=marketplace.name }}</p>
-                </div>
+              <td  align="left">
+                <h2 style="color:#000000;font-size:14px;line-height:18px;font-weight:700;text-transform:uppercase;padding-bottom:20px;">Design Desires Culture.</h2>
               </td>
             </tr>
+            <tr style="width:100%">
+              <td>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">Hi,</p><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph1" "Thank you for contacting us and providing the supporting details for {listingTitle}." listingTitle=listing.title}}</p><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph2" "Upon review, you are entitled a <boldtext>full refund</boldtext>." boldtext=(html-tag "b" )}}</p><br/>
+
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph3" "Return instructions:" }}</p>
+
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">
+                  {{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph4" "* To be refunded, you must return the item in 3 business days——using tracked postage." }}<br/>
+                  {{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph5" "* Return address <orderlink>here</orderlink>." orderlink=(html-tag "a" target=(concat "_blank") style=(concat "color:#000000;text-decoration:line-through;") href=(concat marketplace.url "/sale/" (url-encode id) "/")) }}<br/>
+                  {{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph6" "* Full return instructions <orderlink>here</orderlink>." orderlink=(html-tag "a" target=(concat "_blank") style=(concat "color:#000000;text-decoration:line-through;") href=(concat marketplace.url "/fyi/")) }}<br/>
+                  {{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph7" "* The shipping receipt and tracking details must be emailed to <orderlink>service@desxgn.com</orderlink>." orderlink=(html-tag "a" target=(concat "_blank") style=(concat "color:#000000;text-decoration:line-through;") href=(concat "mailto:service@desxgn.com")) }}<br/><br/>
+                </p><br/>
+
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph8" "Once the item is received,you will be refunded within 72 hours——provided no issues are reported." }}</p><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.ContentParagraph9" "Refunds will be issued to the original payment method.  Please allow 5—10 business days for the refund to process.  Contact your bank if delays occur." }}</p><br/>
+
+
+
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;"><a style="color:#000000;text-decoration:line-through;font-weight:bold;" href="{{marketplace.url}}/order/{{url-encode id}}/" target="_blank">{{t "PurchaseOrderAutoCanceledFromDisputedCustomer.Cta" "View order"}}</a><br/></p><br/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p style="font-size:14px;line-height:18px;margin:16px 0;color:#000000;padding-top:15px;">{{t "UserJoined.SignatureLine1" "X"}}<br />{{t "UserJoined.SignatureLine2" marketplaceName=marketplace.name}}</p>
+                <p style="font-size:14px;text-transform:uppercase;font-weight:400;color:#000000;padding:0;margin:0;"><a style="color:#000000;text-decoration:line-through;" href="{{marketplace.url}}">Desxgn.com</a></p>
+                <p style="font-size:14px;text-transform:uppercase;font-weight:400;color:#000000;padding:0;margin:0;"><a style="color:#000000;text-decoration:line-through;" href="#">@Desxgn_official</a></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>                  
+                  <p style="font-size:14px;line-height:18px;margin:0 auto;color:#000000;text-align:center;margin-bottom:50px;padding-top:250px;text-transform:uppercase">{{t "TransactionEmails.MembershipParagraph"}}<br/>{{t "TransactionEmails.MembershipParagraphAddress"}}<br/><a target="_blank" style="color:#000000;text-decoration:line-through;" href="#" >Unsubscribe</a></p>
+                </div>
+              </td>
+            </tr>            
           </table>
+     {{/with}}
         </td>
-      </tr>
+      </tr>     
     </tbody>
-  </table>
+  </table> 
+
+
 </html>

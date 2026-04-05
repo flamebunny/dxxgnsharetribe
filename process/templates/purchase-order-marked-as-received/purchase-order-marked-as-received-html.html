@@ -6,6 +6,211 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
   </head>{{~#*inline "format-money"~}}{{format-text "{amount,number,::.00} {currency}" amount=money.amount currency=money.currency}}{{~/inline~}}{{#with transaction}}
+  
+  
+    <table style="background-color:#FFF;margin:0 auto;padding:24px 12px 0;font-family:monospace, -apple-system, BlinkMacSystemFont, &#x27;Segoe UI&#x27;, &#x27;Roboto&#x27;, &#x27;Oxygen&#x27;, &#x27;Ubuntu&#x27;, &#x27;Cantarell&#x27;, &#x27;Fira Sans&#x27;, &#x27;Droid Sans&#x27;, &#x27;Helvetica Neue&#x27;, sans-serif" align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%">
+    <tbody>
+      <tr>
+        <td>
+          <table align="center" role="presentation" cellSpacing="0" cellPadding="0" border="0" width="100%" style="max-width:400px;margin:0 auto">
+            <tr>
+              <td style="font-family:Arial,sans-serif;color:#000000;font-weight:400">
+               <table cellpadding="0" cellspacing="0" border="0" align="left" width="400" style="font-family:Arial,sans-serif;color:#000000;font-weight:400">
+                <tbody>
+                 <tr>
+                  <td align="left" style="padding-top:50px;padding-bottom:140px;font-family:Arial,sans-serif;color:#000000;font-weight:400">
+                   <img src="https://sharetribe-assets.imgix.net/67389ca0-12be-4f0d-b876-22dde04423a0/raw/8f/b6381c6b21427ff05ed03ff0492dc7dbeca756?auto=format&fit=clip&h=3600&w=3600&s=bed1035436b5bc7e9a8a54cee91ea850" width="380" height="87" border="0" alt="desxgn" style="border:0;height:auto;line-height:100%;outline:none;text-decoration:none" class="CToWUd" data-bit="iit">
+                  </td>
+                 </tr>
+                </tbody>
+               </table>
+             </td>
+            </tr> 
+            <tr style="width:100%">
+              <td  align="left">
+                <h2 style="color:#000000;font-size:14px;line-height:18px;font-weight:700;text-transform:uppercase;padding-bottom:20px;">Design Desires Culture.</h2>
+              </td>
+            </tr>
+            <tr style="width:100%">
+              <td>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">Hi,</p>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.Title" "Congratulations——The order for {listingTitle} is now successfully completed :)"  listingTitle=listing.title}}</p>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.BreakdownLabel" "The payment of {currency} {amount,number,::.00} has been issued to your Stripe account." amount=payout-total.amount currency=payout-total.currency}}</p>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.BreakdownLabel2" "Please allow 5—10 business days for the transaction to process." }}</p><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;"><a style="color:#000000;text-decoration:line-through;font-weight:bold;" href="{{marketplace.url}}/u/{{url-encode recipient.id}}" target="_blank">{{t "PurchaseOrderMarkedAsReceived.ViewOrderDetailsLink" "View order"}}</a></p><br/><br/>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <table style="padding-bottom: 20px;">
+                  <tr>
+                    <td width="20%" style="width: 20%; background-color: #f8f8f8;">
+                      <img src="{{listing.image_url}}" alt="{{listing.title}}" style="max-width: 100%; height: auto;" />
+                    </td>
+                    <td width="90%" style="width: 90%; padding-left: 25px;">
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:800;text-transform:uppercase;">{{listing.title}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>                      
+
+                      {{#each tx-line-items}}{{#contains include-for "provider"}}{{#eq "line-item/item" code}}
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.UnitPriceLabel" "Unit price"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=unit-price}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.QuantityLabel" "Quantity"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;text-transform:uppercase;">{{number quantity}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;font-weight:400;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.SubtotalLabel" "Amount"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;font-weight:400;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=line-total}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>{{/eq}}
+                      
+                      {{#eq "line-item/customer-commission" code}}
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.FeeLabel" "{marketplaceName} fee" marketplaceName=marketplace.name}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=line-total}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {{/eq}}
+                      
+                      {{#eq "line-item/shipping-fee" code}}
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.ShippingLabel" "Shipping"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=unit-price}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {{/eq}}{{#eq "line-item/pickup-fee" code}}
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.PickupLabel" "Pickup"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=unit-price}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {{/eq}}{{#eq "line-item/provider-commission" code}}
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.MarketplaceFeeLabel" "{ marketplaceName } fee"   marketplaceName = marketplace.name}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;margin-bottom:1px;text-transform:uppercase;">{{> format-money money=line-total}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      {{/eq}}{{/contains}}{{/each}}
+                      <hr style="width:100%;border:none;border-top:1px solid #000000;border-color:#000000;margin:10px 0" />
+                      <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
+                        <tbody>
+                          <tr>
+                            <td>                              
+                              <td>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.PaymentTotalLabel" "Sale Proceeds"}}</p>
+                              </td>
+                              <td style="text-align:right">
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{> format-money money=payout-total}}</p>
+                              </td>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>    
+                    </td>
+                  </tr>
+                </table>
+              </td>
+              
+            </tr>
+            
+            <tr>
+              <td>
+                <p style="font-size:14px;line-height:18px;margin:16px 0;color:#000000;padding-top:15px;">{{t "UserJoined.SignatureLine1" "X"}}<br />{{t "UserJoined.SignatureLine2" marketplaceName=marketplace.name}}</p>
+                <p style="font-size:14px;text-transform:uppercase;font-weight:400;color:#000000;padding:0;margin:0;"><a style="color:#000000;text-decoration:line-through;" href="{{marketplace.url}}">Desxgn.com</a></p>
+                <p style="font-size:14px;text-transform:uppercase;font-weight:400;color:#000000;padding:0;margin:0;"><a style="color:#000000;text-decoration:line-through;" href="#">@Desxgn_official</a></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div>                  
+                  <p style="font-size:14px;line-height:18px;margin:0 auto;color:#000000;text-align:center;margin-bottom:50px;padding-top:150px;text-transform:uppercase">{{t "TransactionEmails.MembershipParagraph"}}<br/>{{t "TransactionEmails.MembershipParagraphAddress"}}<br/><a target="_blank" style="color:#000000;text-decoration:line-through;" href="#" >Unsubscribe</a></p>
+                </div>
+              </td>
+            </tr>            
+          </table>
+       
+        </td>
+      </tr>     
+    </tbody>
+  </table> 
+  
+  
   <table style="background-color:#FFF;margin:0 auto;padding:24px 12px 0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif" align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
     <tbody>
       <tr>
@@ -137,7 +342,7 @@
                     </tr>
                   </tbody>
                 </table>
-                {{/with}}
+          {{/with}}
                 <div>
                   <hr style="width:100%;border:none;border-top:1px solid #eaeaea;border-color:#E1E1E1;margin:20px 0" />
                   <p style="font-size:12px;line-height:15px;margin:0 auto;color:#b7b7b7;text-align:left;margin-bottom:50px">{{t "TransactionEmails.MembershipParagraph" "You're a member of {marketplaceName}. If you no longer want to receive these emails, please contact {marketplaceName} team." marketplaceName=marketplace.name }}</p>

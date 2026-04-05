@@ -10,7 +10,8 @@ flex-cli process pull --process default-purchase --version 1 --path process -m d
 //make changes
 
 //Preview changes
-flex-cli notifications preview --template process/templates/purchase-order-disputed -m desxgn-dev
+flex-cli notifications preview --template process/templates/purchase-order-marked-as-received -m desxgn-dev
+flex-cli notifications preview --template process/templates/purchase-order-canceled-to-provider --context sample-template-context.json -m desxgn-dev
 
 //Send file
 flex-cli notifications send --template process/templates/purchase-order-disputed -m desxgn-dev
