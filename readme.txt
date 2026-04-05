@@ -10,8 +10,8 @@ flex-cli process pull --process default-purchase --version 1 --path process -m d
 //make changes
 
 //Preview changes
-flex-cli notifications preview --template process/templates/purchase-order-marked-as-received -m desxgn-dev
-flex-cli notifications preview --template process/templates/purchase-order-canceled-to-provider --context sample-template-context.json -m desxgn-dev
+flex-cli notifications preview --template process/templates/purchase-new-order -m desxgn-dev
+flex-cli notifications preview --template process/templates/purchase-new-order --context sample-template-context.json -m desxgn-dev
 
 //Send file
 flex-cli notifications send --template process/templates/purchase-order-disputed -m desxgn-dev
@@ -20,6 +20,10 @@ flex-cli notifications send --template process/templates/purchase-order-disputed
 flex-cli process push --path process --process default-purchase -m desxgn-dev
 
 //Update alias
-flex-cli process update-alias --process default-purchase --alias release-1 --version 2 -m desxgn-dev
+flex-cli process update-alias --process default-purchase --alias release-1 --version 3 -m desxgn-dev
+
+
+//View updated alias
+flex-cli process list --process default-purchase -m desxgn-dev
 
 

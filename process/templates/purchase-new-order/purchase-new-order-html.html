@@ -50,7 +50,7 @@
                 <table style="padding-bottom: 20px;">
                   <tr>
                     <td width="20%" style="width: 20%; background-color: #f8f8f8;">
-                      <img src="{{listing.image_url}}" alt="{{listing.title}}" style="max-width: 100%; height: auto;" />
+                      <img src="{{listing.images.0.url}}" alt="{{listing.title}}" style="max-width: 100%; height: auto;" />
                     </td>
                     <td width="90%" style="width: 90%; padding-left: 25px;">
                       <table align="center" border="0" cellPadding="0" cellSpacing="0" role="presentation" width="100%">
@@ -209,7 +209,7 @@
               </td>
             </tr>            
           </table>
-       
+        {{/with}}
         </td>
       </tr>     
     </tbody>
