@@ -37,7 +37,7 @@
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.Title" "Congratulations——The order for {listingTitle} is now successfully completed :)"  listingTitle=listing.title}}</p>
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.BreakdownLabel" "The payment of {currency} {amount,number,::.00} has been issued to your Stripe account." amount=payout-total.amount currency=payout-total.currency}}</p>
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderMarkedAsReceived.BreakdownLabel2" "Please allow 5—10 business days for the transaction to process." }}</p><br/>
-                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;"><a style="color:#000000;text-decoration:line-through;font-weight:bold;" href="{{marketplace.url}}/u/{{url-encode recipient.id}}" target="_blank">{{t "PurchaseOrderMarkedAsReceived.ViewOrderDetailsLink" "View order"}}</a></p><br/><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;"><a style="color:#000000;text-decoration:line-through;font-weight:bold;" href="{{marketplace.url}}/sale/{{url-encode id}}/" target="_blank">{{t "PurchaseOrderMarkedAsReceived.ViewOrderDetailsLink" "View order"}}</a></p><br/><br/>
               </td>
             </tr>
             <tr>
