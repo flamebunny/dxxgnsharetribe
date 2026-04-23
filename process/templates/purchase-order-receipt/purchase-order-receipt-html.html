@@ -33,12 +33,49 @@
               <td>
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">Hi,</p>
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderReceipt.Content" "Thank you for purchasing {listingTitle}."  listingTitle=listing.title}}</p>
-                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderReceipt.BreakdownLabel" "{currency} {amount,number,::.00} will be deducted from your card. " amount=payout-total.amount currency=payout-total.currency}}</p><br/>
+                <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;">{{t "PurchaseOrderReceipt.BreakdownLabel" "{currency} {amount,number,::.00} will be deducted from your card. " amount=payin-total.amount currency=payin-total.currency}}</p><br/>
                 <p style="font-size:14px;line-height:18px;font-weight:400;color:#000000;text-transform:uppercase;"><a style="color:#000000;text-decoration:line-through;font-weight:bold;" href="{{marketplace.url}}/order/{{url-encode id}}/" target="_blank">{{t "PurchaseOrderReceipt.ViewOrderDetailsLink" "View order"}}</a></p><br/><br/>
               </td>
             </tr>
             <tr>
               <td>
+
+                ---- Testing Variable output start ----
+                <table>
+                  <tbody>
+                    <tr>
+                      <td>                        
+                        Listing Output private-data
+                        <ul>
+                          {{#each listing.private-data}}
+                            <li>{{@key}}: {{this}}</li>
+                          {{/each}}
+                        </ul>
+                        Listing Output public-data
+                        <ul>
+                          {{#each listing.public-data}}
+                            <li>{{@key}}: {{this}}</li>
+                          {{/each}}
+                        </ul>
+                        Listing Output metadata
+                        <ul>
+                          {{#each listing.metadata}}
+                            <li>{{@key}}: {{this}}</li>
+                          {{/each}}
+                        </ul>
+                        Listing Output
+                        <ul>
+                          {{#each listing}}
+                            <li>{{@key}}: {{this}}</li>
+                          {{/each}}
+                        </ul>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                ---- Testing Variale output end ----
+
+
                 <table style="padding-bottom: 20px;">
                   <tr>
                     <td width="20%" style="width: 20%; background-color: #f8f8f8;">
@@ -170,10 +207,10 @@
                           <tr>
                             <td>                              
                               <td>
-                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{t "PurchaseOrderReceipt.PaymentTotalLabel" "Sale Proceeds"}}</p>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{t "PurchaseOrderReceipt.PaymentTotalLabel" "Total"}}</p>
                               </td>
                               <td style="text-align:right">
-                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{> format-money money=payout-total}}</p>
+                                <p style="font-size:16px;line-height:1.4;margin:16px 0;color:#000000;margin-top:1px;font-weight:700;text-transform:uppercase;">{{> format-money money=payin-total}}</p>
                               </td>
                             </td>
                           </tr>

@@ -1,4 +1,5 @@
 //Email Templates Cli
+https://www.sharetribe.com/docs/how-to/emails-and-notifications/edit-email-templates-with-sharetribe-cli/
 
 flex-cli process list -m desxgn-dev
 
@@ -20,7 +21,7 @@ flex-cli notifications send --template process/templates/purchase-order-disputed
 flex-cli process push --path process --process default-purchase -m desxgn-dev
 
 //Update alias
-flex-cli process update-alias --process default-purchase --alias release-1 --version 3 -m desxgn-dev
+flex-cli process update-alias --process default-purchase --alias release-1 --version 7 -m desxgn-dev
 
 
 //View updated alias
