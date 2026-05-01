@@ -318,15 +318,25 @@ const EditListingDetailsPanel = props => {
     <div className={classes}>
       <H3 as="h1">
         {isPublished ? (
-          <FormattedMessage
-            id="EditListingDetailsPanel.title"
-            values={{ listingTitle: <ListingLink listing={listing} />, lineBreak: <br /> }}
-          />
+          <div>
+            isPublished = True
+            <ListingLink listing={listing} />
+            <br/>
+            <FormattedMessage
+              id="EditListingDetailsPanel.title"
+              values={{ listingTitle: <ListingLink listing={listing} />, lineBreak: <br /> }}
+            />
+          </div>
+          
         ) : (
-          <FormattedMessage
-            id="EditListingDetailsPanel.createListingTitle"
-            values={{ lineBreak: <br /> }}
-          />
+          <div>
+            isPublished = False
+            <FormattedMessage
+              id="EditListingDetailsPanel.createListingTitle"
+              values={{ lineBreak: <br /> }}
+            />
+          </div>
+          
         )}
       </H3>
 

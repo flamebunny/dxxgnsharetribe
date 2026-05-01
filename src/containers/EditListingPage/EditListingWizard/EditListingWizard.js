@@ -51,6 +51,9 @@ import {
 
 // Import modules from this directory
 import EditListingWizardTab, {
+  ID,
+  INFORMATION,
+  EDITION,
   DETAILS,
   PRICING,
   PRICING_AND_STOCK,
@@ -69,7 +72,7 @@ import css from './EditListingWizard.module.css';
 // Note 3: The first tab creates a draft listing and title is mandatory attribute for it.
 //         Details tab asks for "title" and is therefore the first tab in the wizard flow.
 const TABS_DETAILS_ONLY = [DETAILS];
-const TABS_PRODUCT = [DETAILS, PRICING_AND_STOCK, DELIVERY, PHOTOS, STYLE];
+const TABS_PRODUCT = [ID, INFORMATION, EDITION, DETAILS, PRICING_AND_STOCK, DELIVERY, PHOTOS, STYLE];
 const TABS_BOOKING = [DETAILS, LOCATION, PRICING, AVAILABILITY, PHOTOS, STYLE];
 const TABS_INQUIRY = [DETAILS, LOCATION, PRICING, PHOTOS, STYLE];
 const TABS_ALL = [...TABS_PRODUCT, ...TABS_BOOKING, ...TABS_INQUIRY];
@@ -126,7 +129,16 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
 
   let labelKey = null;
   let submitButtonKey = null;
-  if (tab === DETAILS) {
+  if (tab === ID) {
+    labelKey = 'EditListingWizard.tabLabelId';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveID`;
+  } else if (tab === INFORMATION) {
+    labelKey = 'EditListingWizard.tabLabelInformation';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveInformation`;
+  } else if (tab === EDITION) {
+    labelKey = 'EditListingWizard.tabLabelEdition';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveEdition`;
+  } else if (tab === DETAILS) {
     labelKey = 'EditListingWizard.tabLabelDetails';
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveDetails`;
   } else if (tab === PRICING) {

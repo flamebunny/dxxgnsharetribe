@@ -10,6 +10,7 @@ import { createResourceLocatorString } from '../../../util/routes';
 
 // Import modules from this directory
 import EditListingAvailabilityPanel from './EditListingAvailabilityPanel/EditListingAvailabilityPanel';
+import EditListingIdPanel from './EditListingIdPanel/EditListingIdPanel';
 import EditListingDetailsPanel from './EditListingDetailsPanel/EditListingDetailsPanel';
 import EditListingDeliveryPanel from './EditListingDeliveryPanel/EditListingDeliveryPanel';
 import EditListingLocationPanel from './EditListingLocationPanel/EditListingLocationPanel';
@@ -20,6 +21,9 @@ import EditListingStylePanel from './EditListingStylePanel/EditListingStylePanel
 
 import css from './EditListingWizardTab.module.css';
 
+export const ID = 'id';
+export const INFORMATION = 'information';
+export const EDITION = 'edition';
 export const DETAILS = 'details';
 export const PRICING = 'pricing';
 export const PRICING_AND_STOCK = 'pricing-and-stock';
@@ -31,6 +35,9 @@ export const STYLE = 'style';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
+  ID,
+  INFORMATION,
+  EDITION,
   DETAILS,
   PRICING,
   PRICING_AND_STOCK,
@@ -186,6 +193,33 @@ const EditListingWizardTab = props => {
 
   // TODO: add missing cases for supported tabs
   switch (tab) {
+    case ID: {
+      return (
+        <EditListingIdPanel
+          {...panelProps(ID)}
+          onListingTypeChange={onListingTypeChange}
+          config={config}
+        />
+      );
+    }
+    case EDITION: {
+      return (
+        <EditListingDetailsPanel
+          {...panelProps(DETAILS)}
+          onListingTypeChange={onListingTypeChange}
+          config={config}
+        />
+      );
+    }
+    case INFORMATION: {
+      return (
+        <EditListingDetailsPanel
+          {...panelProps(DETAILS)}
+          onListingTypeChange={onListingTypeChange}
+          config={config}
+        />
+      );
+    }
     case DETAILS: {
       return (
         <EditListingDetailsPanel
