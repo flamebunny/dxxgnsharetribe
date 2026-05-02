@@ -11,12 +11,9 @@ import classNames from 'classnames';
 import { ListingCard } from '../../../../components';
 
 import Field, { hasDataInFields } from '../../Field';
-import BlockBuilder from '../../BlockBuilder';
 
 import SectionContainer from '../SectionContainer';
 import css from './SectionCarouselNew.module.css';
-
-import BlockContainer from '../../BlockBuilder/BlockContainer';
 
 import { IconArrowHead } from '../../../../components';
 
@@ -55,23 +52,26 @@ const SectionCarouselNew = props => {
     description,
     appearance,
     callToAction,
-    listings,
+    listings = [],
     options,
   } = props;
 
   const intl = useIntl();
 
-  const imgSize = getResponsiveImageSizes(numColumns);
-  const sliderContainerId = `${props.sectionId}-container`;
-  const sliderId = `${props.sectionId}-slider`;
-  const numberOfListings = listings?.length;
-  const hasListings = listings.length > 0;
+  const sliderContainerId = `${sectionId}-container`;
+  const sliderId = `${sectionId}-slider`;
+  const numberOfListings = listings.length;
+  const hasListings = numberOfListings > 0;
 
   useEffect(() => {
     const setCarouselWidth = () => {
       if (hasListings) {
         const windowWidth = window.innerWidth;
         const elem = window.document.getElementById(sliderContainerId);
+        if (!elem) {
+          return;
+        }
+
         const scrollbarWidth = window.innerWidth - document.body.clientWidth;
         const elementWidth =
           elem.clientWidth >= windowWidth - scrollbarWidth ? windowWidth : elem.clientWidth;
@@ -84,7 +84,7 @@ const SectionCarouselNew = props => {
 
     window.addEventListener('resize', setCarouselWidth);
     return () => window.removeEventListener('resize', setCarouselWidth);
-  }, []);
+  }, [hasListings, sliderContainerId]);
 
   // If external mapping has been included for fields
   // E.g. { h1: { component: MyAwesomeHeader } }
@@ -93,28 +93,12 @@ const SectionCarouselNew = props => {
 
   const hasHeaderFields = hasDataInFields([title, description, callToAction], fieldOptions);
 
-  const RenderLeftNav = (onClick, onKeyDown) => {
-    return (
-      <button className={css.navLeft} onClick={onSlideLeft} onKeyDown={ onKeyDown}>
-        <div className={css.navArrowWrapper}>
-          <IconArrowHead direction="left" size="big" />
-        </div>
-      </button>
-    );
-  };
-  const RenderRightNav = (onClick, onKeyDown) => {
-    return (
-      <button className={css.navRight} onClick={onSlideRight} onKeyDown={onKeyDown}>
-        <div className={css.navArrowWrapper}>
-          <IconArrowHead direction="right" size="big" />
-        </div>
-      </button>
-    );
-  };
-
-
   const onSlideLeft = e => {
-    var slider = window.document.getElementById(sliderId);
+    const slider = window.document.getElementById(sliderId);
+    if (!slider) {
+      return;
+    }
+
     const slideWidth = numColumns * slider?.firstChild?.clientWidth;
     slider.scrollLeft = slider.scrollLeft - slideWidth;
     // Fix for Safari
@@ -122,7 +106,11 @@ const SectionCarouselNew = props => {
   };
 
   const onSlideRight = e => {
-    var slider = window.document.getElementById(sliderId);
+    const slider = window.document.getElementById(sliderId);
+    if (!slider) {
+      return;
+    }
+
     const slideWidth = numColumns * slider?.firstChild?.clientWidth;
     slider.scrollLeft = slider.scrollLeft + slideWidth;
     // Fix for Safari
