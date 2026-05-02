@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { createImageVariantConfig } from '../../util/sdkLoader';
 import { isErrorUserPendingApproval, isForbiddenError, storableError } from '../../util/errors';
 import { convertUnitToSubUnit, unitDivisor } from '../../util/currency';
@@ -20,6 +21,8 @@ import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 // Current design has max 3 columns 12 is divisible by 2 and 3
 // So, there's enough cards to fill all columns on full pagination pages
 const RESULT_PAGE_SIZE = 24;
+const LANDING_PAGE_ASSET_NAME = 'landing-page';
+const FEATURED_SECTION_ID = 'featured-listings';
 
 // ================ Helper Functions ================ //
 
@@ -416,44 +419,67 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   } = config.layout.listingImage;
   const aspectRatio = aspectHeight / aspectWidth;
 
-  const searchListingsCall = searchListings({
-    searchParams: {
-      ...rest,
-      ...originMaybe,
-      ...listingTypeVariantMaybe,
-      page,
-      perPage: RESULT_PAGE_SIZE,
-      include: ['author', 'images'],
-      'fields.listing': [
-        'title',
-        'geolocation',
-        'price',
-        'deleted',
-        'state',
-        'publicData.listingType',
-        'publicData.transactionProcessAlias',
-        'publicData.unitType',
-        'publicData.cardStyle',
-        // These help rendering of 'purchase' listings,
-        // when transitioning from search page to listing page
-        'publicData.pickupEnabled',
-        'publicData.shippingEnabled',
-        'publicData.priceVariationsEnabled',
-        'publicData.priceVariants',
-      ],
-      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
-      'fields.image': [
-        'variants.scaled-small',
-        'variants.scaled-medium',
-        `variants.${variantPrefix}`,
-        `variants.${variantPrefix}-2x`,
-      ],
-      ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
-      ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
-      'limit.images': 1,
-    },
-    config,
-  });
+  const baseSearchParams = {
+    ...rest,
+    ...originMaybe,
+    ...listingTypeVariantMaybe,
+    page,
+    perPage: RESULT_PAGE_SIZE,
+    include: ['author', 'images'],
+    'fields.listing': [
+      'title',
+      'geolocation',
+      'price',
+      'deleted',
+      'state',
+      'publicData.listingType',
+      'publicData.transactionProcessAlias',
+      'publicData.unitType',
+      'publicData.cardStyle',
+      // These help rendering of 'purchase' listings,
+      // when transitioning from search page to listing page
+      'publicData.pickupEnabled',
+      'publicData.shippingEnabled',
+      'publicData.priceVariationsEnabled',
+      'publicData.priceVariants',
+    ],
+    'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
+    'fields.image': [
+      'variants.scaled-small',
+      'variants.scaled-medium',
+      `variants.${variantPrefix}`,
+      `variants.${variantPrefix}-2x`,
+    ],
+    ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
+    ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
+    'limit.images': 1,
+  };
 
-  return dispatch(searchListingsCall);
+  const searchListingsCall = searchParams => searchListings({ searchParams, config });
+  const isFeaturedSort = queryParams?.sort === 'featured';
+
+  if (isFeaturedSort) {
+    const pageAsset = {
+      landingPage: `content/pages/${LANDING_PAGE_ASSET_NAME}.json`,
+    };
+
+    return dispatch(fetchPageAssets(pageAsset, true)).then(assetResp => {
+      const sections = assetResp?.landingPage?.data?.sections || [];
+      const featuredSection = sections.find(section => section.sectionId === FEATURED_SECTION_ID);
+      const featuredListingIds = featuredSection?.blocks?.map(block => block.blockName) || [];
+
+      const featuredSearchParams =
+        featuredListingIds.length > 0
+          ? {
+              ...baseSearchParams,
+              ids: featuredListingIds,
+              sort: 'createdAt',
+            }
+          : baseSearchParams;
+
+      return dispatch(searchListingsCall(featuredSearchParams));
+    });
+  }
+
+  return dispatch(searchListingsCall(baseSearchParams));
 };
