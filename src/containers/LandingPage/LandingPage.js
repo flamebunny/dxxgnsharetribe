@@ -243,7 +243,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onFetchCustomFeaturedListings: (params, config) =>
     dispatch(landingpageFeaturedListings(params, config)),
-  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
+  onFetchNewListings: (params, config) =>
+    dispatch(searchListings({ searchParams: params, config })),
   onFetchFeaturedListings: (sectionId, parentPage, listingImageConfig, allSections) =>
     dispatch(fetchFeaturedListings({ sectionId, parentPage, listingImageConfig, allSections })),
 });
