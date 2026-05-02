@@ -162,15 +162,12 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         values,
         commission,
       } = formRenderProps;
-      //const intl = useIntl();
-      const providerCommissionPercentage = commission.data.providerCommission.percentage;
-      
-      // providerCommissionMinimum in cents
-      const providerCommissionMinimum = commission.data.providerCommission.minimum_amount;
-
-      const customerCommissionPercentage = commission.data.customerCommission.percentage;
-      // customerCommissionMinimum in cents
-      const customerCommissionMinimum = commission.data.customerCommission.minimum_amount;
+      const providerCommission = commission?.data?.providerCommission || {};
+      const customerCommissionData = commission?.data?.customerCommission || {};
+      const providerCommissionPercentage = providerCommission.percentage || 0;
+      const providerCommissionMinimum = providerCommission.minimum_amount || 0;
+      const customerCommissionPercentage = customerCommissionData.percentage || 0;
+      const customerCommissionMinimum = customerCommissionData.minimum_amount || 0;
 
       const priceValidators = getPriceValidators(
         listingMinimumPriceSubUnits,
