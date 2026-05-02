@@ -6,6 +6,7 @@ import {
   denormalisedEntities,
   humanizeLineItemCode,
   denormalizeAssetData,
+  limitListingsSections,
 } from './data';
 
 const { UUID } = sdkTypes;
@@ -427,5 +428,28 @@ describe('denormalizeAssetData', () => {
       },
     };
     expect(JSON.stringify(denormalizeAssetData(jsonObj))).toEqual(JSON.stringify(expected));
+  });
+});
+
+describe('limitListingsSections', () => {
+  it('returns non-page asset data as-is', () => {
+    const assetData = { foo: 'bar' };
+    expect(limitListingsSections(assetData)).toBe(assetData);
+    expect(limitListingsSections(undefined)).toBe(undefined);
+  });
+
+  it('keeps non-listing sections and limits listing sections to 10', () => {
+    const listingSections = Array.from({ length: 12 }, (_, i) => ({
+      sectionId: `listing-${i}`,
+      sectionType: 'listings',
+    }));
+    const data = {
+      sections: [{ sectionId: 'hero', sectionType: 'hero' }, ...listingSections],
+    };
+
+    const limited = limitListingsSections(data);
+    expect(limited.sections).toHaveLength(11);
+    expect(limited.sections[0].sectionType).toEqual('hero');
+    expect(limited.sections.filter(s => s.sectionType === 'listings')).toHaveLength(10);
   });
 });

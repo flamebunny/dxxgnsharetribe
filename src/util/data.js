@@ -220,6 +220,10 @@ export const denormalizeAssetData = assetJson => {
  * const limited = limitListingsSections(pageData);
  */
 export const limitListingsSections = data => {
+  if (!Array.isArray(data?.sections)) {
+    return data;
+  }
+
   let acc = 0;
   const listingSectionLimit = 10;
   const filteredSections = data.sections.filter(section => {
