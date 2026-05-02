@@ -7,6 +7,7 @@ import { useConfiguration } from '../../context/configurationContext';
 
 import { useIntl } from '../../util/reactIntl';
 import { requireListingImage } from '../../util/configHelpers';
+import { formatMoney } from '../../util/currency';
 import { lazyLoadWithDimensions } from '../../util/uiHelpers';
 import { createSlug } from '../../util/urlHelpers';
 
@@ -119,14 +120,16 @@ export const ListingCard = props => {
     showPrice,
     priceTooltip,
     priceMessage,
-    authorName,
   } = translations;
 
   const classes = classNames(rootClassName || css.root, className);
 
   const id = listing?.id?.uuid;
-  const { title = '', publicData } = listing?.attributes || {};
+  const { title = '', price, publicData } = listing?.attributes || {};
   const slug = createSlug(title);
+  const authorDisplayName = listing?.author?.attributes?.profile?.displayName;
+  const formattedPrice =
+    price?.currency === config.currency ? formatMoney(intl, price) : priceMessage;
 
   const { listingType, cardStyle } = publicData || {};
   const validListingTypes = config.listing.listingTypes || [];
@@ -177,24 +180,22 @@ export const ListingCard = props => {
           setActivePropsMaybe={setActivePropsMaybe}
         />
       )}
-      <div className={css.info}>
-        {showPrice ? (
-          <div className={css.price} title={priceTooltip}>
-            {priceMessage}
-          </div>
+      <div className={classNames(css.info2, css.cousine, { [css.lightText]: darkMode })}>
+        <span className={classNames(css.infoTitle, css.elipsis)}>{titleFormatted}</span>
+        {showAuthorInfo && authorDisplayName ? (
+          <>
+            <span className={css.slash}>/</span>
+            <span className={classNames(css.infoAuthor, css.elipsis)}>{authorDisplayName}</span>
+          </>
         ) : null}
-        <div className={css.mainInfo}>
-          {showListingImage && (
-            <div className={classNames(css.title, { [css.lightText]: darkMode })}>
-              {titleFormatted}
-            </div>
-          )}
-          {showAuthorInfo ? (
-            <div className={classNames(css.authorInfo, { [css.lightText]: darkMode })}>
-              {authorName}
-            </div>
-          ) : null}
-        </div>
+        {showPrice && formattedPrice ? (
+          <>
+            <span className={css.slash}>/</span>
+            <span className={css.infoPrice} title={priceTooltip}>
+              <b>{formattedPrice}</b>
+            </span>
+          </>
+        ) : null}
       </div>
     </NamedLink>
   );

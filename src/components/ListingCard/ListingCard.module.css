@@ -4,6 +4,7 @@
   /* Layout */
   display: flex;
   flex-direction: column;
+  position: relative;
 
   /* Remove link's hover effect */
   &:hover {
@@ -14,9 +15,16 @@
 .aspectRatioWrapper {
   transition: var(--transitionStyleButton);
   background: var(--colorGrey100); /* Loading BG color */
-  border-radius: var(--borderRadiusMedium);
+  overflow: hidden;
+  margin-bottom: 24px;
+
+  @media (--viewportSmall) {
+    margin-bottom: 14px;
+  }
 
   @media (--viewportMedium) {
+    margin-bottom: 0;
+
     &:hover {
       transform: scale(1.02);
       box-shadow: var(--boxShadowListingCard);
@@ -25,10 +33,75 @@
 }
 
 .rootForImage {
-  border: solid 1px var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
   width: 100%;
   height: 100%;
+}
+
+.info2 {
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  font-size: 12px;
+  line-height: 12px;
+  width: 100%;
+  height: 30px;
+  text-transform: uppercase;
+  color: var(--marketplaceColor);
+
+  @media (--viewportSmall) {
+    bottom: -6px;
+    height: auto;
+    font-size: 14px;
+  }
+
+  @media (--viewportMedium) {
+    bottom: -20px;
+  }
+}
+
+.infoAuthor,
+.infoTitle {
+  max-width: 21%;
+  display: inline-block;
+
+  @media (min-width: 550px) {
+    max-width: 28%;
+  }
+
+  @media (--viewportLarge) {
+    max-width: 21%;
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 28%;
+  }
+}
+
+.infoPrice {
+  display: inline-block;
+  overflow: hidden;
+}
+
+.slash {
+  padding: 0 5px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.elipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.cousine {
+  font-family: 'Cousine', serif;
+  font-weight: 400;
+}
+
+.info2.lightText {
+  color: var(--colorWhite);
 }
 
 .title.lightText {
