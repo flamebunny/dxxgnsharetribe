@@ -11,6 +11,7 @@ import { hasPermissionToPostListings, showCreateListingLinkForUser } from '../..
 import { NO_ACCESS_PAGE_POST_LISTINGS } from '../../util/urlHelpers';
 import { propTypes } from '../../util/types';
 import { isErrorNoPermissionToPostListings } from '../../util/errors';
+import { types as sdkTypes } from '../../util/sdkLoader';
 import { isScrollingDisabled, manageDisableScrolling } from '../../ducks/ui.duck';
 
 import {
@@ -36,6 +37,8 @@ import {
 } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import DiscardDraftModal from './DiscardDraftModal/DiscardDraftModal';
+
+const { Money } = sdkTypes;
 
 const Heading = props => {
   const { listingsAreLoaded, pagination } = props;
@@ -73,6 +76,36 @@ const PaginationLinksMaybe = props => {
       pagination={pagination}
     />
   ) : null;
+};
+
+const addCustomerCommission = (listings = [], customerCommissionPercentage = 0) => {
+  if (!customerCommissionPercentage) {
+    return listings;
+  }
+
+  return listings.map(listing => {
+    const price = listing?.attributes?.price;
+    if (!price) {
+      return listing;
+    }
+
+    const priceAmount = Number(price.amount?.toString ? price.amount.toString() : price.amount);
+    if (!Number.isFinite(priceAmount)) {
+      return listing;
+    }
+
+    const priceWithCommission = Math.round(
+      priceAmount + priceAmount * (customerCommissionPercentage / 100)
+    );
+
+    return {
+      ...listing,
+      attributes: {
+        ...listing.attributes,
+        price: new Money(priceWithCommission, price.currency),
+      },
+    };
+  });
 };
 
 /**
@@ -168,65 +201,11 @@ export const ManageListingsPageComponent = props => {
     setDiscardDraftModalOpen(false);
     setDiscardDraftModalId(null);
   };
-
-
-
   // ADD COMMISSION to Listings
   const commission = pageAssetsData?.commission === undefined ? 0 : pageAssetsData?.commission; 
 
-  const providerCommissionPercentage = commission?.data?.providerCommission.percentage === undefined ? 0 : commission?.data?.providerCommission.percentage; 
-  // providerCommissionMinimum in cents
-  const providerCommissionMinimum = commission?.data?.providerCommission.minimum_amount === undefined ? 0 : commission?.data?.providerCommission.minimum_amount; 
-
   const customerCommissionPercentage = commission?.data?.customerCommission.percentage === undefined ? 0 : commission?.data?.customerCommission.percentage; 
-  // customerCommissionMinimum in cents
-  const customerCommissionMinimum = commission?.data?.customerCommission.minimum_amount === undefined ? 0 : commission?.data?.customerCommission.minimum_amount; 
-
-
-  function calculatePricePlusPercentage(originalPrice, percentageIncrease) {
-    // Convert percentage to a decimal
-    const percentageDecimal = percentageIncrease / 100;
-
-    // Calculate the amount of the increase
-    const increaseAmount = originalPrice * percentageDecimal;
-
-    // Add the increase amount to the original price
-    const finalPrice = originalPrice + increaseAmount;
-
-    return finalPrice;
-  }
-
-  const addCommissionShippingToListings = (listingsWithCommission, commission) => {
-    listingsWithCommission.map((listing, i) => {
-
-      if(listing.attributes.price === null){      
-        listing.attributes.price = {};  
-        listing.attributes.price.amount = 0;
-        listing.attributes.price.priceOriginal = 0;
-        listing.attributes.price.priceCommission = 0;
-        listing.attributes.price.priceCommissionShipping = 0;
-      }
-
-      //create safe backup of original price      
-      listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
-      listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-
-      const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
-      const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-      
-      listing.attributes.price.priceCommission = calculatePriceCommission;
-      listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping;
-      //overwite amount including shipping and commission
-      listing.attributes.price.amount = listing.attributes.price.priceCommission;
-
-      return listing;
-    })
-
-  } 
-
-  if (commission != null) {
-    addCommissionShippingToListings(listings, customerCommissionPercentage);
-  }
+  const listingsWithCommission = addCustomerCommission(listings, customerCommissionPercentage);
 
   // END COMMISSION
 
@@ -287,7 +266,7 @@ export const ManageListingsPageComponent = props => {
           <Heading listingsAreLoaded={listingsAreLoaded} pagination={pagination} />
 
           <ul className={css.listingCards}>
-            {listings.map(l => (
+            {listingsWithCommission.map(l => (
               <li key={l.id.uuid} className={css.listingCard}>
                 <ManageListingCard
                   listing={l}
