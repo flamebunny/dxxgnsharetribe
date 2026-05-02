@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 import { useConfiguration } from '../../context/configurationContext';
+import { types as sdkTypes } from '../../util/sdkLoader';
 
 import FallbackPage from './FallbackPage';
 import {
@@ -53,6 +54,7 @@ const textlinksSectionType = 'textlinks';
 const columnsTextType = 'columnstext';
 const categoriesSectionType = 'categories';
 const carouselNewSectionType = 'carouselsnew';
+const { Money } = sdkTypes;
 
 const idToSdkUuid = uuid => ({
   uuid,
@@ -70,24 +72,20 @@ const addCustomerCommission = (listings = [], customerCommissionPercentage = 0) 
       return listing;
     }
 
-    const priceOriginal = price.priceOriginal ?? price.amount;
-    const shippingPrice =
-      listing.attributes.publicData?.shippingPriceInSubunitsOneItem === undefined
-        ? 0
-        : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-    const priceCommission = priceOriginal + priceOriginal * (customerCommissionPercentage / 100);
+    const priceAmount = Number(price.amount?.toString ? price.amount.toString() : price.amount);
+    if (!Number.isFinite(priceAmount)) {
+      return listing;
+    }
+
+    const priceWithCommission = Math.round(
+      priceAmount + priceAmount * (customerCommissionPercentage / 100)
+    );
 
     return {
       ...listing,
       attributes: {
         ...listing.attributes,
-        price: {
-          ...price,
-          amount: priceCommission,
-          priceOriginal,
-          priceCommission,
-          priceCommissionShipping: priceCommission + shippingPrice,
-        },
+        price: new Money(priceWithCommission, price.currency),
       },
     };
   });
