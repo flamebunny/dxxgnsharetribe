@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import loadable from '@loadable/component';
 
 import { bool, object } from 'prop-types';
@@ -7,23 +7,206 @@ import { connect } from 'react-redux';
 
 import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
+import { useConfiguration } from '../../context/configurationContext';
 
 import FallbackPage from './FallbackPage';
-import { ASSET_NAME } from './LandingPage.duck';
+import {
+  ASSET_NAME,
+  getNewListingParams,
+  getFeaturedListingParams,
+  featuredSectionId,
+  newSectionId,
+  masonarySectionId,
+  textblurbSectionId,
+  heroimgcustomSectionId,
+  textlinksSectionId,
+  columnsTextSectionId,
+  categoriesSectionId,
+  carouselNewSectionId,
+  landingpageFeaturedListings,
+} from './LandingPage.duck';
 import { fetchFeaturedListings } from '../../ducks/featuredListings.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { getFeaturedListingsProps } from '../../util/data';
+import { searchListings } from '../SearchPage/SearchPage.duck';
+
+import SectionTextblurb from '../PageBuilder/SectionBuilder/SectionTextblurb';
+import SectionHeroImgCustom from '../PageBuilder/SectionBuilder/SectionHeroImgCustom';
+import SectionTextLinks from '../PageBuilder/SectionBuilder/SectionTextLinks';
+import SectionColumnsText from '../PageBuilder/SectionBuilder/SectionColumnsText';
+import SectionMasonary from '../PageBuilder/SectionBuilder/SectionMasonary';
+import SectionNewListings from '../PageBuilder/SectionBuilder/SectionNewListings';
+import SectionFeaturedListings from '../PageBuilder/SectionBuilder/SectionFeaturedListings';
+import SectionColumnsCategories from '../PageBuilder/SectionBuilder/SectionColumnsCategories';
+import SectionCarouselNew from '../PageBuilder/SectionBuilder/SectionCarouselNew';
 
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
 );
 
+const newSectionType = 'new';
+const featuredSectionType = 'featured';
+const textblurbSectionType = 'textblurb';
+const heroimgcustomSectionType = 'heroimgcustom';
+const masonarySectionType = 'masonary';
+const textlinksSectionType = 'textlinks';
+const columnsTextType = 'columnstext';
+const categoriesSectionType = 'categories';
+const carouselNewSectionType = 'carouselsnew';
+
+const idToSdkUuid = uuid => ({
+  uuid,
+  _sdkType: 'UUID',
+});
+
+const addCustomerCommission = (listings = [], customerCommissionPercentage = 0) => {
+  if (!customerCommissionPercentage) {
+    return listings;
+  }
+
+  return listings.map(listing => {
+    const price = listing?.attributes?.price;
+    if (!price) {
+      return listing;
+    }
+
+    const priceOriginal = price.priceOriginal ?? price.amount;
+    const shippingPrice =
+      listing.attributes.publicData?.shippingPriceInSubunitsOneItem === undefined
+        ? 0
+        : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
+    const priceCommission = priceOriginal + priceOriginal * (customerCommissionPercentage / 100);
+
+    return {
+      ...listing,
+      attributes: {
+        ...listing.attributes,
+        price: {
+          ...price,
+          amount: priceCommission,
+          priceOriginal,
+          priceCommission,
+          priceCommissionShipping: priceCommission + shippingPrice,
+        },
+      },
+    };
+  });
+};
+
+const getCustomSections = (pageData, listings, featuredListings, categories) => {
+  const sections = pageData?.sections;
+
+  if (!Array.isArray(sections)) {
+    return pageData;
+  }
+
+  const sectionOverrides = {
+    [featuredSectionId]: {
+      sectionId: featuredSectionId,
+      sectionType: featuredSectionType,
+      listings: featuredListings,
+    },
+    [newSectionId]: {
+      sectionId: newSectionId,
+      sectionType: newSectionType,
+      listings,
+    },
+    [carouselNewSectionId]: {
+      sectionId: carouselNewSectionId,
+      sectionType: carouselNewSectionType,
+      listings,
+    },
+    [masonarySectionId]: {
+      sectionId: masonarySectionId,
+      sectionType: masonarySectionType,
+    },
+    [textblurbSectionId]: {
+      sectionId: textblurbSectionId,
+      sectionType: textblurbSectionType,
+    },
+    [heroimgcustomSectionId]: {
+      sectionId: heroimgcustomSectionId,
+      sectionType: heroimgcustomSectionType,
+    },
+    [textlinksSectionId]: {
+      sectionId: textlinksSectionId,
+      sectionType: textlinksSectionType,
+    },
+    [columnsTextSectionId]: {
+      sectionId: columnsTextSectionId,
+      sectionType: columnsTextType,
+    },
+    [categoriesSectionId]: {
+      sectionId: categoriesSectionId,
+      sectionType: categoriesSectionType,
+      allCategories: categories,
+    },
+  };
+
+  return {
+    ...pageData,
+    sections: sections.map(section => ({
+      ...section,
+      ...(sectionOverrides[section.sectionId] || {}),
+    })),
+  };
+};
+
 export const LandingPageComponent = props => {
-  const { pageAssetsData, inProgress, error } = props;
+  const {
+    pageAssetsData,
+    listings,
+    featuredListings,
+    featuredListingIds,
+    inProgress,
+    error,
+    onFetchNewListings,
+    onFetchCustomFeaturedListings,
+  } = props;
+
+  const config = useConfiguration();
+
+  useEffect(() => {
+    onFetchNewListings(getNewListingParams(config), config);
+  }, [config, onFetchNewListings]);
+
+  useEffect(() => {
+    if (featuredListingIds.length > 0) {
+      onFetchCustomFeaturedListings(getFeaturedListingParams(config, featuredListingIds), config);
+    }
+  }, [config, featuredListingIds, onFetchCustomFeaturedListings]);
+
+  const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
+  const commissionData = pageAssetsData?.commission?.data;
+  const customerCommissionPercentage = commissionData?.customerCommission?.percentage || 0;
+  const listingsWithCommission = addCustomerCommission(listings, customerCommissionPercentage);
+  const featuredListingsWithCommission = addCustomerCommission(
+    featuredListings,
+    customerCommissionPercentage
+  );
+  const customPageData = getCustomSections(
+    pageData,
+    listingsWithCommission,
+    featuredListingsWithCommission,
+    config.categoryConfiguration.categories
+  );
 
   return (
     <PageBuilder
-      pageAssetsData={pageAssetsData?.[camelize(ASSET_NAME)]?.data}
+      pageAssetsData={customPageData}
+      options={{
+        sectionComponents: {
+          [newSectionType]: { component: SectionNewListings },
+          [featuredSectionType]: { component: SectionFeaturedListings },
+          [masonarySectionType]: { component: SectionMasonary },
+          [textblurbSectionType]: { component: SectionTextblurb },
+          [heroimgcustomSectionType]: { component: SectionHeroImgCustom },
+          [textlinksSectionType]: { component: SectionTextLinks },
+          [columnsTextType]: { component: SectionColumnsText },
+          [categoriesSectionType]: { component: SectionColumnsCategories },
+          [carouselNewSectionType]: { component: SectionCarouselNew },
+        },
+      }}
       inProgress={inProgress}
       error={error}
       fallbackPage={<FallbackPage error={error} />}
@@ -41,13 +224,28 @@ LandingPageComponent.propTypes = {
 const mapStateToProps = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
   const featuredListingData = state.featuredListings || {};
+  const featuredListingIds = state.LandingPage?.featuredListingIds || [];
+  const currentPageResultIds = state.SearchPage?.currentPageResultIds || [];
+  const featuredListingObj = featuredListingIds.map(idToSdkUuid);
 
   const getListingEntitiesById = listingIds => getListingsById(state, listingIds);
 
-  return { pageAssetsData, featuredListingData, getListingEntitiesById, inProgress, error };
+  return {
+    pageAssetsData,
+    listings: getListingsById(state, currentPageResultIds),
+    featuredListings: getListingsById(state, featuredListingObj),
+    featuredListingIds,
+    featuredListingData,
+    getListingEntitiesById,
+    inProgress,
+    error,
+  };
 };
 
 const mapDispatchToProps = dispatch => ({
+  onFetchCustomFeaturedListings: (params, config) =>
+    dispatch(landingpageFeaturedListings(params, config)),
+  onFetchNewListings: (params, config) => dispatch(searchListings(params, config)),
   onFetchFeaturedListings: (sectionId, parentPage, listingImageConfig, allSections) =>
     dispatch(fetchFeaturedListings({ sectionId, parentPage, listingImageConfig, allSections })),
 });
