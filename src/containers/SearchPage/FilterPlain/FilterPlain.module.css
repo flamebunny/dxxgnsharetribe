@@ -14,21 +14,31 @@
 }
 
 .filterHeader {
-  line-height: 36px;
+  line-height: 24px;
 }
 
 .labelButton {
   /* Override button styles */
   width: 100%;
   outline: none;
-  font-size: 14px;
-  line-height: 18px;
+  line-height: 24px;
   text-align: left;
   border: none;
   padding: 0;
   cursor: pointer;
-  text-transform: uppercase;
-  font-family: 'Cousine', sans-serif;
+
+  &:focus,
+  &:hover {
+    color: var(--marketplaceColor);
+  }
+
+  &:focus {
+    & .label,
+    & .label * {
+      color: var(--colorBlack);
+      color: var(--marketplaceColorDark);
+    }
+  }
 }
 
 .labelButtonContent {
@@ -52,7 +62,7 @@
 
 .label,
 .labelSelected {
-  /* composes: marketplaceSmallFontStyles from global; */
+  composes: marketplaceSmallFontStyles from global;
   font-weight: var(--fontWeightBold);
 
   /* Baseline adjustment for label text */
@@ -65,11 +75,16 @@
 }
 
 .label {
-  color: var(--colorBlack);
+  color: var(--colorGrey700);
 }
 
 .labelSelected {
+  color: var(--marketplaceColor);
   margin-left: 5px;
+
+  &:hover {
+    color: var(--marketplaceColorDark);
+  }
 }
 
 .openSign {
@@ -80,10 +95,9 @@
   composes: h5 from global;
   margin: 0;
   display: block;
-  font-weight: var(--fontWeightRegular);
-  color: var(--colorGrey300);
-  padding: 16px 0 4px 12px;
-  text-transform: uppercase;
+  font-weight: var(--fontWeightMedium);
+  color: var(--colorGrey600);
+  padding: 2px 0 4px 12px;
 
   /* Override button styles */
   outline: none;
@@ -93,12 +107,12 @@
 
   &:focus,
   &:hover {
-    color: var(--colorGrey700);
+    color: var(--colorBlack);
   }
 
   @media (--viewportMedium) {
-    padding: 16px 0 4px 12px;
-    margin-top: 0px;
+    padding: 4px 0 4px 12px;
+    margin-top: 8px;
   }
 }
 

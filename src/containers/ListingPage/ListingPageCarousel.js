@@ -1,45 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useCallback } from 'react';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import classNames from 'classnames';
-import { compose } from 'redux';
-import { connect } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
 
-
-// Contexts
-import { useConfiguration } from '../../context/configurationContext';
-import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 // Utils
-import { FormattedMessage, useIntl } from '../../util/reactIntl';
-import { LISTING_STATE_PENDING_APPROVAL, LISTING_STATE_CLOSED, propTypes } from '../../util/types';
-import { types as sdkTypes } from '../../util/sdkLoader';
-import {
-  LISTING_PAGE_DRAFT_VARIANT,
-  LISTING_PAGE_PENDING_APPROVAL_VARIANT,
-  LISTING_PAGE_PARAM_TYPE_DRAFT,
-  LISTING_PAGE_PARAM_TYPE_EDIT,
-  createSlug,
-  NO_ACCESS_PAGE_USER_PENDING_APPROVAL,
-  NO_ACCESS_PAGE_VIEW_LISTINGS,
-} from '../../util/urlHelpers';
-import {
-  isErrorNoViewingPermission,
-  isErrorUserPendingApproval,
-  isForbiddenError,
-} from '../../util/errors.js';
-import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers.js';
-import { requireListingImage } from '../../util/configHelpers';
-import {
-  ensureListing,
-  ensureOwnListing,
-  ensureUser,
-  userDisplayNameAsString,
-} from '../../util/data';
-import { richText } from '../../util/richText';
-import {
-  isBookingProcess,
-  isPurchaseProcess,
-  resolveLatestProcessName,
-} from '../../transactions/transaction';
+import { FormattedMessage } from '../../util/reactIntl';
+import { LISTING_STATE_CLOSED, propTypes } from '../../util/types';
+import { OFFER, REQUEST } from '../../transactions/transaction';
 
 // Global ducks (for Redux actions and thunks)
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
@@ -48,13 +15,14 @@ import { initializeCardPaymentData } from '../../ducks/stripe.duck.js';
 
 // Shared components
 import {
-  H4,
+  H2,
   H3,
+  H4,
   Page,
   NamedLink,
-  NamedRedirect,
   OrderPanel,
   LayoutSingleColumn,
+  SectionText,
 } from '../../components';
 
 // Related components and modules
@@ -72,27 +40,25 @@ import {
 import {
   LoadingPage,
   ErrorPage,
-  priceData,
-  listingImages,
   handleContactUser,
   handleSubmitInquiry,
+  handleNavigateToMakeOfferPage,
+  handleNavigateToRequestQuotePage,
   handleSubmit,
   priceForSchemaMaybe,
+  getDerivedRenderData,
 } from './ListingPage.shared';
-import ActionBarMaybe from './ActionBarMaybe';
-import SectionTextMaybe from './SectionTextMaybe';
+import Notifications from './Notifications/Notifications';
 import SectionReviews from './SectionReviews';
 import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
 import CustomListingFields from './CustomListingFields';
-import CustomListingFields2 from './CustomListingFields2';
+import ListingPageAccessWrapper from './ListingPageAccessWrapper';
 
 import css from './ListingPage.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
-
-const { UUID } = sdkTypes;
 
 export const ListingPageComponent = props => {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(
@@ -107,7 +73,6 @@ export const ListingPageComponent = props => {
   const {
     isAuthenticated,
     currentUser,
-    pageAssetsData,
     getListing,
     getOwnListing,
     intl,
@@ -130,124 +95,52 @@ export const ListingPageComponent = props => {
     ...restOfProps
   } = props;
 
-
-    // ADD COMMISSION to Listings
-  const commission = pageAssetsData?.commission === undefined ? 0 : pageAssetsData?.commission; 
-
-  const providerCommissionPercentage = commission?.data?.providerCommission.percentage === undefined ? 0 : commission?.data?.providerCommission.percentage; 
-  // providerCommissionMinimum in cents
-  const providerCommissionMinimum = commission?.data?.providerCommission.minimum_amount === undefined ? 0 : commission?.data?.providerCommission.minimum_amount; 
-
-  const customerCommissionPercentage = commission?.data?.customerCommission.percentage === undefined ? 0 : commission?.data?.customerCommission.percentage; 
-  // customerCommissionMinimum in cents
-  const customerCommissionMinimum = commission?.data?.customerCommission.minimum_amount === undefined ? 0 : commission?.data?.customerCommission.minimum_amount; 
-
-
-  function calculatePricePlusPercentage(originalPrice, percentageIncrease) {
-    // Convert percentage to a decimal
-    const percentageDecimal = percentageIncrease / 100;
-
-    // Calculate the amount of the increase
-    const increaseAmount = originalPrice * percentageDecimal;
-
-    // Add the increase amount to the original price
-    const finalPrice = originalPrice + increaseAmount;
-
-    return finalPrice;
-  }
-
-  const addCommissionToSinglePrice = (listing, commission) => {
-    if(listing.attributes.price === null){      
-      listing.attributes.price = {};  
-      listing.attributes.price.amount = 0;
-      listing.attributes.price.priceOriginal = 0;
-      listing.attributes.price.priceCommission = 0;
-      listing.attributes.price.priceCommissionShipping = 0;
-    }
-
-    //create safe backup of original price      
-    listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
-    listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-
-    const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
-    const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-    
-    listing.attributes.price.priceCommission = calculatePriceCommission; // commission
-    listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping; // commission + shipping
-    //overwite price
-    listing.attributes.price.amount = listing.attributes.price.priceCommission;
-
-    return listing;
-  }
-
-  const addCommissionShippingToListings = (listingsWithCommission, commission) => {
-    listingsWithCommission.map((listing, i) => {
-
-      if(listing.attributes.price === null){      
-        listing.attributes.price = {};  
-        listing.attributes.price.amount = 0;
-        listing.attributes.price.priceOriginal = 0;
-        listing.attributes.price.priceCommission = 0;
-        listing.attributes.price.priceCommissionShipping = 0;
-      }
-
-      //create safe backup of original price      
-      listing.attributes.price.priceOriginal = listing.attributes.price.priceOriginal === undefined ? listing.attributes.price.amount : listing.attributes.price.priceOriginal;
-      listing.attributes.publicData.shippingPriceInSubunitsOneItem  = listing.attributes.publicData.shippingPriceInSubunitsOneItem === undefined ? 0 : listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-
-      const calculatePriceCommission = calculatePricePlusPercentage(listing.attributes.price.priceOriginal, commission);
-      const calculatePriceCommissionShipping = calculatePriceCommission + listing.attributes.publicData.shippingPriceInSubunitsOneItem;
-      
-      listing.attributes.price.priceCommission = calculatePriceCommission; // commission
-      listing.attributes.price.priceCommissionShipping = calculatePriceCommissionShipping; // commission + shipping
-      //overwite price
-      listing.attributes.price.amount = listing.attributes.price.priceCommission;
-
-      return listing;
-    })
-
-  } 
-
-  // END COMMISSION
-
-  const listingConfig = config.listing;
-  const listingId = new UUID(rawParams.id);
-  const isVariant = rawParams.variant != null;
-  const isPendingApprovalVariant = rawParams.variant === LISTING_PAGE_PENDING_APPROVAL_VARIANT;
-  const isDraftVariant = rawParams.variant === LISTING_PAGE_DRAFT_VARIANT;
-  const currentListing =
-    isPendingApprovalVariant || isDraftVariant || showOwnListingsOnly
-      ? ensureOwnListing(getOwnListing(listingId))
-      : ensureListing(getListing(listingId));
-
-
-  const listingSlug = rawParams.slug || createSlug(currentListing.attributes.title || '');
-  const params = { slug: listingSlug, ...rawParams };
-
-  const listingPathParamType = isDraftVariant
-    ? LISTING_PAGE_PARAM_TYPE_DRAFT
-    : LISTING_PAGE_PARAM_TYPE_EDIT;
-  const listingTab = isDraftVariant ? 'photos' : 'details';
-
-  const isApproved =
-    currentListing.id && currentListing.attributes.state !== LISTING_STATE_PENDING_APPROVAL;
-
-  const pendingIsApproved = isPendingApprovalVariant && isApproved;
-
-  // If a /pending-approval URL is shared, the UI requires
-  // authentication and attempts to fetch the listing from own
-  // listings. This will fail with 403 Forbidden if the author is
-  // another user. We use this information to try to fetch the
-  // public listing.
-  const pendingOtherUsersListing =
-    (isPendingApprovalVariant || isDraftVariant) &&
-    showListingError &&
-    showListingError.status === 403;
-  const shouldShowPublicListingPage = pendingIsApproved || pendingOtherUsersListing;
-
-  if (shouldShowPublicListingPage) {
-    return <NamedRedirect name="ListingPage" params={params} search={location.search} />;
-  }
+  const derivedData = getDerivedRenderData({
+    rawParams,
+    getListing,
+    getOwnListing,
+    showOwnListingsOnly,
+    currentUser,
+    config,
+    intl,
+    location,
+    longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE,
+    longWordClassName: css.longWord,
+    payoutDetailsWarningClassName: css.payoutDetailsWarning,
+  });
+  const {
+    listingConfig,
+    listingId,
+    isVariant,
+    currentListing,
+    listingSlug,
+    params,
+    listingPathParamType,
+    listingTab,
+    description,
+    geolocation,
+    price,
+    title,
+    publicData,
+    metadata,
+    richTitle,
+    isOwnListing,
+    showListingImage,
+    showDescription,
+    processType,
+    ensuredAuthor,
+    noPayoutDetailsSetWithOwnListing,
+    payoutDetailsWarning,
+    authorDisplayName,
+    schemaTitle,
+    facebookImages,
+    twitterImages,
+    schemaImages,
+    productURL,
+    availabilityMaybe,
+    noIndexMaybe,
+    hasInvalidListingData,
+  } = derivedData;
 
   const topbar = <TopbarContainer />;
 
@@ -262,153 +155,61 @@ export const ListingPageComponent = props => {
     return <LoadingPage topbar={topbar} scrollingDisabled={scrollingDisabled} intl={intl} />;
   }
 
-  const {
-    description = '',
-    geolocation = null,
-    price = null,
-    title = '',
-    publicData = {},
-    metadata = {},
-  } = currentListing.attributes;
-
-  const richTitle = (
-    <span>
-      {richText(title, {
-        longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE,
-        longWordClass: css.longWord,
-      })}
-    </span>
-  );
-
-
-  if (commission != null) {
-    addCommissionToSinglePrice(currentListing, customerCommissionPercentage);
-    //addCommissionShippingToListings(featuredListings, customerCommissionPercentage);
-  }
-
-
-
-  const authorAvailable = currentListing && currentListing.author;
-  const userAndListingAuthorAvailable = !!(currentUser && authorAvailable);
-  const isOwnListing =
-    userAndListingAuthorAvailable && currentListing.author.id.uuid === currentUser.id.uuid;
-
-  const { listingType, transactionProcessAlias, unitType } = publicData;
-  if (!(listingType && transactionProcessAlias && unitType)) {
+  if (hasInvalidListingData) {
     // Listing should always contain listingType, transactionProcessAlias and unitType)
     return (
       <ErrorPage topbar={topbar} scrollingDisabled={scrollingDisabled} intl={intl} invalidListing />
     );
   }
-  const validListingTypes = listingConfig.listingTypes;
-  const foundListingTypeConfig = validListingTypes.find(conf => conf.listingType === listingType);
-  const showListingImage = requireListingImage(foundListingTypeConfig);
-
-  const processName = resolveLatestProcessName(transactionProcessAlias.split('/')[0]);
-  const isBooking = isBookingProcess(processName);
-  const isPurchase = isPurchaseProcess(processName);
-  const processType = isBooking ? 'booking' : isPurchase ? 'purchase' : 'inquiry';
-
-  const currentAuthor = authorAvailable ? currentListing.author : null;
-  const ensuredAuthor = ensureUser(currentAuthor);
-  const noPayoutDetailsSetWithOwnListing =
-    isOwnListing && (processType !== 'inquiry' && !currentUser?.attributes?.stripeConnected);
-  const payoutDetailsWarning = noPayoutDetailsSetWithOwnListing ? (
-    <span className={css.payoutDetailsWarning}>
-      <FormattedMessage id="ListingPage.payoutDetailsWarning" values='{{ processType }}' />
-      <NamedLink name="StripePayoutPage">
-        <FormattedMessage id="ListingPage.payoutDetailsWarningLink" />
-      </NamedLink>
-    </span>
-  ) : null;
-
-  // When user is banned or deleted the listing is also deleted.
-  // Because listing can be never showed with banned or deleted user we don't have to provide
-  // banned or deleted display names for the function
-  const authorDisplayName = userDisplayNameAsString(ensuredAuthor, '');
-
-  const { formattedPrice } = priceData(price, config.currency, intl);
+  const unitType = publicData.unitType;
+  const isNegotiation = processType === 'negotiation';
 
   const commonParams = { params, history, routes: routeConfiguration };
   const onContactUser = handleContactUser({
     ...commonParams,
     currentUser,
     callSetInitialValues,
+    setInitialValues, // from ListingPage.duck.js (set initial values for the listing page)
     location,
-    setInitialValues,
     setInquiryModalOpen,
   });
-  // Note: this is for inquiry state in booking and purchase processes. Inquiry process is handled through handleSubmit.
+  // Note: this is for inquire transition to inquiry state in booking, purchase and negotiation processes.
+  // Inquiry process is handled through handleSubmit.
   const onSubmitInquiry = handleSubmitInquiry({
     ...commonParams,
     getListing,
     onSendInquiry,
     setInquiryModalOpen,
   });
-  const onSubmit = handleSubmit({
-    ...commonParams,
-    currentUser,
-    callSetInitialValues,
-    getListing,
-    onInitializeCardPaymentData,
-  });
 
   const handleOrderSubmit = values => {
     const isCurrentlyClosed = currentListing.attributes.state === LISTING_STATE_CLOSED;
     if (isOwnListing || isCurrentlyClosed) {
       window.scrollTo(0, 0);
+    } else if (isNegotiation && unitType === REQUEST) {
+      // This is to navigate to MakeOfferPage when InvokeNegotiationForm is submitted
+      const onNavigateToMakeOfferPage = handleNavigateToMakeOfferPage({
+        ...commonParams,
+        getListing,
+      });
+      onNavigateToMakeOfferPage(values);
+    } else if (isNegotiation && unitType === OFFER) {
+      // This is to navigate to MakeOfferPage when InvokeNegotiationForm is submitted
+      const onNavigateToRequestQuotePage = handleNavigateToRequestQuotePage({
+        ...commonParams,
+        getListing,
+      });
+      onNavigateToRequestQuotePage(values);
     } else {
+      const onSubmit = handleSubmit({
+        ...commonParams,
+        currentUser,
+        callSetInitialValues,
+        getListing,
+        onInitializeCardPaymentData,
+      });
       onSubmit(values);
     }
-  };
-
-  const facebookImages = listingImages(currentListing, 'facebook');
-  const twitterImages = listingImages(currentListing, 'twitter');
-  const schemaImages = listingImages(
-    currentListing,
-    `${config.layout.listingImage.variantPrefix}-2x`
-  ).map(img => img.url);
-  const marketplaceName = config.marketplaceName;
-  const schemaTitle = intl.formatMessage(
-    { id: 'ListingPage.schemaTitle' },
-    { title, price: formattedPrice, marketplaceName }
-  );
-  // You could add reviews, sku, etc. into page schema
-  // Read more about product schema
-  // https://developers.google.com/search/docs/advanced/structured-data/product
-  const productURL = `${config.marketplaceRootURL}${location.pathname}${location.search}${location.hash}`;
-  const currentStock = currentListing.currentStock?.attributes?.quantity || 0;
-  const schemaAvailability = !currentListing.currentStock
-    ? null
-    : currentStock > 0
-    ? 'https://schema.org/InStock'
-    : 'https://schema.org/OutOfStock';
-
-  const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
-
-  const authorLink =  
-    <NamedLink className={css.authorNameLink} name="ProfilePage" params={{ id: currentListing.author.id.uuid }}>
-      {authorDisplayName}
-    </NamedLink>
-
-  const parseListingConfig = props => {
-    const { listingFieldConfigs } = props;
-    
-    return (
-    <>
-      <SectionDetailsMaybe {...props} isFieldForCategory={isFieldForSelectedCategories} />
-      {propsForCustomFields.map(customFieldProps => {
-        const { schemaType, ...fieldProps } = customFieldProps;
-        return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
-          <SectionMultiEnumMaybe {...fieldProps} />
-        ) : schemaType === SCHEMA_TYPE_TEXT ? (
-          <SectionTextMaybe {...fieldProps} />
-        ) : schemaType === SCHEMA_TYPE_YOUTUBE ? (
-          <SectionYoutubeVideoMaybe {...fieldProps} />
-        ) : null;
-      })}
-    </>
-  );
   };
 
   return (
@@ -419,6 +220,7 @@ export const ListingPageComponent = props => {
       description={description}
       facebookImages={facebookImages}
       twitterImages={twitterImages}
+      {...noIndexMaybe}
       schema={{
         '@context': 'http://schema.org',
         '@type': 'Product',
@@ -436,61 +238,71 @@ export const ListingPageComponent = props => {
       <LayoutSingleColumn className={css.pageRoot} topbar={topbar} footer={<FooterContainer />}>
         <div className={css.contentWrapperForProductLayout}>
           <div className={css.mainColumnForProductLayout}>
-            {mounted && currentListing.id && noPayoutDetailsSetWithOwnListing ? (
-              <ActionBarMaybe
-                className={css.actionBarForProductLayout}
-                isOwnListing={isOwnListing}
-                listing={currentListing}
-                showNoPayoutDetailsSet={noPayoutDetailsSetWithOwnListing}
-                currentUser={currentUser}
-              />
-            ) : null}
-            {mounted && currentListing.id ? (
-              <ActionBarMaybe
-                className={css.actionBarForProductLayout}
-                isOwnListing={isOwnListing}
-                listing={currentListing}
-                currentUser={currentUser}
-                editParams={{
-                  id: listingId.uuid,
-                  slug: listingSlug,
-                  type: listingPathParamType,
-                  tab: listingTab,
-                }}
-              />
-            ) : null}
+            <Notifications
+              mounted={mounted}
+              listing={currentListing}
+              isOwnListing={isOwnListing}
+              noPayoutDetailsSetWithOwnListing={noPayoutDetailsSetWithOwnListing}
+              currentUser={currentUser}
+              className={css.actionBarForProductLayout}
+              editParams={{
+                id: listingId.uuid,
+                slug: listingSlug,
+                type: listingPathParamType,
+                tab: listingTab,
+              }}
+            />
             {showListingImage && (
               <SectionGallery
                 listing={currentListing}
                 variantPrefix={config.layout.listingImage.variantPrefix}
               />
             )}
-            </div>
-            <div className={css.orderColumnForProductLayout}>
-            
-              <div className={css.breadcrumbs}>
-                <a className={css.breadcrumbLink} href="/s/">All</a>
-                <span className={css.spacer}>·</span>
-                <a className={css.breadcrumbLink} href={'/s?pub_categoryLevel1='+publicData.categoryLevel1}>{publicData.categoryLevel1}</a>
-              </div>                  
-          
-              <div className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}>
-              {showListingImage ? (             
-                <H4 as="h1" className={css.orderPanelTitle}>
+            <div
+              className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
+            >
+              {showListingImage ? (
+                <H2 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-                </H4>          
+                </H2>
               ) : (
                 <H3 as="h1" className={css.orderPanelTitle}>
                   <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
                 </H3>
               )}
             </div>
-            <div className={classNames(css.mobileAuthor)}>                
-              <span className={css.providerNameLinked}>
-                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
-              </span>             
-            </div>
-            
+            {showDescription && <SectionText text={description} showAsIngress />}
+
+            <CustomListingFields
+              publicData={publicData}
+              metadata={metadata}
+              listingFieldConfigs={listingConfig.listingFields}
+              categoryConfiguration={config.categoryConfiguration}
+              intl={intl}
+            />
+
+            <SectionMapMaybe
+              geolocation={geolocation}
+              publicData={publicData}
+              listingId={currentListing.id}
+              mapsConfig={config.maps}
+            />
+            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+            <SectionAuthorMaybe
+              title={title}
+              listing={currentListing}
+              authorDisplayName={authorDisplayName}
+              onContactUser={onContactUser}
+              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
+              onCloseInquiryModal={() => setInquiryModalOpen(false)}
+              sendInquiryError={sendInquiryError}
+              sendInquiryInProgress={sendInquiryInProgress}
+              onSubmitInquiry={onSubmitInquiry}
+              currentUser={currentUser}
+              onManageDisableScrolling={onManageDisableScrolling}
+            />
+          </div>
+          <div className={css.orderColumnForProductLayout}>
             <OrderPanel
               className={classNames(css.productOrderPanel, {
                 [css.imagesEnabled]: showListingImage,
@@ -498,7 +310,16 @@ export const ListingPageComponent = props => {
               listing={currentListing}
               isOwnListing={isOwnListing}
               onSubmit={handleOrderSubmit}
-              authorLink={authorLink}
+              authorLink={
+                <NamedLink
+                  className={css.authorNameLink}
+                  name={isVariant ? 'ListingPageVariant' : 'ListingPage'}
+                  params={params}
+                  to={{ hash: '#author' }}
+                >
+                  {authorDisplayName}
+                </NamedLink>
+              }
               title={<FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />}
               titleDesktop={
                 <H4 as="h1" className={css.orderPanelTitle}>
@@ -516,27 +337,6 @@ export const ListingPageComponent = props => {
               marketplaceName={config.marketplaceName}
               showListingImage={showListingImage}
             />
-
-            <SectionTextMaybe heading={'Description'} text={description} showAsIngress />
-
-            <SectionMapMaybe
-              geolocation={geolocation}
-              publicData={publicData}
-              listingId={currentListing.id}
-              mapsConfig={config.maps}
-            />
-
-            <CustomListingFields2
-              heading={'Details'}
-              publicData={publicData}
-              metadata={metadata}
-              listingFieldConfigs={listingConfig.listingFields}
-              categoryConfiguration={config.categoryConfiguration}
-              intl={intl}
-            />
-
-            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />            
-           
           </div>
         </div>
       </LayoutSingleColumn>
@@ -561,7 +361,7 @@ export const ListingPageComponent = props => {
  * @param {boolean} props.scrollingDisabled - Whether scrolling is disabled
  * @param {string} props.inquiryModalOpenForListingId - The inquiry modal open for the specific listing id
  * @param {propTypes.error} props.showListingError - The show listing error
- * @param {Function} props.callSetInitialValues - The call setInitialValues function, which is given to this function as a parameter
+ * @param {Function} props.callSetInitialValues - The call page-specific setInitialValues function, which is given to this function as a parameter
  * @param {Array<propTypes.review>} props.reviews - The reviews
  * @param {propTypes.error} props.fetchReviewsError - The fetch reviews error
  * @param {Object<string, Object>} props.monthlyTimeSlots - The monthly time slots. E.g. { '2019-11': { timeSlots: [], fetchTimeSlotsInProgress: false, fetchTimeSlotsError: null } }
@@ -577,68 +377,11 @@ export const ListingPageComponent = props => {
  * @param {propTypes.error} props.fetchLineItemsError - The fetch line items error
  * @returns {JSX.Element} listing page component
  */
-const EnhancedListingPage = props => {
-  const config = useConfiguration();
-  const routeConfiguration = useRouteConfiguration();
-  const intl = useIntl();
-  const history = useHistory();
-  const location = useLocation();
+const ListingPage = props => {
+  const dispatch = useDispatch();
+  const store = useStore();
 
-  const showListingError = props.showListingError;
-  const isVariant = props.params?.variant != null;
-  const currentUser = props.currentUser;
-  if (isForbiddenError(showListingError) && !isVariant && !currentUser) {
-    // This can happen if private marketplace mode is active
-    return (
-      <NamedRedirect
-        name="SignupPage"
-        state={{ from: `${location.pathname}${location.search}${location.hash}` }}
-      />
-    );
-  }
-
-  const isPrivateMarketplace = config.accessControl.marketplace.private === true;
-  const isUnauthorizedUser = currentUser && !isUserAuthorized(currentUser);
-  const hasNoViewingRights = currentUser && !hasPermissionToViewData(currentUser);
-  const hasUserPendingApprovalError = isErrorUserPendingApproval(showListingError);
-
-  if ((isPrivateMarketplace && isUnauthorizedUser) || hasUserPendingApprovalError) {
-    return (
-      <NamedRedirect
-        name="NoAccessPage"
-        params={{ missingAccessRight: NO_ACCESS_PAGE_USER_PENDING_APPROVAL }}
-      />
-    );
-  } else if (
-    (hasNoViewingRights && isForbiddenError(showListingError)) ||
-    isErrorNoViewingPermission(showListingError)
-  ) {
-    // If the user has no viewing rights, fetching anything but their own listings
-    // will return a 403 error. If that happens, redirect to NoAccessPage.
-    return (
-      <NamedRedirect
-        name="NoAccessPage"
-        params={{ missingAccessRight: NO_ACCESS_PAGE_VIEW_LISTINGS }}
-      />
-    );
-  }
-
-  return (
-    <ListingPageComponent
-      config={config}
-      routeConfiguration={routeConfiguration}
-      intl={intl}
-      history={history}
-      location={location}
-      showOwnListingsOnly={hasNoViewingRights}
-      {...props}
-    />
-  );
-};
-
-const mapStateToProps = state => {
-  const { isAuthenticated } = state.auth;
-  const { pageAssetsData } = state.hostedAssets || {}; 
+  const { isAuthenticated } = useSelector(state => state.auth);
   const {
     showListingError,
     reviews,
@@ -651,65 +394,83 @@ const mapStateToProps = state => {
     fetchLineItemsInProgress,
     fetchLineItemsError,
     inquiryModalOpenForListingId,
-  } = state.ListingPage;
-  const { currentUser } = state.user;
+  } = useSelector(state => state.ListingPage);
+  const currentUser = useSelector(state => state.user?.currentUser);
+  const scrollingDisabled = useSelector(state => isScrollingDisabled(state));
 
-  const getListing = id => {
-    const ref = { id, type: 'listing' };
-    const listings = getMarketplaceEntities(state, [ref]);
-    return listings.length === 1 ? listings[0] : null;
-  };
+  const getListing = useCallback(
+    id => {
+      const state = store.getState();
+      const ref = { id, type: 'listing' };
+      const listings = getMarketplaceEntities(state, [ref]);
+      return listings.length === 1 ? listings[0] : null;
+    },
+    [store]
+  );
+  const getOwnListing = useCallback(
+    id => {
+      const state = store.getState();
+      const ref = { id, type: 'ownListing' };
+      const listings = getMarketplaceEntities(state, [ref]);
+      return listings.length === 1 ? listings[0] : null;
+    },
+    [store]
+  );
 
-  const getOwnListing = id => {
-    const ref = { id, type: 'ownListing' };
-    const listings = getMarketplaceEntities(state, [ref]);
-    return listings.length === 1 ? listings[0] : null;
-  };
+  const onManageDisableScrolling = useCallback(
+    (componentId, disableScrolling) =>
+      dispatch(manageDisableScrolling(componentId, disableScrolling)),
+    [dispatch]
+  );
+  const callSetInitialValues = useCallback(
+    (setInitialValuesFn, values, saveToSessionStorage) =>
+      dispatch(setInitialValuesFn(values, saveToSessionStorage)),
+    [dispatch]
+  );
+  const onFetchTransactionLineItems = useCallback(
+    params => dispatch(fetchTransactionLineItems(params)),
+    [dispatch]
+  );
+  const onSendInquiry = useCallback((listing, message) => dispatch(sendInquiry(listing, message)), [
+    dispatch,
+  ]);
+  const onInitializeCardPaymentData = useCallback(() => dispatch(initializeCardPaymentData()), [
+    dispatch,
+  ]);
+  const onFetchTimeSlots = useCallback(
+    (listingId, start, end, timeZone, options) =>
+      dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)),
+    [dispatch]
+  );
 
-  return {
-    isAuthenticated,
-    currentUser,
-    pageAssetsData,
-    getListing,
-    getOwnListing,
-    scrollingDisabled: isScrollingDisabled(state),
-    inquiryModalOpenForListingId,
-    showListingError,
-    reviews,
-    fetchReviewsError,
-    monthlyTimeSlots, // for OrderPanel
-    timeSlotsForDate, // for OrderPanel
-    lineItems, // for OrderPanel
-    fetchLineItemsInProgress, // for OrderPanel
-    fetchLineItemsError, // for OrderPanel
-    sendInquiryInProgress,
-    sendInquiryError,
-  };
+  return (
+    <ListingPageAccessWrapper
+      {...props}
+      PageComponent={ListingPageComponent}
+      isAuthenticated={isAuthenticated}
+      currentUser={currentUser}
+      getListing={getListing}
+      getOwnListing={getOwnListing}
+      scrollingDisabled={scrollingDisabled}
+      inquiryModalOpenForListingId={inquiryModalOpenForListingId}
+      showListingError={showListingError}
+      reviews={reviews}
+      fetchReviewsError={fetchReviewsError}
+      monthlyTimeSlots={monthlyTimeSlots}
+      timeSlotsForDate={timeSlotsForDate}
+      lineItems={lineItems}
+      fetchLineItemsInProgress={fetchLineItemsInProgress}
+      fetchLineItemsError={fetchLineItemsError}
+      sendInquiryInProgress={sendInquiryInProgress}
+      sendInquiryError={sendInquiryError}
+      onManageDisableScrolling={onManageDisableScrolling}
+      callSetInitialValues={callSetInitialValues}
+      onFetchTransactionLineItems={onFetchTransactionLineItems}
+      onSendInquiry={onSendInquiry}
+      onInitializeCardPaymentData={onInitializeCardPaymentData}
+      onFetchTimeSlots={onFetchTimeSlots}
+    />
+  );
 };
-
-const mapDispatchToProps = dispatch => ({
-  onManageDisableScrolling: (componentId, disableScrolling) =>
-    dispatch(manageDisableScrolling(componentId, disableScrolling)),
-  callSetInitialValues: (setInitialValues, values, saveToSessionStorage) =>
-    dispatch(setInitialValues(values, saveToSessionStorage)),
-  onFetchTransactionLineItems: params => dispatch(fetchTransactionLineItems(params)), // for OrderPanel
-  onSendInquiry: (listing, message) => dispatch(sendInquiry(listing, message)),
-  onInitializeCardPaymentData: () => dispatch(initializeCardPaymentData()),
-  onFetchTimeSlots: (listingId, start, end, timeZone, options) =>
-    dispatch(fetchTimeSlots(listingId, start, end, timeZone, options)), // for OrderPanel
-});
-
-// Note: it is important that the withRouter HOC is **outside** the
-// connect HOC, otherwise React Router won't rerender any Route
-// components since connect implements a shouldComponentUpdate
-// lifecycle hook.
-//
-// See: https://github.com/ReactTraining/react-router/issues/4671
-const ListingPage = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
-)(EnhancedListingPage);
 
 export default ListingPage;

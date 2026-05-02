@@ -128,7 +128,6 @@ if (typeof window !== 'undefined') {
     ? { assetCdnBaseUrl: appSettings.sdk.assetCdnBaseUrl }
     : {};
 
-  // eslint-disable-next-line no-underscore-dangle
   const preloadedState = window.__PRELOADED_STATE__ || '{}';
   const initialState = JSON.parse(preloadedState, sdkTypes.reviver);
   const sdk = createInstance({
@@ -144,7 +143,7 @@ if (typeof window !== 'undefined') {
   const googleAnalyticsIdFromSSR = initialState?.hostedAssets?.googleAnalyticsId;
   const googleAnalyticsId = googleAnalyticsIdFromSSR || process.env.REACT_APP_GOOGLE_ANALYTICS_ID;
   const analyticsHandlers = setupAnalyticsHandlers(googleAnalyticsId);
-  const store = configureStore(initialState, sdk, analyticsHandlers);
+  const store = configureStore({ initialState, sdk, analyticsHandlers });
 
   require('./util/polyfills');
   render(store, !!window.__PRELOADED_STATE__);

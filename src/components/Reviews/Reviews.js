@@ -58,7 +58,7 @@ const Reviews = props => {
   const { className, rootClassName, reviews = [] } = props;
   const classes = classNames(rootClassName || css.root, className);
 
-  return (
+  return reviews.length ? (
     <ul className={classes}>
       {reviews.map(r => {
         return (
@@ -68,7 +68,7 @@ const Reviews = props => {
         );
       })}
     </ul>
-  );
+  ) : null;
 };
 
 export default Reviews;

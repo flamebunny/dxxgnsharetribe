@@ -1,4 +1,4 @@
-import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { createImageVariantConfig } from '../../util/sdkLoader';
 import { isErrorUserPendingApproval, isForbiddenError, storableError } from '../../util/errors';
 import { convertUnitToSubUnit, unitDivisor } from '../../util/currency';
@@ -10,47 +10,18 @@ import {
   daysBetween,
   getStartOf,
 } from '../../util/dates';
-
-export const ASSET_NAME = 'landing-page';
-export const featuredSectionId = 'featured-listings';
-
-import { constructQueryParamName, isOriginInUse, isStockInUse } from '../../util/search';
+import { constructQueryParamName, isOriginInUse } from '../../util/search';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
 import { parse } from '../../util/urlHelpers';
 
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
-import { queryUserListings, showUserNameFromId } from '../ProfilePage/ProfilePage.duck';
 
 // Pagination page size might need to be dynamic on responsive page layouts
 // Current design has max 3 columns 12 is divisible by 2 and 3
 // So, there's enough cards to fill all columns on full pagination pages
 const RESULT_PAGE_SIZE = 24;
 
-// ================ Action types ================ //
-
-export const SEARCH_LISTINGS_REQUEST = 'app/SearchPage/SEARCH_LISTINGS_REQUEST';
-export const SEARCH_LISTINGS_SUCCESS = 'app/SearchPage/SEARCH_LISTINGS_SUCCESS';
-export const SEARCH_LISTINGS_ERROR = 'app/SearchPage/SEARCH_LISTINGS_ERROR';
-
-export const SEARCH_MAP_LISTINGS_REQUEST = 'app/SearchPage/SEARCH_MAP_LISTINGS_REQUEST';
-export const SEARCH_MAP_LISTINGS_SUCCESS = 'app/SearchPage/SEARCH_MAP_LISTINGS_SUCCESS';
-export const SEARCH_MAP_LISTINGS_ERROR = 'app/SearchPage/SEARCH_MAP_LISTINGS_ERROR';
-
-export const SEARCH_MAP_SET_ACTIVE_LISTING = 'app/SearchPage/SEARCH_MAP_SET_ACTIVE_LISTING';
-
-export const SEARCH_AUTHOR_NAME_SUCCESS = 'app/SearchPage/SEARCH_AUTHOR_NAME_SUCCESS'; 
-
-
-// ================ Reducer ================ //
-
-const initialState = {
-  pagination: null,
-  searchParams: null,
-  searchInProgress: false,
-  searchListingsError: null,
-  currentPageResultIds: [], 
-  searchAuthorName: 'Seller Not Found',
-};
+// ================ Helper Functions ================ //
 
 const resultIds = data => {
   const listings = data.data;
@@ -59,81 +30,13 @@ const resultIds = data => {
     .map(l => l.id);
 };
 
-const listingPageReducer = (state = initialState, action = {}) => {
- 
+// ================ Async Thunks ================ //
 
-  const { type, payload } = action;
-
-  switch (type) {
-    case SEARCH_LISTINGS_REQUEST:
-      return {
-        ...state,
-        searchParams: payload.searchParams,
-        searchInProgress: true,
-        searchMapListingIds: [],
-        searchListingsError: null,
-      };
-    case SEARCH_LISTINGS_SUCCESS:
-      return {
-        ...state,
-        currentPageResultIds: resultIds(payload.data),
-        pagination: payload.data.meta,
-        searchInProgress: false,
-      };
-    case SEARCH_LISTINGS_ERROR:
-      // eslint-disable-next-line no-console
-      console.error(payload);
-      return { ...state, searchInProgress: false, searchListingsError: payload };
-
-    case SEARCH_MAP_SET_ACTIVE_LISTING:
-      return {
-        ...state,
-        activeListingId: payload,
-      };
-
-    case SEARCH_AUTHOR_NAME_SUCCESS:
-        return {
-          ...state,
-          searchAuthorName: payload,
-        };
-
-    default:
-      return state;
-  }
-};
-
-export default listingPageReducer;
-
-// ================ Action creators ================ //
-
-export const searchListingsRequest = searchParams => ({
-  type: SEARCH_LISTINGS_REQUEST,
-  payload: { searchParams },
-});
-
-export const searchListingsSuccess = response => ({
-  type: SEARCH_LISTINGS_SUCCESS,
-  payload: { data: response.data },
-});
-
-export const searchListingsError = e => ({
-  type: SEARCH_LISTINGS_ERROR,
-  error: true,
-  payload: e,
-});
-
-export const searchAuthorNameSuccess = e => ({
-  type: SEARCH_AUTHOR_NAME_SUCCESS,
-  error: true,
-  payload: e,
-});
-
-
-
-export const searchListings = (searchParams, config) => (dispatch, getState, sdk) => {
-
-  dispatch(searchListingsRequest(searchParams));
-
+/////////////////////
+// Search Listings //
+/////////////////////
+const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
+  const { dispatch, rejectWithValue, extra: sdk } = thunkAPI;
   // SearchPage can enforce listing query to only those listings with valid listingType
   // NOTE: this only works if you have set 'enum' type search schema to listing's public data fields
   //       - listingType
@@ -334,6 +237,28 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
     return hasDatesFilterInUse && seatsFilter ? { seats } : {};
   };
 
+  const sortSearchParams = (sortParam, hasKeywords) => {
+    const sortConfig = config?.search?.sortConfig || {};
+    // If no sort options are set, defaultSort will be undefined
+    const defaultSort = sortConfig?.options?.[0]?.key;
+    const relevanceEnabled = sortConfig.options?.some(
+      option => option.key === sortConfig.relevanceKey
+    );
+
+    // User-specified sort takes priority
+    if (sortParam !== undefined && sortParam !== sortConfig.relevanceKey) {
+      return { sort: sortParam };
+    }
+
+    // No sort parameter needed when keyword search is used or sort config is inactive
+    if (relevanceEnabled && (hasKeywords || !sortConfig.active)) {
+      return {};
+    }
+
+    // Fall back to default sort
+    return { sort: defaultSort };
+  };
+
   const {
     perPage,
     price,
@@ -351,7 +276,7 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
   const datesMaybe = datesSearchParams(dates);
   const stockMaybe = stockFilters(datesMaybe);
   const seatsMaybe = seatsSearchParams(seats, datesMaybe);
-  const sortMaybe = sort === config.search.sortConfig.relevanceKey ? {} : { sort };
+  const sortMaybe = sortSearchParams(sort, searchParams?.keywords !== undefined);
 
   const params = {
     // The params that are related to listing fields and categories are prepared here.
@@ -390,31 +315,68 @@ export const searchListings = (searchParams, config) => (dispatch, getState, sdk
       const sanitizeConfig = { listingFields };
 
       dispatch(addMarketplaceEntities(response, sanitizeConfig));
-      dispatch(searchListingsSuccess(response));
       return response;
     })
     .catch(e => {
       const error = storableError(e);
-      dispatch(searchListingsError(error));
       if (!(isErrorUserPendingApproval(error) || isForbiddenError(error))) {
-        throw e;
+        return rejectWithValue(error);
       }
+      return rejectWithValue(error);
     });
 };
 
-export const setActiveListing = listingId => ({
-  type: SEARCH_MAP_SET_ACTIVE_LISTING,
-  payload: listingId,
+export const searchListings = createAsyncThunk(
+  'SearchPage/searchListings',
+  searchListingsPayloadCreator
+);
+
+// ================ Slice ================ //
+
+const searchPageSlice = createSlice({
+  name: 'SearchPage',
+  initialState: {
+    pagination: null,
+    searchParams: null,
+    searchInProgress: false,
+    searchListingsError: null,
+    currentPageResultIds: [],
+    activeListingId: null,
+  },
+  reducers: {
+    setActiveListing: (state, action) => {
+      state.activeListingId = action.payload;
+    },
+  },
+  extraReducers: builder => {
+    // Search Listings
+    builder
+      .addCase(searchListings.pending, (state, action) => {
+        state.searchParams = action.meta.arg.searchParams;
+        state.searchInProgress = true;
+        state.searchListingsError = null;
+      })
+      .addCase(searchListings.fulfilled, (state, action) => {
+        state.currentPageResultIds = resultIds(action.payload.data);
+        state.pagination = action.payload.data.meta;
+        state.searchInProgress = false;
+      })
+      .addCase(searchListings.rejected, (state, action) => {
+        console.error(action.payload);
+        state.searchInProgress = false;
+        state.searchListingsError = action.payload;
+      });
+  },
 });
 
+// Export the action creator
+export const { setActiveListing } = searchPageSlice.actions;
+
+export default searchPageSlice.reducer;
+
+// ================ Load data ================ //
+
 export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
-  // Get Provider and Customer commission values for use in Listing Wizard
-  const pageAsset = { 
-    landingPage: `content/pages/${ASSET_NAME}.json`,
-    commission: `transactions/commission.json`,
-  };
-
-
   // In private marketplace mode, this page won't fetch data if the user is unauthorized
   const { listingType: listingTypePathParam } = params || {};
   const state = getState();
@@ -447,8 +409,8 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   } = config.layout.listingImage;
   const aspectRatio = aspectHeight / aspectWidth;
 
-  const searchListingsCall = searchListings(
-    {
+  const searchListingsCall = searchListings({
+    searchParams: {
       ...rest,
       ...originMaybe,
       ...listingTypeVariantMaybe,
@@ -469,7 +431,6 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
         // when transitioning from search page to listing page
         'publicData.pickupEnabled',
         'publicData.shippingEnabled',
-        'publicData.shippingPriceInSubunitsOneItem',
         'publicData.priceVariationsEnabled',
         'publicData.priceVariants',
       ],
@@ -484,209 +445,8 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
       ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
       'limit.images': 1,
     },
-    config
-  ); 
-
-  const authorListingsCall = listingIds => {
-    
-    dispatch(searchListings(
-     {
-      ...rest,
-      ...originMaybe,
-      ...listingTypeVariantMaybe,
-      ids: listingIds,
-      page,
-      perPage: RESULT_PAGE_SIZE,
-      include: ['author', 'images'],
-      'fields.listing': [
-        'title',
-        'price',
-        'deleted',
-        'state',
-        'publicData.listingType',
-        'publicData.transactionProcessAlias',
-        'publicData.unitType',
-        // These help rendering of 'purchase' listings,
-        // when transitioning from search page to listing page
-        'publicData.pickupEnabled',
-        'publicData.shippingEnabled',
-        'publicData.shippingPriceInSubunitsOneItem',
-      ],
-      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
-      'fields.image': [
-        'variants.scaled-small',
-        'variants.scaled-medium',
-        `variants.${variantPrefix}`,
-        `variants.${variantPrefix}-2x`,
-      ],
-      ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
-      ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
-      'limit.images': 1,   
-    },
-    config
-  ))};  
-
-  const featuredListingsCall = listingIds => {
-    
-    dispatch(searchListings(
-     {
-      ...rest,
-      ...originMaybe,
-      ...listingTypeVariantMaybe,
-      ids: listingIds,
-      page,
-      perPage: RESULT_PAGE_SIZE,
-      include: ['author', 'images'],
-      'fields.listing': [
-        'title',
-        'price',
-        'deleted',
-        'state',
-        'publicData.listingType',
-        'publicData.transactionProcessAlias',
-        'publicData.unitType',
-        // These help rendering of 'purchase' listings,
-        // when transitioning from search page to listing page
-        'publicData.pickupEnabled',
-        'publicData.shippingEnabled',
-        'publicData.shippingPriceInSubunitsOneItem',
-      ],
-      'fields.user': ['profile.displayName', 'profile.abbreviatedName'],
-      'fields.image': [
-        'variants.scaled-small',
-        'variants.scaled-medium',
-        `variants.${variantPrefix}`,
-        `variants.${variantPrefix}-2x`,
-      ],
-      ...createImageVariantConfig(`${variantPrefix}`, 400, aspectRatio),
-      ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
-      'limit.images': 1,
-      sort: "createdAt",      
-    },
-    config
-  ))};  
-
-  let featuredListingIds = [];
-  let authorListingIds = [];
-  let authorName = '';
-
-  //let authorId = "673936b3-fe19-41ef-8f0d-4b5475adc146";
-  //let authorId2 = "679eccf8-fd03-4fdf-9177-e21b45971e58";
-  let authorId = '';
-  let authorCheck = '';
-
-  //------------------
-  // Get AuthorID from URL eg 679eccf8-fd03-4fdf-9177-e21b45971e58
-  const paramsAuthorId = Object.fromEntries(new URLSearchParams(location.search));
-
-  if(paramsAuthorId?.u !== undefined){
-    authorId = paramsAuthorId?.u;
-  }
-  //------------------
-
-  /*
-  const promises = hasNoViewingRights
-    ? // If user has no viewing rights, only allow fetching their own listing without reviews
-      [dispatch(showListing(listingId, config, true)), dispatch(fetchPageAssets(pageAsset, true))]
-    : // For users with viewing rights, fetch the listing and the associated reviews
-      [dispatch(showListing(listingId, config)), dispatch(fetchPageAssets(pageAsset, true)), dispatch(fetchReviews(listingId))];
-
-  return Promise.all(promises).then(response => {
-
-  })
-  .catch(e => {
-    throw e;
-  });
-*/
-
-  return Promise.all([   
-    // Get Featured lising IDS
-    dispatch(fetchPageAssets(pageAsset, true)).then(assetResp => {
-      assetResp.landingPage?.data?.sections.map((section, idx) =>{
-        
-        if (section.sectionId === featuredSectionId) {        
-          featuredListingIds = section?.blocks.map(b => b.blockName);
-        }else{
-
-        }
-      })
-      
-    }),    
-
-    dispatch(queryUserListings(authorId, config)).then(assetResp => {
-
-      if(assetResp !== undefined) {
-
-        authorListingIds = assetResp.data?.data?.reduce((accumulator, currentItem) => {
-          accumulator.push(currentItem.id.uuid);
-          return accumulator;
-        }, []);          
-
-        authorName = assetResp.data?.included   
-          .filter(l => {
-            return l.type === 'user'
-          })  
-          .map(l => l.attributes.profile.displayName);    
-      }
-
-    }),
-
-/*
-    dispatch(showUserNameFromId(authorId)).then(assetResp => {
-      authorName = assetResp;
-    })
-*/
-
-    
-    //dispatch(searchListingsCall),
-  ])
-  .then(response => {
-    /**
-     * HOW TO GET FEATURED LISTINGS TO WORK IN SEARCHPAGE
-     * 1. Get Featured lising IDS
-     * 2. Get listings from featuredListingIds 
-     *    A new function featuredListingsCall(featuredListingIds) is called with featured specific parameters such as
-     *    searching from ids 'ids: listingIds'
-     *    and overwrting sort: "createdAt",  as sort: "featured" does not exist
-     * 3. In SearchPage.shared.js
-     *    Overwrite the search sync for FEATURED listings
-     *    as sort=featured is not valid and will cause errors
-     *    if(queryParamsFromURL?.sort === 'featured') {
-     *      queryParamsFromSearchParams.sort = 'featured'
-     *    }
-     */
-
-    dispatch(searchAuthorNameSuccess(authorName));
-
-    if(queryParams?.sort === 'featured') {
-      // console.log('======= Featured search =======');      
-      featuredListingsCall(featuredListingIds);
-    } else if(queryParams?.u ) {
-      // console.log('======= User search =======');
-      authorListingsCall(authorListingIds);
-     // dispatch(searchListingsCall);
-    } else {
-      // console.log('======= Default search =======');
-      dispatch(searchListingsCall);
-    }
-
-    return response;
-  })
-  .catch(e => {
-    throw e;
+    config,
   });
 
-  /*
-  return Promise.all([
-    dispatch(fetchPageAssets(pageAsset, true)),
-    dispatch(searchListingsCall),
-  ])
-  .then(response => {
-    return response;
-  })
-  .catch(e => {
-    throw e;
-  });
-  */
-
+  return dispatch(searchListingsCall);
 };

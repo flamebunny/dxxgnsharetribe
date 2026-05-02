@@ -31,7 +31,7 @@
   box-shadow: none;
 
   @media (--viewportLarge) {
-  /*  box-shadow: var(--boxShadowLight); */
+    box-shadow: var(--boxShadowLight);
   }
 }
 
@@ -47,6 +47,7 @@
   border-top-color: var(--colorGrey100);
   border-top-style: solid;
   background-color: var(--colorWhite);
+  box-shadow: var(--boxShadow);
 
   @media (--viewportMedium) {
     padding: 24px 24px 0 24px;
@@ -62,7 +63,7 @@
     background-color: transparent;
   }
   @media (--viewportLargeWithPaddings) {
-
+    padding: 40px 0 82px calc((100% - 1056px) / 2);
   }
 }
 
@@ -112,7 +113,6 @@
   }
 
   @media (--viewportLarge) {
-    margin-bottom: 10px;
     margin-left: 0;
   }
 }
@@ -340,19 +340,19 @@
 
 .stateActionNeeded {
   font-weight: var(--fontWeightMedium);
-  color: var(--colorAttention);
+  color: var(--colorStatusActionNeeded);
 }
 
 .stateNoActionNeeded {
-  color: var(--colorGrey300);
+  color: var(--colorStatusNormal);
 }
 
 .stateConcluded {
-  color: var(--colorGrey300);
+  color: var(--colorStatusFinalState);
 }
 
 .bookingActionNeeded {
-  color: var(--colorGrey300);
+  color: var(--colorGrey700);
   margin-top: 4px;
 
   @media (--viewportMedium) {

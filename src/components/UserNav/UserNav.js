@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormattedMessage } from '../../util/reactIntl';
+import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import classNames from 'classnames';
 import { ACCOUNT_SETTINGS_PAGES } from '../../routing/routeConfiguration';
 import { LinkTabNavHorizontal } from '../../components';
@@ -18,6 +18,7 @@ import css from './UserNav.module.css';
  */
 const UserNav = props => {
   const { className, rootClassName, currentPage, showManageListingsLink } = props;
+  const intl = useIntl();
   const classes = classNames(rootClassName || css.root, className);
 
   const manageListingsTabMaybe = showManageListingsLink
@@ -32,15 +33,8 @@ const UserNav = props => {
       ]
     : [];
 
-  const tabs = [    
-     {
-      text: <FormattedMessage id="UserNav.inbox" />,
-      selected: currentPage === 'InboxPage',
-      disabled: false,
-      linkProps: {
-        name: 'InboxBasePage',
-      },
-    },
+  const tabs = [
+    ...manageListingsTabMaybe,
     {
       text: <FormattedMessage id="UserNav.profileSettings" />,
       selected: currentPage === 'ProfileSettingsPage',
@@ -48,7 +42,7 @@ const UserNav = props => {
       linkProps: {
         name: 'ProfileSettingsPage',
       },
-    },   
+    },
     {
       text: <FormattedMessage id="UserNav.accountSettings" />,
       selected: ACCOUNT_SETTINGS_PAGES.includes(currentPage),
@@ -57,11 +51,16 @@ const UserNav = props => {
         name: 'ContactDetailsPage',
       },
     },
-    ...manageListingsTabMaybe,
   ];
 
   return (
-    <LinkTabNavHorizontal className={classes} tabRootClassName={css.tab} tabs={tabs} skin="light" />
+    <LinkTabNavHorizontal
+      className={classes}
+      tabRootClassName={css.tab}
+      tabs={tabs}
+      skin="dark"
+      ariaLabel={intl.formatMessage({ id: 'UserNav.screenreader.userNav' })}
+    />
   );
 };
 

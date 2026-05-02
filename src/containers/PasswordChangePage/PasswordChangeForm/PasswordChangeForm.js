@@ -199,63 +199,62 @@ class PasswordChangeForm extends Component {
                   });
               }}
             >
-              <div className={css.defaultFields}>
-                <div className={css.newPasswordSection}>
-                  <FieldTextInput
-                    type="password"
-                    id={formId ? `${formId}.newPassword` : 'newPassword'}
-                    name="newPassword"
-                    autoComplete="new-password"
-                    label={newPasswordLabel}
-                    placeholder={newPasswordPlaceholder}
-                    validate={validators.composeValidators(
-                      newPasswordRequired,
-                      passwordMinLength,
-                      passwordMaxLength
-                    )}
-                  />
-                </div>
+              <div className={css.newPasswordSection}>
+                <FieldTextInput
+                  type="password"
+                  id={formId ? `${formId}.newPassword` : 'newPassword'}
+                  name="newPassword"
+                  autoComplete="new-password"
+                  label={newPasswordLabel}
+                  placeholder={newPasswordPlaceholder}
+                  validate={validators.composeValidators(
+                    newPasswordRequired,
+                    passwordMinLength,
+                    passwordMaxLength
+                  )}
+                />
+              </div>
 
-                <div className={confirmClasses}>
-                  <H4 as="h3" className={css.confirmChangesTitle}>
-                    <FormattedMessage id="PasswordChangeForm.confirmChangesTitle" />
-                  </H4>
-                  <p className={css.confirmChangesInfo}>
-                    <FormattedMessage id="PasswordChangeForm.confirmChangesInfo" />
-                    <br />
-                    <FormattedMessage
-                      id="PasswordChangeForm.resetPasswordInfo"
-                      values={{ resetPasswordLink }}
-                    />
-                  </p>
-
-                  <FieldTextInput
-                    className={css.password}
-                    type="password"
-                    id="currentPassword"
-                    name="currentPassword"
-                    autoComplete="current-password"
-                    label={passwordLabel}
-                    placeholder={passwordPlaceholder}
-                    validate={validators.composeValidators(
-                      passwordRequired,
-                      passwordMinLength,
-                      passwordMaxLength
-                    )}
-                    customErrorText={passwordTouched ? null : passwordErrorText}
+              <div className={confirmClasses} aria-hidden={pristine}>
+                <H4 as="h3" className={css.confirmChangesTitle}>
+                  <FormattedMessage id="PasswordChangeForm.confirmChangesTitle" />
+                </H4>
+                <p className={css.confirmChangesInfo}>
+                  <FormattedMessage id="PasswordChangeForm.confirmChangesInfo" />
+                  <br />
+                  <FormattedMessage
+                    id="PasswordChangeForm.resetPasswordInfo"
+                    values={{ resetPasswordLink }}
                   />
-                </div>
-                <div className={css.bottomWrapper}>
-                  {genericFailure}
-                  <PrimaryButton
-                    type="submit"
-                    inProgress={inProgress}
-                    ready={ready}
-                    disabled={submitDisabled}
-                  >
-                    <FormattedMessage id="PasswordChangeForm.saveChanges" />
-                  </PrimaryButton>
-                </div>
+                </p>
+
+                <FieldTextInput
+                  className={css.password}
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  disabled={pristine}
+                  autoComplete="current-password"
+                  label={passwordLabel}
+                  placeholder={passwordPlaceholder}
+                  validate={validators.composeValidators(
+                    passwordRequired,
+                    passwordMinLength,
+                    passwordMaxLength
+                  )}
+                  customErrorText={passwordTouched ? null : passwordErrorText}
+                />
+              </div>
+              <div className={css.bottomWrapper}>
+                {genericFailure}
+                <PrimaryButton
+                  type="submit"
+                  inProgress={inProgress}
+                  ready={ready}
+                  disabled={submitDisabled}
+                >
+                  <FormattedMessage id="PasswordChangeForm.saveChanges" />
+                </PrimaryButton>
               </div>
             </Form>
           );

@@ -11,9 +11,6 @@
 }
 
 .defaultUserFields {
-  label {
-    display: none;
-  }
 }
 
 .name {
@@ -36,11 +33,11 @@
 }
 
 .firstNameRoot {
-  width: calc(50% - 9px);
+  width: calc(34% - 9px);
 }
 
 .lastNameRoot {
-  width: calc(50% - 9px);
+  width: calc(66% - 9px);
 }
 
 .password {
@@ -51,5 +48,14 @@
   composes: marketplaceModalBottomWrapper from global;
 }
 
+.error {
+  composes: textXSmall from global;
+  color: var(--colorFail);
+  font-weight: var(--fontWeightBold);
+  text-align: left;
+  padding: 6px 0;
 
-
+  @media (--viewportMedium) {
+    padding: 8px 0;
+  }
+}

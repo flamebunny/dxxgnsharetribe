@@ -1,13 +1,16 @@
 @import '../../../styles/customMediaQueries.css';
 
+.root {
+}
+
 .labelPlain {
 }
 
 .labelPlainSelected {
   color: var(--marketplaceColor);
-  opacity: 1;
-}
 
-.labelPlainSelected:hover {
-  opacity: 1;
+  &:focus,
+  &:hover {
+    color: var(--marketplaceColorDark);
+  }
 }

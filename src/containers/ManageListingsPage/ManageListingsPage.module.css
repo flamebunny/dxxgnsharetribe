@@ -37,31 +37,20 @@
 .messagePanel,
 .listingPanel {
   width: 100%;
-  padding: 40px 24px;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-
-  width: 100%;
-  max-width: var(--contentMaxWidthPages);
-  margin: 0 auto;
+  margin: 24px auto 0 auto;
 
   @media (--viewportMedium) {
-
+    margin: 48px auto 0 auto;
   }
 
   @media (--viewportLarge) {
-
-    
+    margin: 72px auto 0 auto;
+    max-width: calc(var(--contentMaxWidth) + 72px);
   }
 
   @media (--viewportXLarge) {
-    
+    max-width: var(--contentMaxWidth);
   }
-}
-
-.listingPanel {
-  margin: 0 auto;
 }
 
 .noResultsContainer {
@@ -77,13 +66,15 @@
 }
 
 .heading {
-  margin: 0;
-  font-family: "Cousine", serif;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 18px;
-  word-break: auto-phrase;
-  margin-bottom: 20px;
+  margin: 0 24px 24px 24px;
+
+  @media (--viewportMedium) {
+    margin: 0 24px 32px 24px;
+  }
+
+  @media (--viewportLarge) {
+    margin: 0 36px 32px 36px;
+  }
 }
 
 .createListingParagraph,
@@ -100,42 +91,32 @@
 }
 
 .listingCards {
-  padding: 0 0 72px 0;
+  list-style: none;
+  margin: 0;
+  padding: 0 24px;
+
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+  width: 100%;
 
   @media (min-width: 550px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  } 
+  }
 
   @media (--viewportMedium) {
-    padding: 0 0 96px 0;
-    gap: 24px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (--viewportLarge) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (min-width: 1440px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (--viewportXLarge) {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    padding: 0 36px;
   }
 }
 
 .listingCard {
+  margin-bottom: 36px;
   width: 100%;
-
-  img {
-    height: auto;
-    position: relative;
-  }
 }
 
 /**
@@ -164,5 +145,3 @@
     margin: auto 36px 0 36px;
   }
 }
-
-

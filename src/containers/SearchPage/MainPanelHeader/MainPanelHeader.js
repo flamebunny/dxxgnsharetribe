@@ -1,10 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import { FormattedMessage, useIntl } from '../../../util/reactIntl';
-
-// component imports
-import ClearButton from '../ClearButton/ClearButton';
+import { FormattedMessage } from '../../../util/reactIntl';
 
 import css from './MainPanelHeader.module.css';
 
@@ -35,34 +32,14 @@ const MainPanelHeader = props => {
     resultsCount,
     searchInProgress = false,
     noResultsInfo,
-    labelHeading,
-    getHandleChangedValueFn,
-    ...rest
   } = props;
 
-  const intl = useIntl();
-
   const classes = classNames(rootClassName || css.root, className);
-  const clear = intl.formatMessage({ id: 'PriceFilterForm.clear' });
-
-  const { liveEdit, showAsPopup } = rest;
-  const useHistoryPush = liveEdit || showAsPopup;
 
   return (
     <div className={classes}>
-
-      <div className={css.breadcrumbs}>
-        <ClearButton
-          onSubmit={getHandleChangedValueFn(useHistoryPush)}
-          {...rest}
-        />
-        <span className={css.spacer}>{' • '}</span>
-        <span>{labelHeading}</span>
-      </div>
-      
       <div className={css.searchOptions}>
-
-        <div className={css.searchResultSummary}>
+        <h1 className={css.searchResultSummary}>
           <span className={css.resultsFound}>
             {searchInProgress ? (
               <FormattedMessage id="MainPanelHeader.loadingResults" />
@@ -73,7 +50,7 @@ const MainPanelHeader = props => {
               />
             )}
           </span>
-        </div>
+        </h1>
         {isSortByActive ? (
           <div className={css.sortyByWrapper}>
             <span className={css.sortyBy}>

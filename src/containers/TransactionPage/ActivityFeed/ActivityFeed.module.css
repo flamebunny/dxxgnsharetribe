@@ -56,7 +56,7 @@
   display: inline-block;
   margin: 0;
   padding: 8.5px 14px 8.5px 14px;
-  border-radius: 0;
+  border-radius: 8px;
   box-shadow: var(--boxShadow);
   background-color: var(--colorWhite);
 
@@ -93,7 +93,7 @@
   composes: marketplaceMessageDateFontStyles from global;
 
   margin: 11px 0 0 0;
-  color: var(--colorGrey300);
+  color: var(--colorGrey600);
 
   @media (--viewportMedium) {
     margin: 0 0 0 0;
@@ -138,13 +138,13 @@
   margin: 0;
 }
 
-.bold {
-  font-weight: var(--fontWeightBold);
+.reviewLink {
+  composes: a from global;
 }
 
 .transitionDate {
-
-  color: var(--colorGrey300);
+  composes: marketplaceMessageDateFontStyles from global;
+  color: var(--colorGrey600);
   margin: 7px 0 0 0;
 
   @media (--viewportMedium) {
@@ -157,7 +157,9 @@
 }
 
 .reviewContent {
-  composes: textSmall from global;
+  composes: h4 from global;
+  font-style: italic;
+  white-space: pre-line;
   margin: 8px 0 0 0;
 
   @media (--viewportMedium) {
@@ -169,8 +171,6 @@
 .reviewStars {
   display: block;
   margin-top: 4px;
-  display: inline-flex;
-  white-space: nowrap;
 
   @media (--viewportMedium) {
     margin: 5px 0;
@@ -178,23 +178,10 @@
 }
 
 .reviewStar {
-  height: 12px;
   width: 12px;
+  height: 12px;
   margin-right: 2px;
-
-  font-weight: var(--fontWeightBold);
-
-  &:last-of-type {
-    margin-right: 0;
-  }
-}
-
-.filled {
-    color: #000000;
-}
-
-.unfilled {
-    color: #B2B2B2;
+  font-styles: initial;
 }
 
 .showOlderWrapper {

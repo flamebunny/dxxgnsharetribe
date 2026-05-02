@@ -15,83 +15,29 @@
   color: var(--colorFail);
 }
 
-.layoutWrapperMain {
-  /* Expand to the full remaining width of the viewport */
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 0 10px;
-
-  max-width: var(--contentMaxWidthPages);
-  margin: 0 auto;
-  width: 100%;
-
-  @media (--viewportSmall) {
-    padding: 0 10px;
-  }
-
-  @media (--viewportMedium) {
-    /**
-     * Calculate right padding to match Footer right border
-     * and left padding together with border should be 60px.
-     */
-    padding: 24px 24px 0 24px;
-
-  }
-
-  @media (--viewportLarge) {
-    /**
-     * Calculate right padding to match Footer right border
-     * and left padding together with border should be 60px.
-     */
-    /* padding: 40px 36px 0 36px; */
-    padding: 40px 24px;
-  }
-
-  @media (min-width: 1440px) {
-    /* padding: 40px calc((100vw - 1368px) / 2) 0 59px; */
-    padding: 40px 24px;
-  }
-  @media (--viewportXLarge) {
-    /* padding: 40px calc((100vw - 1800px) / 2) 0 59px; */
-    padding: 40px 24px;
-  }
-}
-
 .aside {
   box-shadow: none;
 }
 
 .asideContent {
   width: 100%;
-  max-width: var(--contentMaxUltraWidthPages);
-  display: block;  
-  text-align: center;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--colorGrey100);
+
+  @media (--viewportLarge) {
+    flex-direction: column;
+    border-bottom: none;
+  }
 }
 
 .avatar {
-  margin: 0 auto;
+  margin: 30px 26px 29px 0;
   flex-shrink: 0;
-  width: 100%;
-  height: 100%;
-  background: none;
-  padding: 0;
 
   @media (--viewportLarge) {
-    margin: 0 auto;
-    padding: 0 60px 0px 0px;
-  }
-
-  img {
-    height: auto;  
-    max-width: 300px;
-
-    @media (--viewportMedium) {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px; 
-      max-width: none;   
-    }
+    margin: 0 96px 48px 0;
   }
 }
 .avatarPlaceholder {
@@ -101,32 +47,24 @@
 
 .mobileHeading {
   flex-shrink: 0;
-  margin: 20px 0 0 0;
-  text-transform: uppercase;
-  font-family:'Cousine', sans-serif;
-
-  font-size: 14px;
-  line-height: 18px;
-  font-weight: var(--fontWeightBold);
-  padding: 5px 0 3px 0;
+  margin: 60px 0 0 0;
 
   @media (--viewportMedium) {
-    margin: 20px 0 0 0;
+    margin: 49px 0 0 0;
   }
   @media (--viewportLarge) {
-    font-size: 14px;
-    line-height: 18px;
+    display: none;
   }
 }
 
 .editLinkMobile {
+  margin-top: 17px;
+
   /* Pull the link to the end of the container */
-  margin: 0 auto;
-  display: inline;
-  padding: 6px 0 2px 0;
+  margin-left: auto;
 
   @media (--viewportMedium) {
-
+    margin-top: 20px;
   }
   @media (--viewportLarge) {
     display: none;
@@ -134,7 +72,7 @@
 }
 
 .editLinkDesktop {
-  margin: 0 auto;
+  display: none;
 
   @media (--viewportLarge) {
     display: inline;
@@ -142,58 +80,37 @@
   }
 }
 
-.heading {
-  flex-shrink: 0;
-  margin: 0 0 20px 0;
-  text-transform: uppercase;
-  font-family:'Cousine', sans-serif;
-  font-weight: var(--fontWeightRegular);
+.desktopHeading {
+  display: none;
 
-  font-size: 14px;
-  line-height: 18px;
-  padding: 5px 0 3px 0;
-  position: relative;
-  z-index: 2;
-  text-align: center;
-
-  margin: 0 0 20px 0;
-  font-size: 24px;
-  line-height: 30px;
-
+  @media (--viewportLarge) {
+    display: block;
+    margin: 0 0 24px 0;
+  }
 }
-
 
 .longWord {
   word-break: break-word;
   hyphens: auto;
 }
 
-.profileUser{
-  padding: 0 0 30px 0;
-  width: 100%;
-}
-
 .bio {
   /* Preserve newlines, but collapse other whitespace */
   white-space: pre-line;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0;
-
-  font-size: 14px;
-  line-height: 18px;
-  padding: 0px;
-  text-align: left;
+  margin: 5px 0 24px 0;
 
   @media (--viewportMedium) {
-    font-size: 14px;
-    line-height: 18px;
-    padding: 0px 30px;
+    margin: 4px 0 51px 0;
+  }
+  @media (--viewportLarge) {
+    margin: 0 0 56px 0;
+    max-width: 600px;
   }
 }
 
 .listingsContainer {
   composes: clearfix from global;
+  border-top: 1px solid var(--colorGrey100);
   padding-bottom: 23px;
 
   @media (--viewportMedium) {
@@ -202,19 +119,15 @@
 }
 
 .listingsTitle {
-  color: var(--colorBlack);
+  color: var(--colorGrey700);
   margin-bottom: 0;
-  font-size: 14px;
-  font-weight: var(--fontWeightRegular);
-  line-height: 18px;
-  text-transform: uppercase;
 
   @media (--viewportMedium) {
-    margin-top: 0px;
+    margin-top: 48px;
     margin-bottom: 8px;
   }
   @media (--viewportLarge) {
-    margin-top: 0px;
+    margin-top: 56px;
     margin-bottom: 8px;
   }
 }
@@ -222,42 +135,47 @@
 .withBioMissingAbove {
   /* Avoid extra borders in mobile when bio is missing */
   border-top: none;
+
+  @media (--viewportLarge) {
+    border-top: 1px solid var(--colorGrey100);
+  }
 }
 
 .listings {
-  padding: 0 0 72px 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  width: 100%;
-
-  @media (min-width: 550px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-  } 
-
-  @media (--viewportMedium) {
-    padding: 0 0 96px 0;
-    gap: 24px;
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  @media (--viewportLarge) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (min-width: 1440px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  @media (--viewportXLarge) {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .listing {
-  position: relative;
   width: 100%;
+
+  /* Single column in mobile */
+  margin-top: 34px;
+  &:first-of-type {
+    margin-top: 18px;
+  }
+
+  @media (--viewportMedium) {
+    /* Two columns in desktop */
+    width: calc(50% - 12px);
+    margin-bottom: 36px;
+
+    /* Horizontal space */
+    &:nth-of-type(odd) {
+      margin-right: 12px;
+    }
+    &:nth-of-type(even) {
+      margin-left: 12px;
+    }
+
+    /* Vertical space */
+    margin-top: 0;
+    &:nth-of-type(1),
+    &:nth-of-type(2) {
+      margin-top: 20px;
+    }
+  }
 }
 
 .mobileReviewsTitle {
@@ -265,10 +183,13 @@
 }
 
 .mobileReviews {
+  border-top: 1px solid var(--colorGrey100);
   margin-bottom: 36px;
 }
 
 .desktopReviews {
+  border-top: 1px solid var(--colorGrey100);
+
   @media (--viewportMedium) {
     margin-bottom: 48px;
   }
@@ -286,10 +207,6 @@
 .desktopReviewsTitle {
   composes: textLarge from global;
   margin-bottom: 0;
-
-  font-weight: var(--fontWeightRegular);
-  font-size: 14px;
-  line-height: 18px;
 }
 
 .desktopReviewsTabNav {
@@ -389,7 +306,8 @@
 }
 
 .detailLabel {
-  font-weight: var(--fontWeightRegular);
+  font-weight: var(--fontWeightSemiBold);
+  letter-spacing: -0.09px;
 }
 
 .video {
@@ -407,73 +325,12 @@
   height: 100%;
 }
 
-.inter {
-  font-family: "Inter", sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 24px;
-  word-break: auto-phrase;
-  text-transform: uppercase;
-}
-
-.cousine {
-  font-family: "Cousine", sans-serif;
-}
-
-.profileGrid {
-  gap: 24px;
-  grid-template-columns: repeat(1, 1fr);
-  display: grid;
-  max-width: 800px;
-  margin: 0 auto;  
-  padding: 0 20px;
-  margin-top: 40px;
-
-  @media (min-width: 550px) {
-
-  } 
+.userFieldSection {
+  padding: 0px;
+  margin-bottom: 24px;
 
   @media (--viewportMedium) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;    
-  }
-
-  @media (--viewportLarge) {
     padding: 0;
+    margin-bottom: 24px;
   }
-
-  @media (min-width: 1440px) {
-
-  }
-
-  @media (--viewportXLarge) {
-
-  }
-
-
-}
-
-.profileSectionCarouselNew {
-  margin-top: -44px;
-
-  @media (min-width: 550px) {
-
-  } 
-
-  @media (--viewportMedium) {
-    margin-top: -64px;
-  }
-
-  @media (--viewportLarge) {
-
-  }
-
-  @media (min-width: 1440px) {
-
-  }
-
-  @media (--viewportXLarge) {
-
-  }
-
 }

@@ -86,6 +86,7 @@ class ContactDetailsFormComponent extends Component {
     super(props);
     this.state = { showVerificationEmailSentMessage: false, showResetPasswordMessage: false };
     this.emailSentTimeoutId = null;
+    this.restartTimeoutId = null;
     this.handleResendVerificationEmail = this.handleResendVerificationEmail.bind(this);
     this.handleResetPassword = this.handleResetPassword.bind(this);
     this.submittedValues = {};
@@ -93,6 +94,7 @@ class ContactDetailsFormComponent extends Component {
 
   componentWillUnmount() {
     window.clearTimeout(this.emailSentTimeoutId);
+    window.clearTimeout(this.restartTimeoutId);
   }
 
   handleResendVerificationEmail() {
@@ -363,61 +365,64 @@ class ContactDetailsFormComponent extends Component {
               className={classes}
               onSubmit={e => {
                 this.submittedValues = values;
-                handleSubmit(e);
+                handleSubmit(e).then(() => {
+                  this.restartTimeoutId = setTimeout(() => {
+                    fieldRenderProps.form.restart({ email, phoneNumber });
+                  }, 1000);
+                });
               }}
             >
-              <div className={css.defaultFields}>
-                <div className={css.contactDetailsSection}>
-                  <FieldTextInput
-                    type="email"
-                    name="email"
-                    id={formId ? `${formId}.email` : 'email'}
-                    label={emailLabel}
-                    placeholder={emailPlaceholder}
-                    validate={validators.composeValidators(emailRequired, emailValid)}
-                    customErrorText={emailTouched ? null : emailTakenErrorText}
+              <div className={css.contactDetailsSection}>
+                <FieldTextInput
+                  type="email"
+                  name="email"
+                  id={formId ? `${formId}.email` : 'email'}
+                  label={emailLabel}
+                  placeholder={emailPlaceholder}
+                  validate={validators.composeValidators(emailRequired, emailValid)}
+                  customErrorText={emailTouched ? null : emailTakenErrorText}
+                />
+                {emailVerifiedInfo}
+
+                <PhoneNumberMaybe formId={formId} userTypeConfig={userTypeConfig} intl={intl} />
+              </div>
+
+              <div className={confirmClasses} aria-hidden={!emailChanged}>
+                <H4 as="h3" className={css.confirmChangesTitle}>
+                  <FormattedMessage id="ContactDetailsForm.confirmChangesTitle" />
+                </H4>
+                <p className={css.confirmChangesInfo}>
+                  <FormattedMessage id="ContactDetailsForm.confirmChangesInfo" />
+                  <br />
+                  <FormattedMessage
+                    id="ContactDetailsForm.resetPasswordInfo"
+                    values={{ resetPasswordLink }}
                   />
-                  {emailVerifiedInfo}
+                </p>
 
-                  <PhoneNumberMaybe formId={formId} userTypeConfig={userTypeConfig} intl={intl} />
-                </div>
-
-                <div className={confirmClasses}>
-                  <H4 as="h3" className={css.confirmChangesTitle}>
-                    <FormattedMessage id="ContactDetailsForm.confirmChangesTitle" />
-                  </H4>
-                  <p className={css.confirmChangesInfo}>
-                    <FormattedMessage id="ContactDetailsForm.confirmChangesInfo" />
-                    <br />
-                    <FormattedMessage
-                      id="ContactDetailsForm.resetPasswordInfo"
-                      values={{ resetPasswordLink }}
-                    />
-                  </p>
-
-                  <FieldTextInput
-                    className={css.password}
-                    type="password"
-                    name="currentPassword"
-                    id={formId ? `${formId}.currentPassword` : 'currentPassword'}
-                    autoComplete="current-password"
-                    label={passwordLabel}
-                    placeholder={passwordPlaceholder}
-                    validate={passwordValidators}
-                    customErrorText={passwordTouched ? null : passwordErrorText}
-                  />
-                </div>
-                <div className={css.bottomWrapper}>
-                  {genericError}
-                  <PrimaryButton
-                    type="submit"
-                    inProgress={inProgress}
-                    ready={pristineSinceLastSubmit}
-                    disabled={submitDisabled}
-                  >
-                    <FormattedMessage id="ContactDetailsForm.saveChanges" />
-                  </PrimaryButton>
-                </div>
+                <FieldTextInput
+                  className={css.password}
+                  type="password"
+                  name="currentPassword"
+                  id={formId ? `${formId}.currentPassword` : 'currentPassword'}
+                  disabled={!emailChanged}
+                  autoComplete="current-password"
+                  label={passwordLabel}
+                  placeholder={passwordPlaceholder}
+                  validate={passwordValidators}
+                  customErrorText={passwordTouched ? null : passwordErrorText}
+                />
+              </div>
+              <div className={css.bottomWrapper}>
+                {genericError}
+                <PrimaryButton
+                  type="submit"
+                  inProgress={inProgress}
+                  ready={pristineSinceLastSubmit}
+                  disabled={submitDisabled}
+                >
+                  <FormattedMessage id="ContactDetailsForm.saveChanges" />
+                </PrimaryButton>
               </div>
             </Form>
           );

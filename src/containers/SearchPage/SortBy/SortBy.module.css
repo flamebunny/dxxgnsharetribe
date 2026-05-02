@@ -10,9 +10,11 @@
 }
 
 .sortByMenuLabel {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   width: auto;
-  height: 35px;
+  height: auto;
   min-height: 35px;
 
   padding: 0;
@@ -56,6 +58,7 @@
   }
 
   @media (--viewportMedium) {
+    gap: 36px;
     height: auto;
     min-height: 0;
     padding: var(--marketplaceButtonSmallDesktopPadding);

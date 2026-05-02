@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 
 // Import configs and util modules
 import {
@@ -117,6 +118,8 @@ const EditListingWizardTab = props => {
     tabSubmitButtonText,
     config,
     routeConfiguration,
+    titleId,
+    intl,
   } = props;
 
   const { type } = params;
@@ -188,6 +191,12 @@ const EditListingWizardTab = props => {
       onSubmit: values => {
         return onCompleteEditListingWizardTab(tab, values);
       },
+      intl,
+      updatePageTitle: ({ panelHeading }) => (
+        <Helmet>
+          <title>{intl.formatMessage({ id: titleId }, { panelHeading })}</title>
+        </Helmet>
+      ),
     };
   };
 

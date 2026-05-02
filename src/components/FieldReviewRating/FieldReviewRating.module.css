@@ -6,19 +6,19 @@
   margin: 0;
 
   & legend {
-    font-weight: var(--fontWeightBold);
-    font-size: 14px;
-    line-height: 18px;
-    color: var(--colorBlack);
+    font-weight: var(--fontWeightSemiBold);
+    font-size: 18px;
+    line-height: 24px;
+    color: var(--colorGrey600);
 
     /* margin-top + n * line-height + margin-bottom => x * 6px */
     margin-top: 16px;
-    margin-bottom: 0x;
+    margin-bottom: 14px;
 
     @media (--viewportMedium) {
       /* margin-top + n * line-height + margin-bottom => x * 8px */
       margin-top: 16px;
-      margin-bottom: 0px;
+      margin-bottom: 16px;
     }
   }
 }
@@ -28,8 +28,7 @@
   display: flex;
   flex-direction: row-reverse;
   justify-content: flex-end;
-  margin-top: 0px;
-  margin-left: 16px;
+  margin-top: 16px;
 }
 
 .rateInput {
@@ -69,37 +68,4 @@
 .rating > .label:hover ~ .rateInput:checked ~ .label > .star,
 .rating > .rateInput:checked ~ .label:hover ~ .label > .star {
   fill: var(--marketplaceColorDark);
-}
-
-
-.reviewRatingStar {
-  color: var(--colorGrey300);
-  transition: var(--transitionStyleButton);
-  font-size: 14px;
-  font-weight: bold;
-}
-
-/***** CSS Magic to Highlight Stars on Hover *****/
-
-/* Star order: reverse expected (5 -> 1) and also input before label */
-
-/* show actived star when checked */
-/* and actived star when hovering over a star */
-/* and show previous stars also as activated */
-.rating > .rateInput:checked ~ .label > .reviewRatingStar,
-.rating > .label:hover > .reviewRatingStar,
-.rating > .label:hover ~ .label > .reviewRatingStar {
-  color: var(--marketplaceColor);
-  transition: var(--transitionStyleButton);
-}
-
-/* Darken hovered star when changing rating i.e it already is active */
-/* and darken hovered star too when changing rating (hovering inside current selection) */
-/* and darken current selection inside hovered selection */
-/* and darken hovered selection inside current selection */
-.rating > .rateInput:checked + .label:hover > .reviewRatingStar,
-.rating > .rateInput:checked ~ .label:hover > .reviewRatingStar,
-.rating > .label:hover ~ .rateInput:checked ~ .label > .reviewRatingStar,
-.rating > .rateInput:checked ~ .label:hover ~ .label > .reviewRatingStar {
-  color: var(--marketplaceColorDark);
 }
