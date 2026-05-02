@@ -1,6 +1,7 @@
 import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { isErrorUserPendingApproval, isForbiddenError, storableError } from '../../util/errors';
 import { createImageVariantConfig } from '../../util/sdkLoader';
+import { convertUnitToSubUnit, unitDivisor } from '../../util/currency';
 import {
   parseDateFromISO8601,
   getExclusiveEndDate,
@@ -57,6 +58,7 @@ export const SEARCH_MAP_SET_ACTIVE_LISTING = 'app/SearchPage/SEARCH_MAP_SET_ACTI
 
 const initialState = {
   featuredListingIds: [],
+  newListingIds: [],
   currentPageResultIds: [],
 };
 
@@ -113,7 +115,7 @@ export default function reducer(state = initialState, action = {}) {
     case SEARCH_LISTINGS_SUCCESS:
       return {
         ...state,
-        currentPageResultIds: resultIds(payload.data),
+        newListingIds: resultIds(payload.data),
         pagination: payload.data.meta,
         searchInProgress: false,
       };

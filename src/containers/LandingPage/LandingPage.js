@@ -25,11 +25,11 @@ import {
   categoriesSectionId,
   carouselNewSectionId,
   landingpageFeaturedListings,
+  searchListings2,
 } from './LandingPage.duck';
 import { fetchFeaturedListings } from '../../ducks/featuredListings.duck';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { getFeaturedListingsProps } from '../../util/data';
-import { searchListings } from '../SearchPage/SearchPage.duck';
 
 import SectionTextblurb from '../PageBuilder/SectionBuilder/SectionTextblurb';
 import SectionHeroImgCustom from '../PageBuilder/SectionBuilder/SectionHeroImgCustom';
@@ -223,14 +223,14 @@ const mapStateToProps = state => {
   const { pageAssetsData, inProgress, error } = state.hostedAssets || {};
   const featuredListingData = state.featuredListings || {};
   const featuredListingIds = state.LandingPage?.featuredListingIds || [];
-  const currentPageResultIds = state.SearchPage?.currentPageResultIds || [];
+  const newListingIds = state.LandingPage?.newListingIds || [];
   const featuredListingObj = featuredListingIds.map(idToSdkUuid);
 
   const getListingEntitiesById = listingIds => getListingsById(state, listingIds);
 
   return {
     pageAssetsData,
-    listings: getListingsById(state, currentPageResultIds),
+    listings: getListingsById(state, newListingIds),
     featuredListings: getListingsById(state, featuredListingObj),
     featuredListingIds,
     featuredListingData,
@@ -243,8 +243,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   onFetchCustomFeaturedListings: (params, config) =>
     dispatch(landingpageFeaturedListings(params, config)),
-  onFetchNewListings: (params, config) =>
-    dispatch(searchListings({ searchParams: params, config })),
+  onFetchNewListings: (params, config) => dispatch(searchListings2(params, config)),
   onFetchFeaturedListings: (sectionId, parentPage, listingImageConfig, allSections) =>
     dispatch(fetchFeaturedListings({ sectionId, parentPage, listingImageConfig, allSections })),
 });
