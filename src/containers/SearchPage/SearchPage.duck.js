@@ -239,15 +239,22 @@ const searchListingsPayloadCreator = ({ searchParams, config }, thunkAPI) => {
 
   const sortSearchParams = (sortParam, hasKeywords) => {
     const sortConfig = config?.search?.sortConfig || {};
-    // If no sort options are set, defaultSort will be undefined
-    const defaultSort = sortConfig?.options?.[0]?.key;
+    const uiOnlySortKeys = ['featured', sortConfig.relevanceKey];
+    const isApiSortKey = key => key && !uiOnlySortKeys.includes(key);
+    // If no API-compatible sort options are set, defaultSort will be undefined.
+    const defaultSort = sortConfig?.options?.find(option => isApiSortKey(option.key))?.key;
     const relevanceEnabled = sortConfig.options?.some(
       option => option.key === sortConfig.relevanceKey
     );
 
-    // User-specified sort takes priority
-    if (sortParam !== undefined && sortParam !== sortConfig.relevanceKey) {
+    // User-specified API-compatible sort takes priority.
+    if (isApiSortKey(sortParam)) {
       return { sort: sortParam };
+    }
+
+    // Some sort options are UI-only. Do not send them to Marketplace API.
+    if (uiOnlySortKeys.includes(sortParam)) {
+      return {};
     }
 
     // No sort parameter needed when keyword search is used or sort config is inactive
