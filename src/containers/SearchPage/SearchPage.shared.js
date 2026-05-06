@@ -565,6 +565,63 @@ const getSelectedSecondaryFiltersCount = (
   return selectedSecondaryFilters?.length;
 };
 
+const formatFallbackBreadcrumbLabel = value => {
+  const str = `${value || ''}`.trim();
+  return str ? str.charAt(0).toUpperCase() + str.slice(1).replace(/-/g, ' ') : 'New+';
+};
+
+const findCategoryLabel = (categories = [], value) => {
+  const selectedValue = `${value || ''}`;
+
+  return categories.reduce((foundLabel, category) => {
+    if (foundLabel) {
+      return foundLabel;
+    }
+
+    const categoryValues = [category.id, category.name, category.key, category.option];
+    const isMatch = categoryValues.some(v => v != null && `${v}` === selectedValue);
+    if (isMatch) {
+      return category.label || category.name || category.id || category.key || category.option;
+    }
+
+    const subcategories = category.subcategories || category.suboptions || category.children || [];
+    return findCategoryLabel(subcategories, selectedValue);
+  }, null);
+};
+
+export const getSearchBreadcrumbLabel = ({
+  locationSearch,
+  validQueryParams = {},
+  listingCategories = [],
+  searchAuthorName,
+}) => {
+  const params = parse(locationSearch);
+
+  if (params?.u && searchAuthorName) {
+    return searchAuthorName;
+  }
+
+  const categoryValue =
+    validQueryParams.pub_categoryLevel1 ||
+    params.pub_categoryLevel1 ||
+    validQueryParams.pub_categoryLevel ||
+    params.pub_categoryLevel;
+
+  if (categoryValue) {
+    return (
+      findCategoryLabel(listingCategories, categoryValue) ||
+      formatFallbackBreadcrumbLabel(categoryValue)
+    );
+  }
+
+  const sortValue = validQueryParams.sort || params.sort;
+  if (sortValue === 'featured') {
+    return 'Featured';
+  }
+
+  return 'New+';
+};
+
 /**
  * Derives URL, filter, pagination, and SEO values shared by SearchPage map and grid variants.
  *

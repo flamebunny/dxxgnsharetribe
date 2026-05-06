@@ -15,6 +15,7 @@ import {
   initialValues,
   validUrlQueryParamsFromProps,
   getDerivedRenderData,
+  getSearchBreadcrumbLabel,
   onResetAll,
   createFilterValueChangeHandler,
   onSortBy,
@@ -139,6 +140,7 @@ export class SearchPageComponent extends Component {
       searchInProgress,
       searchListingsError,
       searchParams = {},
+      searchAuthorName,
       routeConfiguration,
       config,
       params: currentPathParams = {},
@@ -199,6 +201,12 @@ export class SearchPageComponent extends Component {
         showCreateListingsLink={showCreateListingsLink}
       />
     );
+    const labelHeading = getSearchBreadcrumbLabel({
+      locationSearch: location.search,
+      validQueryParams,
+      listingCategories,
+      searchAuthorName,
+    });
 
     // Set topbar class based on if a modal is open in
     // a child component
@@ -302,6 +310,10 @@ export class SearchPageComponent extends Component {
                 searchInProgress={searchInProgress}
                 searchListingsError={searchListingsError}
                 noResultsInfo={noResultsInfo}
+                labelHeading={labelHeading}
+                getHandleChangedValueFn={this.getHandleChangedValueFn}
+                liveEdit
+                showAsPopup={false}
               />
               <div
                 className={classNames(css.listingsForGridVariant, {

@@ -3,6 +3,8 @@ import classNames from 'classnames';
 
 import { FormattedMessage } from '../../../util/reactIntl';
 
+import ClearButton from '../ClearButton/ClearButton';
+
 import css from './MainPanelHeader.module.css';
 
 /**
@@ -28,16 +30,29 @@ const MainPanelHeader = props => {
     children,
     sortByComponent,
     isSortByActive,
-    listingsAreLoaded,
     resultsCount,
     searchInProgress = false,
     noResultsInfo,
+    labelHeading,
+    getHandleChangedValueFn,
+    ...rest
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
+  const { liveEdit, showAsPopup } = rest;
+  const useHistoryPush = liveEdit || showAsPopup;
+  const showBreadcrumbs = labelHeading && getHandleChangedValueFn;
 
   return (
     <div className={classes}>
+      {showBreadcrumbs ? (
+        <div className={css.breadcrumbs}>
+          <ClearButton onSubmit={getHandleChangedValueFn(useHistoryPush)} {...rest} />
+          <span className={css.spacer}>{' • '}</span>
+          <span>{labelHeading}</span>
+        </div>
+      ) : null}
+
       <div className={css.searchOptions}>
         <h1 className={css.searchResultSummary}>
           <span className={css.resultsFound}>

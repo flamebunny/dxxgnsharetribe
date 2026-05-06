@@ -19,6 +19,7 @@ import {
   validFilterParams,
   getSearchPageResourceLocatorStringParams,
   getDerivedRenderData,
+  getSearchBreadcrumbLabel,
   onResetAll,
   onApplyFilters,
   createFilterValueChangeHandler,
@@ -220,6 +221,7 @@ export class SearchPageComponent extends Component {
       searchInProgress,
       searchListingsError,
       searchParams = {},
+      searchAuthorName,
       activeListingId,
       onActivateListing,
       routeConfiguration,
@@ -303,6 +305,12 @@ export class SearchPageComponent extends Component {
         showCreateListingsLink={showCreateListingsLink}
       />
     );
+    const labelHeading = getSearchBreadcrumbLabel({
+      locationSearch: location.search,
+      validQueryParams,
+      listingCategories,
+      searchAuthorName,
+    });
 
     const { bounds, origin } = searchParamsInURL || {};
 
@@ -375,6 +383,10 @@ export class SearchPageComponent extends Component {
               searchInProgress={searchInProgress}
               searchListingsError={searchListingsError}
               noResultsInfo={noResultsInfo}
+              labelHeading={labelHeading}
+              getHandleChangedValueFn={this.getHandleChangedValueFn}
+              liveEdit
+              showAsPopup={false}
             >
               <SearchFiltersPrimary {...propsForSecondaryFiltersToggle}>
                 {availablePrimaryFilters.map(filterConfig => {
