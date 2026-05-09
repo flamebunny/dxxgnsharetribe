@@ -221,7 +221,7 @@ const TopbarDesktop = props => {
         showCreateListingsLink={showCreateListingsLink}
       />
 
-      {inboxLinkMaybe}
+
       {profileMenuMaybe}
       {signupLinkMaybe}
       {loginLinkMaybe}
