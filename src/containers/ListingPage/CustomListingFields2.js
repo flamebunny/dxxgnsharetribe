@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Utils
-import { SCHEMA_TYPE_MULTI_ENUM, SCHEMA_TYPE_TEXT, SCHEMA_TYPE_YOUTUBE } from '../../util/types.js';
+import { SCHEMA_TYPE_TEXT } from '../../util/types.js';
 import {
   isFieldForCategory,
   pickCategoryFields,
@@ -9,23 +9,20 @@ import {
 } from '../../util/fieldHelpers.js';
 
 import SectionDetailsMaybe2 from './SectionDetailsMaybe2.js';
-import SectionMultiEnumMaybe from './SectionMultiEnumMaybe.js';
 import SectionTextMaybe2 from './SectionTextMaybe2.js';
-import SectionYoutubeVideoMaybe from './SectionYoutubeVideoMaybe.js';
 import { Heading } from '../../components';
 import css from './ListingPage.module.css';
 
 /**
  * Renders custom listing fields.
  * - SectionDetailsMaybe is used if schemaType is 'enum', 'long', or 'boolean'
- * - SectionMultiEnumMaybe is used if schemaType is 'multi-enum'
- * - SectionTextMaybe is used if schemaType is 'text'
+ * - SectionTextMaybe2 is used if schemaType is 'text'
  *
  * @param {*} props include publicData, metadata, listingFieldConfigs, categoryConfiguration
  * @returns React.Fragment containing aforementioned components
  */
 const CustomListingFields2 = props => {
-  const { publicData, metadata, listingFieldConfigs, categoryConfiguration, heading } = props;  
+  const { publicData, metadata, listingFieldConfigs, categoryConfiguration, heading } = props;
 
   const { key: categoryPrefix, categories: listingCategoriesConfig } = categoryConfiguration;
   const categoriesObj = pickCategoryFields(publicData, categoryPrefix, 1, listingCategoriesConfig);
@@ -57,12 +54,8 @@ const CustomListingFields2 = props => {
 
         
 
-        return schemaType === SCHEMA_TYPE_MULTI_ENUM ? (
-          <SectionMultiEnumMaybe key={key} {...fieldProps} />
-        ) : schemaType === SCHEMA_TYPE_TEXT ? (
+        return schemaType === SCHEMA_TYPE_TEXT ? (
           <SectionTextMaybe2 key={key} {...fieldProps} />
-        ) : schemaType === SCHEMA_TYPE_YOUTUBE ? (
-          <SectionYoutubeVideoMaybe key={key} {...fieldProps} />
         ) : null;
       })}
     </section>

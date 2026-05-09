@@ -53,12 +53,43 @@ import SectionReviews from './SectionReviews';
 import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
+import SectionTextMaybe2 from './SectionTextMaybe2';
 import CustomListingFields from './CustomListingFields';
+import CustomListingFields2 from './CustomListingFields2';
 import ListingPageAccessWrapper from './ListingPageAccessWrapper';
 
 import css from './ListingPage.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS_IN_TITLE = 16;
+
+const addCommissionToListingPrice = (listing, commissionPercentage) => {
+  const price = listing?.attributes?.price;
+  const priceAmount = price?.amount;
+  const shouldAddCommission = price && Number.isFinite(priceAmount) && commissionPercentage > 0;
+
+  if (!shouldAddCommission) {
+    return listing;
+  }
+
+  const commissionMultiplier = 1 + commissionPercentage / 100;
+  const commissionPrice = new price.constructor(
+    Math.round(priceAmount * commissionMultiplier),
+    price.currency
+  );
+  const publicData = listing.attributes.publicData || {};
+
+  return {
+    ...listing,
+    attributes: {
+      ...listing.attributes,
+      price: commissionPrice,
+      publicData: {
+        ...publicData,
+        shippingPriceInSubunitsOneItem: publicData.shippingPriceInSubunitsOneItem || 0,
+      },
+    },
+  };
+};
 
 export const ListingPageComponent = props => {
   const [inquiryModalOpen, setInquiryModalOpen] = useState(
@@ -92,8 +123,12 @@ export const ListingPageComponent = props => {
     config,
     routeConfiguration,
     showOwnListingsOnly,
+    pageAssetsData,
     ...restOfProps
   } = props;
+
+  const commission = pageAssetsData?.commission;
+  const customerCommissionPercentage = commission?.data?.customerCommission?.percentage || 0;
 
   const derivedData = getDerivedRenderData({
     rawParams,
@@ -111,7 +146,6 @@ export const ListingPageComponent = props => {
   const {
     listingConfig,
     listingId,
-    isVariant,
     currentListing,
     listingSlug,
     params,
@@ -163,6 +197,19 @@ export const ListingPageComponent = props => {
   }
   const unitType = publicData.unitType;
   const isNegotiation = processType === 'negotiation';
+  const listingWithCommission = addCommissionToListingPrice(
+    currentListing,
+    customerCommissionPercentage
+  );
+  const authorLink = (
+    <NamedLink
+      className={css.authorNameLink}
+      name="ProfilePage"
+      params={{ id: ensuredAuthor.id.uuid }}
+    >
+      {authorDisplayName}
+    </NamedLink>
+  );
 
   const commonParams = { params, history, routes: routeConfiguration };
   const onContactUser = handleContactUser({
@@ -240,7 +287,7 @@ export const ListingPageComponent = props => {
           <div className={css.mainColumnForProductLayout}>
             <Notifications
               mounted={mounted}
-              listing={currentListing}
+              listing={listingWithCommission}
               isOwnListing={isOwnListing}
               noPayoutDetailsSetWithOwnListing={noPayoutDetailsSetWithOwnListing}
               currentUser={currentUser}
@@ -254,10 +301,23 @@ export const ListingPageComponent = props => {
             />
             {showListingImage && (
               <SectionGallery
-                listing={currentListing}
+                listing={listingWithCommission}
                 variantPrefix={config.layout.listingImage.variantPrefix}
               />
             )}
+          </div>
+          <div className={css.orderColumnForProductLayout}>
+            <div className={css.breadcrumbs}>
+              <a className={css.breadcrumbLink} href="/s/">All</a>
+              <span className={css.spacer}>·</span>
+              <a
+                className={css.breadcrumbLink}
+                href={`/s?pub_categoryLevel1=${publicData.categoryLevel1}`}
+              >
+                {publicData.categoryLevel1}
+              </a>
+            </div>
+
             <div
               className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
             >
@@ -271,6 +331,13 @@ export const ListingPageComponent = props => {
                 </H3>
               )}
             </div>
+
+            <div className={classNames(css.mobileAuthor)}>
+              <span className={css.providerNameLinked}>
+                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
+              </span>
+            </div>
+
             {showDescription && <SectionText text={description} showAsIngress />}
 
             <CustomListingFields
@@ -290,7 +357,7 @@ export const ListingPageComponent = props => {
             <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
             <SectionAuthorMaybe
               title={title}
-              listing={currentListing}
+              listing={listingWithCommission}
               authorDisplayName={authorDisplayName}
               onContactUser={onContactUser}
               isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
@@ -307,19 +374,10 @@ export const ListingPageComponent = props => {
               className={classNames(css.productOrderPanel, {
                 [css.imagesEnabled]: showListingImage,
               })}
-              listing={currentListing}
+              listing={listingWithCommission}
               isOwnListing={isOwnListing}
               onSubmit={handleOrderSubmit}
-              authorLink={
-                <NamedLink
-                  className={css.authorNameLink}
-                  name={isVariant ? 'ListingPageVariant' : 'ListingPage'}
-                  params={params}
-                  to={{ hash: '#author' }}
-                >
-                  {authorDisplayName}
-                </NamedLink>
-              }
+              authorLink={authorLink}
               title={<FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />}
               titleDesktop={
                 <H4 as="h1" className={css.orderPanelTitle}>
@@ -337,6 +395,27 @@ export const ListingPageComponent = props => {
               marketplaceName={config.marketplaceName}
               showListingImage={showListingImage}
             />
+
+            <SectionTextMaybe2 heading={'Description'} text={description} showAsIngress />
+
+            <SectionMapMaybe
+              geolocation={geolocation}
+              publicData={publicData}
+              listingId={currentListing.id}
+              mapsConfig={config.maps}
+            />
+
+            <CustomListingFields2
+              heading={'Details'}
+              publicData={publicData}
+              metadata={metadata}
+              listingFieldConfigs={listingConfig.listingFields}
+              categoryConfiguration={config.categoryConfiguration}
+              intl={intl}
+            />
+
+            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+
           </div>
         </div>
       </LayoutSingleColumn>
@@ -396,6 +475,7 @@ const ListingPage = props => {
     inquiryModalOpenForListingId,
   } = useSelector(state => state.ListingPage);
   const currentUser = useSelector(state => state.user?.currentUser);
+  const pageAssetsData = useSelector(state => state.hostedAssets?.pageAssetsData);
   const scrollingDisabled = useSelector(state => isScrollingDisabled(state));
 
   const getListing = useCallback(
@@ -449,6 +529,7 @@ const ListingPage = props => {
       PageComponent={ListingPageComponent}
       isAuthenticated={isAuthenticated}
       currentUser={currentUser}
+      pageAssetsData={pageAssetsData}
       getListing={getListing}
       getOwnListing={getOwnListing}
       scrollingDisabled={scrollingDisabled}
