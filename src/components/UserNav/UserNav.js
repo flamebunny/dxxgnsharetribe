@@ -34,7 +34,14 @@ const UserNav = props => {
     : [];
 
   const tabs = [
-    ...manageListingsTabMaybe,
+    {
+      text: <FormattedMessage id="UserNav.inbox" />,
+      selected: currentPage === 'InboxPage',
+      disabled: false,
+      linkProps: {
+        name: 'InboxBasePage',
+      },
+    },
     {
       text: <FormattedMessage id="UserNav.profileSettings" />,
       selected: currentPage === 'ProfileSettingsPage',
@@ -51,6 +58,7 @@ const UserNav = props => {
         name: 'ContactDetailsPage',
       },
     },
+    ...manageListingsTabMaybe,
   ];
 
   return (
@@ -58,7 +66,7 @@ const UserNav = props => {
       className={classes}
       tabRootClassName={css.tab}
       tabs={tabs}
-      skin="dark"
+      skin="light"
       ariaLabel={intl.formatMessage({ id: 'UserNav.screenreader.userNav' })}
     />
   );
