@@ -25,32 +25,11 @@ import ProfileSettingsForm from './ProfileSettingsForm/ProfileSettingsForm';
 import { updateProfile, uploadImage } from './ProfileSettingsPage.duck';
 import css from './ProfileSettingsPage.module.css';
 
-const BUILT_IN_PROFILE_FIELD_KEYS = ['firstName', 'lastName', 'displayName', 'bio', 'profileImage'];
-
 const onImageUploadHandler = (values, fn) => {
   const { id, imageId, file } = values;
   if (file) {
     fn({ id, imageId, file });
   }
-};
-
-const normalizeUserFields = userFields => {
-  const seen = new Set();
-
-  return userFields.reduce((fields, field) => {
-    const key = field?.key;
-    const scope = field?.scope || 'public';
-    const fieldId = `${scope}:${key}`;
-    const isBuiltInProfileField = BUILT_IN_PROFILE_FIELD_KEYS.includes(key);
-    const isDuplicate = seen.has(fieldId);
-
-    if (!key || isBuiltInProfileField || isDuplicate) {
-      return fields;
-    }
-
-    seen.add(fieldId);
-    return fields.concat(field);
-  }, []);
 };
 
 const ViewProfileLink = props => {
@@ -105,9 +84,8 @@ export const ProfileSettingsPageComponent = props => {
     uploadInProgress,
   } = props;
 
-  const { userFields = [], userTypes = [] } = config.user;
-  const normalizedUserFields = normalizeUserFields(userFields);
-  const publicUserFields = normalizedUserFields.filter(uf => uf.scope === 'public');
+  const { userFields, userTypes = [] } = config.user;
+  const publicUserFields = userFields.filter(uf => uf.scope === 'public');
 
   const handleSubmit = (values, userType) => {
     const { firstName, lastName, displayName, bio: rawBio, ...rest } = values;
@@ -125,7 +103,7 @@ export const ProfileSettingsPageComponent = props => {
       ...displayNameMaybe,
       bio,
       publicData: {
-        ...pickUserFieldsData(rest, 'public', userType, normalizedUserFields),
+        ...pickUserFieldsData(rest, 'public', userType, userFields),
       },
     };
     const uploadedImage = props.image;
@@ -162,7 +140,7 @@ export const ProfileSettingsPageComponent = props => {
         ...displayNameMaybe,
         bio,
         profileImage: user.profileImage,
-        ...initialValuesForUserFields(publicData, 'public', userType, normalizedUserFields),
+        ...initialValuesForUserFields(publicData, 'public', userType, userFields),
       }}
       profileImage={profileImage}
       onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
