@@ -59,15 +59,15 @@ const TabNavHorizontal = props => {
   const classes2 = classNames({ [css.darkSkin]: isDark });
   const tabClasses = tabRootClassName || css.tab;
   const ariaLabelMaybe = ariaLabel ? { ['aria-label']: ariaLabel } : {};
-  return (    
+  return (
     <nav className={classes2} {...ariaLabelMaybe}>
-      <div className={classes} >
+      <div className={classes}>
         {tabs.map((tab, index) => {
           const key = typeof tab.text === 'string' ? tab.text : index;
           return <Tab key={key} className={classNames(tabClasses)} {...tab} isDark={isDark} />;
         })}
       </div>
-    </nav>    
+    </nav>
   );
 };
 
