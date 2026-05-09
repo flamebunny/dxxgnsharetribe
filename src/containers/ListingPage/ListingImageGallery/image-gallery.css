@@ -25,8 +25,8 @@
   --ig-background-overlay: rgba(0, 0, 0, 0.4);
   --ig-thumbnail-size: 96px;
   --ig-thumbnail-size-small: 80px;
-  --ig-thumbnail-border-width: 4px;
-  --ig-thumbnail-border-width-small: 3px;
+  --ig-thumbnail-border-width: 2px;
+  --ig-thumbnail-border-width-small: 2px;
   --ig-bullet-size: 4px;
   --ig-bullet-size-small: 3px;
 }
@@ -627,14 +627,14 @@
 .image-gallery-thumbnail.active,
 .image-gallery-thumbnail:focus {
   outline: none;
-  border: var(--ig-thumbnail-border-width, 4px) solid
+  border: var(--ig-thumbnail-border-width, 2px) solid
     var(--ig-primary-color, #337ab7);
 }
 
 @media (max-width: 768px) {
   .image-gallery-thumbnail.active,
   .image-gallery-thumbnail:focus {
-    border: var(--ig-thumbnail-border-width-small, 3px) solid
+    border: var(--ig-thumbnail-border-width-small, 2px) solid
       var(--ig-primary-color, #337ab7);
   }
 }
@@ -642,14 +642,14 @@
 @media (hover: hover) and (pointer: fine) {
   .image-gallery-thumbnail:hover {
     outline: none;
-    border: var(--ig-thumbnail-border-width, 4px) solid
+    border: var(--ig-thumbnail-border-width, 2px) solid
       var(--ig-primary-color, #337ab7);
   }
 }
 
 @media (hover: hover) and (pointer: fine) and (max-width: 768px) {
   .image-gallery-thumbnail:hover {
-    border: var(--ig-thumbnail-border-width-small, 3px) solid
+    border: var(--ig-thumbnail-border-width-small, 2px) solid
       var(--ig-primary-color, #337ab7);
   }
 }

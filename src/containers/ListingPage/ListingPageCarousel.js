@@ -53,7 +53,7 @@ import SectionReviews from './SectionReviews';
 import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
-import SectionTextMaybe2 from './SectionTextMaybe2';
+import SectionTextMaybe from './SectionTextMaybe';
 import CustomListingFields from './CustomListingFields';
 import CustomListingFields2 from './CustomListingFields2';
 import ListingPageAccessWrapper from './ListingPageAccessWrapper';
@@ -306,6 +306,7 @@ export const ListingPageComponent = props => {
               />
             )}
           </div>
+
           <div className={css.orderColumnForProductLayout}>
             <div className={css.breadcrumbs}>
               <a className={css.breadcrumbLink} href="/s/">All</a>
@@ -318,58 +319,6 @@ export const ListingPageComponent = props => {
               </a>
             </div>
 
-            <div
-              className={showListingImage ? css.mobileHeading : css.noListingImageHeadingProduct}
-            >
-              {showListingImage ? (
-                <H2 as="h1" className={css.orderPanelTitle}>
-                  <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-                </H2>
-              ) : (
-                <H3 as="h1" className={css.orderPanelTitle}>
-                  <FormattedMessage id="ListingPage.orderTitle" values={{ title: richTitle }} />
-                </H3>
-              )}
-            </div>
-
-            <div className={classNames(css.mobileAuthor)}>
-              <span className={css.providerNameLinked}>
-                By <FormattedMessage id="OrderPanel.author" values={{ name: authorLink }} />
-              </span>
-            </div>
-
-            {showDescription && <SectionText text={description} showAsIngress />}
-
-            <CustomListingFields
-              publicData={publicData}
-              metadata={metadata}
-              listingFieldConfigs={listingConfig.listingFields}
-              categoryConfiguration={config.categoryConfiguration}
-              intl={intl}
-            />
-
-            <SectionMapMaybe
-              geolocation={geolocation}
-              publicData={publicData}
-              listingId={currentListing.id}
-              mapsConfig={config.maps}
-            />
-            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
-            <SectionAuthorMaybe
-              title={title}
-              listing={listingWithCommission}
-              authorDisplayName={authorDisplayName}
-              onContactUser={onContactUser}
-              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
-              onCloseInquiryModal={() => setInquiryModalOpen(false)}
-              sendInquiryError={sendInquiryError}
-              sendInquiryInProgress={sendInquiryInProgress}
-              onSubmitInquiry={onSubmitInquiry}
-              currentUser={currentUser}
-              onManageDisableScrolling={onManageDisableScrolling}
-            />
-          </div>
-          <div className={css.orderColumnForProductLayout}>
             <OrderPanel
               className={classNames(css.productOrderPanel, {
                 [css.imagesEnabled]: showListingImage,
@@ -396,7 +345,7 @@ export const ListingPageComponent = props => {
               showListingImage={showListingImage}
             />
 
-            <SectionTextMaybe2 heading={'Description'} text={description} showAsIngress />
+            <SectionTextMaybe heading={'Description'} text={description} showAsIngress />
 
             <SectionMapMaybe
               geolocation={geolocation}
@@ -415,6 +364,20 @@ export const ListingPageComponent = props => {
             />
 
             <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+
+            <SectionAuthorMaybe
+              title={title}
+              listing={listingWithCommission}
+              authorDisplayName={authorDisplayName}
+              onContactUser={onContactUser}
+              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
+              onCloseInquiryModal={() => setInquiryModalOpen(false)}
+              sendInquiryError={sendInquiryError}
+              sendInquiryInProgress={sendInquiryInProgress}
+              onSubmitInquiry={onSubmitInquiry}
+              currentUser={currentUser}
+              onManageDisableScrolling={onManageDisableScrolling}
+            />
 
           </div>
         </div>
