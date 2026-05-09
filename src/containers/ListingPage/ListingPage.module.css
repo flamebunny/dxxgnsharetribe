@@ -698,6 +698,57 @@
   }
 }
 
+.sectionTextMaybe2 {
+  padding: 0;
+  margin-bottom: 36px;
+  margin-top: 42px;
+  text-transform: uppercase;
+
+  @media (--viewportMedium) {
+    padding: 0;
+    margin-bottom: 40px;
+    margin-top: 40px;
+  }
+}
+
+.sectionTextMaybe2Heading {
+  composes: p from global;
+  display: block;
+  padding: 0;
+  font-weight: var(--fontWeightBold);
+  margin-top: 0;
+  margin-bottom: 12px;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 8px;
+  }
+}
+
+.sectionTextMaybe2Text {
+  display: block;
+  font-weight: var(--fontWeightRegular);
+  padding: 1px 0 5px 0;
+  margin: 0;
+  white-space: pre-line;
+
+  @media (--viewportMedium) {
+    padding: 3px 0 5px 0;
+    margin: 0;
+  }
+}
+
+.sectionTextMaybe2Ingress {
+  composes: p from global;
+  display: block;
+  margin: 0;
+  white-space: pre-line;
+
+  @media (--viewportMedium) {
+    margin: 0;
+  }
+}
+
 .text {
   font-weight: var(--fontWeightRegular);
   padding: 1px 0 5px 0;
