@@ -23,6 +23,7 @@ import css from './ListingPage.module.css';
  */
 const CustomListingFields2 = props => {
   const { publicData, metadata, listingFieldConfigs, categoryConfiguration, heading } = props;
+  const displayableFieldConfigs = Array.isArray(listingFieldConfigs) ? listingFieldConfigs : [];
 
   const { key: categoryPrefix, categories: listingCategoriesConfig } = categoryConfiguration;
   const categoriesObj = pickCategoryFields(publicData, categoryPrefix, 1, listingCategoriesConfig);
@@ -34,9 +35,8 @@ const CustomListingFields2 = props => {
   };
   const propsForCustomFields =
     pickCustomFieldProps(
-      publicData,
-      metadata,
-      listingFieldConfigs,
+      { publicData, metadata },
+      displayableFieldConfigs,
       'listingType',
       isFieldForSelectedCategories
     ) || [];
@@ -48,7 +48,11 @@ const CustomListingFields2 = props => {
           {heading}
         </Heading>
       ) : null}
-      <SectionDetailsMaybe2 {...props} isFieldForCategory={isFieldForSelectedCategories} />
+      <SectionDetailsMaybe2
+        {...props}
+        listingFieldConfigs={displayableFieldConfigs}
+        isFieldForCategory={isFieldForSelectedCategories}
+      />
       {propsForCustomFields.map(customFieldProps => {
         const { schemaType, key, ...fieldProps } = customFieldProps;
 

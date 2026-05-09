@@ -10,7 +10,7 @@ import css from './ListingPage.module.css';
 const SectionDetailsMaybe2 = props => {
   const { publicData, metadata = {}, listingFieldConfigs, isFieldForCategory, intl } = props;
 
-  if (!publicData || !listingFieldConfigs) {
+  if (!publicData || !Array.isArray(listingFieldConfigs)) {
     return null;
   }
 
