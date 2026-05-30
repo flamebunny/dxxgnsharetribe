@@ -150,61 +150,63 @@ const DeleteAccountForm = props => {
               handleSubmit(e);
             }}
           >
-            <FieldCheckbox
-              id="confirmDeleteAccount"
-              name="confirmDeleteAccount"
-              label={intl.formatMessage({ id: 'DeleteAccountForm.checkboxLabel' })}
-              value="deleteAccountSelected"
-              useSuccessColor
-            />
-            <br />
-            <p className={css.confirmChangesInfo}>
-              <FormattedMessage
-                id="DeleteAccountForm.confirmDeleteInfo"
-                values={{ marketplaceName }}
+            <div className={css.defaultFields}>
+              <FieldCheckbox
+                id="confirmDeleteAccount"
+                name="confirmDeleteAccount"
+                label={intl.formatMessage({ id: 'DeleteAccountForm.checkboxLabel' })}
+                value="deleteAccountSelected"
+                useSuccessColor
               />
               <br />
-            </p>
-            <div className={confirmClasses} aria-hidden={!deleteAccountConfirmed}>
-              <H4 as="h3" className={css.confirmChangesTitle}>
-                <FormattedMessage id="DeleteAccountForm.confirmDeleteTitle" />
-              </H4>
               <p className={css.confirmChangesInfo}>
-                <FormattedMessage id="DeleteAccountForm.deleteAccountInfo" values={{ email }} />
-                <br />
                 <FormattedMessage
-                  id="DeleteAccountForm.resetPasswordInfo"
-                  values={{ resetPasswordLink }}
+                  id="DeleteAccountForm.confirmDeleteInfo"
+                  values={{ marketplaceName }}
                 />
+                <br />
               </p>
+              <div className={confirmClasses} aria-hidden={!deleteAccountConfirmed}>
+                <H4 as="h3" className={css.confirmChangesTitle}>
+                  <FormattedMessage id="DeleteAccountForm.confirmDeleteTitle" />
+                </H4>
+                <p className={css.confirmChangesInfo}>
+                  <FormattedMessage id="DeleteAccountForm.deleteAccountInfo" values={{ email }} />
+                  <br />
+                  <FormattedMessage
+                    id="DeleteAccountForm.resetPasswordInfo"
+                    values={{ resetPasswordLink }}
+                  />
+                </p>
 
-              <FieldTextInput
-                className={css.password}
-                type="password"
-                name="currentPassword"
-                id={formId ? `${formId}.currentPassword` : 'currentPassword'}
-                disabled={!deleteAccountConfirmed}
-                autoComplete="current-password"
-                label={intl.formatMessage({
-                  id: 'DeleteAccountForm.passwordLabel',
-                })}
-                placeholder={intl.formatMessage({
-                  id: 'DeleteAccountForm.passwordPlaceholder',
-                })}
-                validate={passwordValidators}
-                customErrorText={passwordErrorText}
-              />
-            </div>
-            <div className={css.bottomWrapper}>
-              <ErrorMessage error={deleteAccountError} />
-              <PrimaryButton
-                className={css.submitButton}
-                type="submit"
-                inProgress={inProgress}
-                disabled={submitDisabled}
-              >
-                <FormattedMessage id="DeleteAccountForm.deleteAccount" />
-              </PrimaryButton>
+                <FieldTextInput
+                  className={css.password}
+                  type="password"
+                  name="currentPassword"
+                  id={formId ? `${formId}.currentPassword` : 'currentPassword'}
+                  disabled={!deleteAccountConfirmed}
+                  autoComplete="current-password"
+                  label={intl.formatMessage({
+                    id: 'DeleteAccountForm.passwordLabel',
+                  })}
+                  placeholder={intl.formatMessage({
+                    id: 'DeleteAccountForm.passwordPlaceholder',
+                  })}
+                  validate={passwordValidators}
+                  customErrorText={passwordErrorText}
+                />
+              </div>
+              <div className={css.bottomWrapper}>
+                <ErrorMessage error={deleteAccountError} />
+                <PrimaryButton
+                  className={css.submitButton}
+                  type="submit"
+                  inProgress={inProgress}
+                  disabled={submitDisabled}
+                >
+                  <FormattedMessage id="DeleteAccountForm.deleteAccount" />
+                </PrimaryButton>
+              </div>
             </div>
           </Form>
         );

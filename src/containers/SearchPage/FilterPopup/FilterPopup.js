@@ -67,6 +67,7 @@ const moveFocusToNextFocusableElement = (formId, direction = 'next') => {
  * @param {Object} props
  * @param {string} [props.className] - Custom class that extends the default class for the root element
  * @param {string} [props.rootClassName] - Custom class that overrides the default class for the root element
+ * @param {string} [props.popupContentClassName] - Custom class that extends the popup content element
  * @param {string} [props.popupClassName] - Custom class that overrides the default class css.popupSize
  * @param {string} props.id - The ID
  * @param {React.Node} props.label - The label
@@ -200,6 +201,7 @@ class FilterPopup extends Component {
       rootClassName,
       className,
       popupClassName,
+      popupContentClassName,
       id,
       label,
       labelMaxWidth,
@@ -213,7 +215,9 @@ class FilterPopup extends Component {
     } = this.props;
 
     const classes = classNames(rootClassName || css.root, className);
-    const popupClasses = classNames(css.popup, { [css.isOpen]: this.state.isOpen });
+    const popupClasses = classNames(popupContentClassName, css.popup, {
+      [css.isOpen]: this.state.isOpen,
+    });
     const popupSizeClasses = popupClassName || css.popupSize;
     const contentStyle = this.positionStyleForContent();
     const formId = `${id}.form`;

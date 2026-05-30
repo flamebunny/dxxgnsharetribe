@@ -12,7 +12,7 @@ const { screen, userEvent } = testingLibrary;
 const noop = () => null;
 
 describe('EditListingIdForm', () => {
-  it('Check that shipping fees can be given and submit button activates', () => {
+  it('Check that shipping fees can be given and submit button activates', async () => {
     const saveActionMsg = 'Save details';
 
     const selectableListingTypes = [
@@ -109,13 +109,66 @@ describe('EditListingIdForm', () => {
     expect(screen.getByRole('button', { name: saveActionMsg })).toBeDisabled();
 
     // Fill mandatory attributes
-    userEvent.type(screen.getByRole('textbox', { name: title }), 'My Listing');
-    userEvent.type(screen.getByRole('textbox', { name: description }), 'Lorem ipsum');
+    await userEvent.type(screen.getByRole('textbox', { name: title }), 'My Listing');
+    await userEvent.type(screen.getByRole('textbox', { name: description }), 'Lorem ipsum');
 
     // Fill custom listing field
-    userEvent.selectOptions(screen.getByLabelText('Clothing'), 'kids');
+    await userEvent.selectOptions(screen.getByLabelText('Clothing'), 'kids');
 
     // Test that save button is enabled
     expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
+  });
+
+  it('renders subcategories as radio buttons', async () => {
+    const selectableListingTypes = [
+      {
+        listingType: 'sell-bicycles',
+        transactionProcessAlias: 'default-purchase/release-1',
+        unitType: 'item',
+      },
+    ];
+    const selectableCategories = [
+      {
+        id: 'bikes',
+        name: 'Bikes',
+        subcategories: [
+          { id: 'city-bikes', name: 'City bikes' },
+          { id: 'mountain-bikes', name: 'Mountain bikes' },
+        ],
+      },
+    ];
+
+    render(
+      <EditListingIdForm
+        intl={fakeIntl}
+        dispatch={noop}
+        onListingTypeChange={noop}
+        onSubmit={v => v}
+        saveActionMsg="Save details"
+        updated={false}
+        updateInProgress={false}
+        disabled={false}
+        ready={false}
+        listingFieldsConfig={[]}
+        categoryPrefix="categoryLevel"
+        selectableCategories={selectableCategories}
+        pickSelectedCategories={values =>
+          pickCategoryFields(values, 'categoryLevel', 1, selectableCategories)
+        }
+        selectableListingTypes={selectableListingTypes}
+        hasExistingListingType={true}
+        initialValues={selectableListingTypes[0]}
+        marketplaceCurrency="EUR"
+      />
+    );
+
+    await userEvent.selectOptions(
+      screen.getByLabelText('EditListingIdForm.categoryLabel'),
+      'bikes'
+    );
+    await userEvent.click(screen.getByRole('radio', { name: 'City bikes' }));
+
+    expect(screen.getByRole('radio', { name: 'City bikes' })).toBeChecked();
+    expect(screen.getAllByRole('combobox')).toHaveLength(1);
   });
 });

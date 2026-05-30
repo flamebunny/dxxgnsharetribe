@@ -45,6 +45,7 @@ const getBranchPath = (primaryOptions, currentSelections) => {
  * @param {boolean} [props.showAsPopup] - Whether to show as popup
  * @param {number} [props.contentPlacementOffset] - The content placement offset
  * @param {boolean} [props.isNestedEnum] - Whether the enum is nested
+ * @param {boolean} [props.alwaysShowSuboptions] - Whether nested options are always visible
  * @returns {JSX.Element}
  */
 const SelectSingleFilter = props => {
@@ -54,6 +55,7 @@ const SelectSingleFilter = props => {
     showAsPopup = false,
     options,
     isNestedEnum = false,
+    alwaysShowSuboptions = false,
     id,
     name,
     label,
@@ -119,7 +121,11 @@ const SelectSingleFilter = props => {
       keepDirtyOnReinitialize
       {...rest}
     >
-      <FieldSelectTree name={name} options={options} />
+      <FieldSelectTree
+        name={name}
+        options={options}
+        alwaysShowSuboptions={alwaysShowSuboptions}
+      />
     </FilterPopup>
   ) : (
     <FilterPlain
@@ -134,7 +140,11 @@ const SelectSingleFilter = props => {
       initialValues={pickedInitialValues}
       {...rest}
     >
-      <FieldSelectTree name={name} options={options} />
+      <FieldSelectTree
+        name={name}
+        options={options}
+        alwaysShowSuboptions={alwaysShowSuboptions}
+      />
     </FilterPlain>
   );
 };

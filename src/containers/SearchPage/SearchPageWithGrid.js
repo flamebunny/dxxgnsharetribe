@@ -164,6 +164,7 @@ export class SearchPageComponent extends Component {
       schema,
       marketplaceCurrency,
       listingCategories,
+      listingFieldsConfig,
     } = getDerivedRenderData({
       intl,
       location,
@@ -240,6 +241,7 @@ export class SearchPageComponent extends Component {
                     config={filterConfig}
                     containerId="SearchPageWithGrid_DesktopFilters"
                     listingCategories={listingCategories}
+                    listingFieldsConfig={listingFieldsConfig}
                     marketplaceCurrency={marketplaceCurrency}
                     urlQueryParams={validQueryParams}
                     initialValues={initialValues(this.props, this.state.currentQueryParams)}
@@ -290,6 +292,7 @@ export class SearchPageComponent extends Component {
                       config={filterConfig}
                       containerId="SearchPage_MobileFilters"
                       listingCategories={listingCategories}
+                      listingFieldsConfig={listingFieldsConfig}
                       marketplaceCurrency={marketplaceCurrency}
                       urlQueryParams={validQueryParams}
                       initialValues={initialValues(this.props, this.state.currentQueryParams)}
@@ -355,9 +358,13 @@ const SearchPage = props => {
   const selectListingsById = useMemo(makeGetListingsByIdSelector, []);
 
   const currentUser = useSelector(state => state.user?.currentUser);
-  const { pagination, searchInProgress, searchListingsError, searchParams } = useSelector(
-    state => state.SearchPage
-  );
+  const {
+    pagination,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
+    searchAuthorName,
+  } = useSelector(state => state.SearchPage);
   const listings = useSelector(state =>
     selectListingsById(state, state.SearchPage.currentPageResultIds)
   );
@@ -380,6 +387,7 @@ const SearchPage = props => {
       searchInProgress={searchInProgress}
       searchListingsError={searchListingsError}
       searchParams={searchParams}
+      searchAuthorName={searchAuthorName}
       onManageDisableScrolling={onManageDisableScrolling}
     />
   );

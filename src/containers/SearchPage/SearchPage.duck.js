@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
-import { createImageVariantConfig } from '../../util/sdkLoader';
+import { createImageVariantConfig, types as sdkTypes } from '../../util/sdkLoader';
 import { isErrorUserPendingApproval, isForbiddenError, storableError } from '../../util/errors';
 import { convertUnitToSubUnit, unitDivisor } from '../../util/currency';
 import {
@@ -23,6 +23,7 @@ import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 const RESULT_PAGE_SIZE = 24;
 const LANDING_PAGE_ASSET_NAME = 'landing-page';
 const FEATURED_SECTION_ID = 'featured-listings';
+const { UUID } = sdkTypes;
 
 // ================ Helper Functions ================ //
 
@@ -341,6 +342,25 @@ export const searchListings = createAsyncThunk(
   searchListingsPayloadCreator
 );
 
+const fetchSearchAuthorPayloadCreator = ({ authorId }, { rejectWithValue, extra: sdk }) => {
+  try {
+    return sdk.users
+      .show({
+        id: new UUID(authorId),
+        'fields.user': ['profile.displayName'],
+      })
+      .then(response => response.data.data.attributes.profile?.displayName || null)
+      .catch(e => rejectWithValue(storableError(e)));
+  } catch (e) {
+    return rejectWithValue(storableError(e));
+  }
+};
+
+export const fetchSearchAuthor = createAsyncThunk(
+  'SearchPage/fetchSearchAuthor',
+  fetchSearchAuthorPayloadCreator
+);
+
 // ================ Slice ================ //
 
 const searchPageSlice = createSlice({
@@ -352,6 +372,7 @@ const searchPageSlice = createSlice({
     searchListingsError: null,
     currentPageResultIds: [],
     activeListingId: null,
+    searchAuthorName: null,
   },
   reducers: {
     setActiveListing: (state, action) => {
@@ -375,6 +396,15 @@ const searchPageSlice = createSlice({
         console.error(action.payload);
         state.searchInProgress = false;
         state.searchListingsError = action.payload;
+      })
+      .addCase(fetchSearchAuthor.pending, state => {
+        state.searchAuthorName = null;
+      })
+      .addCase(fetchSearchAuthor.fulfilled, (state, action) => {
+        state.searchAuthorName = action.payload;
+      })
+      .addCase(fetchSearchAuthor.rejected, state => {
+        state.searchAuthorName = null;
       });
   },
 });
@@ -405,8 +435,9 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     latlngBounds: ['bounds'],
   });
 
-  const { page = 1, address, origin, ...rest } = queryParams;
+  const { page = 1, address, origin, u: authorId, ...rest } = queryParams;
   const originMaybe = isOriginInUse(config) && origin ? { origin } : {};
+  const authorMaybe = authorId ? { author_id: authorId } : {};
 
   const listingTypeVariantMaybe = listingTypePathParam
     ? { listingTypePathParam, isListingTypeVariant: true }
@@ -422,6 +453,7 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
   const baseSearchParams = {
     ...rest,
     ...originMaybe,
+    ...authorMaybe,
     ...listingTypeVariantMaybe,
     page,
     perPage: RESULT_PAGE_SIZE,
@@ -457,29 +489,34 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
 
   const searchListingsCall = searchParams => searchListings({ searchParams, config });
   const isFeaturedSort = queryParams?.sort === 'featured';
+  const fetchSearchAuthorMaybe = authorId
+    ? dispatch(fetchSearchAuthor({ authorId })).catch(() => null)
+    : Promise.resolve();
 
   if (isFeaturedSort) {
     const pageAsset = {
       landingPage: `content/pages/${LANDING_PAGE_ASSET_NAME}.json`,
     };
 
-    return dispatch(fetchPageAssets(pageAsset, true)).then(assetResp => {
-      const sections = assetResp?.landingPage?.data?.sections || [];
-      const featuredSection = sections.find(section => section.sectionId === FEATURED_SECTION_ID);
-      const featuredListingIds = featuredSection?.blocks?.map(block => block.blockName) || [];
+    return Promise.all([fetchSearchAuthorMaybe, dispatch(fetchPageAssets(pageAsset, true))]).then(
+      ([, assetResp]) => {
+        const sections = assetResp?.landingPage?.data?.sections || [];
+        const featuredSection = sections.find(section => section.sectionId === FEATURED_SECTION_ID);
+        const featuredListingIds = featuredSection?.blocks?.map(block => block.blockName) || [];
 
-      const featuredSearchParams =
-        featuredListingIds.length > 0
-          ? {
-              ...baseSearchParams,
-              ids: featuredListingIds,
-              sort: 'createdAt',
-            }
-          : baseSearchParams;
+        const featuredSearchParams =
+          featuredListingIds.length > 0
+            ? {
+                ...baseSearchParams,
+                ids: featuredListingIds,
+                sort: 'createdAt',
+              }
+            : baseSearchParams;
 
-      return dispatch(searchListingsCall(featuredSearchParams));
-    });
+        return dispatch(searchListingsCall(featuredSearchParams));
+      }
+    );
   }
 
-  return dispatch(searchListingsCall(baseSearchParams));
+  return Promise.all([fetchSearchAuthorMaybe, dispatch(searchListingsCall(baseSearchParams))]);
 };

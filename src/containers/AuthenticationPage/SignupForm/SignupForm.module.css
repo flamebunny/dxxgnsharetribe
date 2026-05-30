@@ -11,6 +11,9 @@
 }
 
 .defaultUserFields {
+  label {
+    display: none;
+  }
 }
 
 .name {
@@ -29,6 +32,12 @@
 
   @media (--viewportMedium) {
     margin-top: 32px;
+  }
+}
+
+.customFields {
+  p {
+    display: none;
   }
 }
 

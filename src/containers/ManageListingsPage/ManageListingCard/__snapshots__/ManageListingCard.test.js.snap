@@ -180,31 +180,41 @@ exports[`ManageListingCard matches snapshot (purchase) 1`] = `
     class="info"
   >
     <div
-      class="price"
+      class="info2 cousine"
     >
-      <span>
-        ManageListingCard.price
+      <a
+        aria-label="ManageListingCard.screenreader.viewListing"
+        class="infoTitle elipsis"
+        href="/l/listing1-title/listing1"
+      >
+        <span
+          style="word-break: break-all;"
+        >
+          listing1
+        </span>
+         title
+      </a>
+      <span
+        class="slash"
+      >
+        /
+      </span>
+      <span
+        class="infoPrice"
+      >
+        <div
+          class="price"
+        >
+          <span>
+            ManageListingCard.price
+          </span>
+        </div>
       </span>
     </div>
-    <div
-      class="mainInfo"
-    >
-      <div
-        class="titleWrapper"
-      >
-        <a
-          aria-label="ManageListingCard.screenreader.viewListing"
-          class="title"
-          href="/l/listing1-title/listing1"
-        >
-          <span
-            style="word-break: break-all;"
-          >
-            listing1
-          </span>
-           title
-        </a>
-      </div>
+    <div>
+      <span>
+        Quantity: 0
+      </span>
     </div>
     <div
       class="manageLinks"

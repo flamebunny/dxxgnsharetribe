@@ -572,9 +572,6 @@ class StripePaymentForm extends Component {
     };
     const isBookingYesNo = isBooking ? 'yes' : 'no';
 
-    const showAdditionalInfoHeading =
-      showInitialMessageInput || (hasTransactionFieldConfigs && showTransactionFields);
-
     return hasStripeKey ? (
       <Form className={classes} onSubmit={handleSubmit} enforcePagePreloadFor="OrderDetailsPage">
         <LocationOrShippingDetails
@@ -665,11 +662,6 @@ class StripePaymentForm extends Component {
           <span className={css.errorMessage}>{initiateOrderError.message}</span>
         ) : null}
 
-        {showAdditionalInfoHeading ? (
-          <Heading as="h3" rootClassName={css.heading}>
-            <FormattedMessage id="StripePaymentForm.messageHeading" />
-          </Heading>
-        ) : null}
         {hasTransactionFieldConfigs && showTransactionFields ? (
           <div className={css.transactionFieldsContainer}>
             {transactionFieldsProps.map(({ key, ...fieldProps }) => (

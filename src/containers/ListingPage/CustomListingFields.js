@@ -8,6 +8,7 @@ import {
   pickCategoryFields,
   pickCustomFieldProps,
 } from '../../util/fieldHelpers.js';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions.js';
 
 import CustomExtendedDataSection from '../../components/CustomExtendedDataSection/CustomExtendedDataSection.js';
 
@@ -28,8 +29,10 @@ const CustomListingFields = props => {
   const currentCategories = Object.values(categoriesObj);
 
   // Fields are shown by default. Set showConfig.displayOnListingPage to false to explicitly hide a field.
-  const displayableFieldConfigs = listingFieldConfigs.filter(
-    fieldConfig => fieldConfig.showConfig?.displayOnListingPage !== false
+  const displayableFieldConfigs = addDynamicListingFieldOptions(
+    listingFieldConfigs.filter(
+      fieldConfig => fieldConfig.showConfig?.displayOnListingPage !== false
+    )
   );
 
   const isFieldForSelectedCategories = fieldConfig => {

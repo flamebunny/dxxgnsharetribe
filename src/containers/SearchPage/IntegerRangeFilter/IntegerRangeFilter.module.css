@@ -83,6 +83,7 @@
 
 .sliderWrapper {
   display: flex;
+  display: none;
   padding: 17px 0 25px 0;
   @media (--viewportMedium) {
     padding: 3px 0 13px 0;

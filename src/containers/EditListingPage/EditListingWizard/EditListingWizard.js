@@ -34,6 +34,7 @@ import {
   isFieldForListingType,
   pickCategoryFields,
 } from '../../../util/fieldHelpers';
+import { addDynamicListingFieldOptions } from '../../../util/dynamicListingFieldOptions';
 import { ensureCurrentUser, ensureListing } from '../../../util/data';
 import { getDisplayAccountType } from '../../../util/stripeConnect';
 import { INQUIRY_PROCESS_NAME, resolveLatestProcessName } from '../../../transactions/transaction';
@@ -50,6 +51,9 @@ import {
 
 // Import modules from this directory
 import EditListingWizardTab, {
+  ID,
+  INFORMATION,
+  EDITION,
   DETAILS,
   PRICING,
   PRICING_AND_STOCK,
@@ -59,6 +63,7 @@ import EditListingWizardTab, {
   PHOTOS,
   STYLE,
 } from './EditListingWizardTab';
+import { filterListingFieldsForTab } from './listingFieldTabs';
 import css from './EditListingWizard.module.css';
 
 // This is the initial tab on editlisting wizard.
@@ -99,7 +104,14 @@ const tabsForListingType = (processName, listingTypeConfig) => {
   //         Details tab asks for "title" and is therefore the first tab in the wizard flow.
   const tabs = {
     ['default-booking']: [DETAILS, ...locationMaybe, PRICING, AVAILABILITY, ...styleOrPhotosTab],
-    ['default-purchase']: [DETAILS, PRICING_AND_STOCK, ...deliveryMaybe, ...styleOrPhotosTab],
+    ['default-purchase']: [
+      ID,
+      EDITION,
+      INFORMATION,
+      PRICING_AND_STOCK,
+      ...deliveryMaybe,
+      ...styleOrPhotosTab,
+    ],
     ['default-negotiation']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
     ['default-inquiry']: [DETAILS, ...locationMaybe, ...pricingMaybe, ...styleOrPhotosTab],
   };
@@ -121,11 +133,18 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
 
   let labelKey = null;
   let submitButtonKey = null;
-  if (tab === DETAILS) {
-    labelKey = 'EditListingWizard.tabLabelDetails';
-    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveDetails`;
+  if (tab === ID) {
+    labelKey = 'EditListingWizard.tabLabelId';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveID`;
+  } else if (tab === INFORMATION) {
+    labelKey = 'EditListingWizard.tabLabelInformation';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveInformation`;
+  } else if (tab === EDITION) {
+    labelKey = 'EditListingWizard.tabLabelEdition';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.saveEdition`;
   } else if (tab === PRICING) {
     labelKey = 'EditListingWizard.tabLabelPricing';
+    submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.savePricing`;
     submitButtonKey = `EditListingWizard.${processNameString}${newOrEdit}.savePricing`;
   } else if (tab === PRICING_AND_STOCK) {
     labelKey = 'EditListingWizard.tabLabelPricingAndStock';
@@ -163,7 +182,7 @@ const tabLabelAndSubmit = (intl, tab, isNewListingFlow, isPriceDisabled, process
  * @param {Object} publicData
  * @param {Object} privateData
  */
-const hasValidListingFieldsInExtendedData = (publicData, privateData, config) => {
+const hasValidListingFieldsInExtendedData = (publicData, privateData, config, tab) => {
   const isValidField = (fieldConfig, fieldData) => {
     const { key, schemaType, enumOptions = [], saveConfig = {} } = fieldConfig;
 
@@ -204,7 +223,14 @@ const hasValidListingFieldsInExtendedData = (publicData, privateData, config) =>
     }
     return true;
   };
-  return config.listing.listingFields.reduce((isValid, fieldConfig) => {
+  const listingFieldsWithDynamicOptions = addDynamicListingFieldOptions(
+    config.listing.listingFields
+  );
+  const listingFields = tab
+    ? filterListingFieldsForTab(listingFieldsWithDynamicOptions, tab)
+    : listingFieldsWithDynamicOptions;
+
+  return listingFields.reduce((isValid, fieldConfig) => {
     const data = fieldConfig.scope === 'private' ? privateData : publicData;
     return isValid && isValidField(fieldConfig, data);
   }, true);
@@ -247,6 +273,12 @@ const tabCompleted = (tab, listing, config) => {
   const deliveryOptionPicked = publicData && (shippingEnabled || pickupEnabled);
 
   switch (tab) {
+    case ID:
+      return !!(title && listingType && transactionProcessAlias && unitType);
+    case EDITION:
+      return hasValidListingFieldsInExtendedData(publicData, privateData, config, EDITION);
+    case INFORMATION:
+      return hasValidListingFieldsInExtendedData(publicData, privateData, config, INFORMATION);
     case DETAILS:
       return !!(
         (!descriptionRequired || hasValidDescription) &&
@@ -254,7 +286,7 @@ const tabCompleted = (tab, listing, config) => {
         listingType &&
         transactionProcessAlias &&
         unitType &&
-        hasValidListingFieldsInExtendedData(publicData, privateData, config)
+        hasValidListingFieldsInExtendedData(publicData, privateData, config, DETAILS)
       );
     case PRICING:
       return !!price;
@@ -413,6 +445,7 @@ class EditListingWizard extends Component {
 
     // Having this info in state would trigger unnecessary rerendering
     this.hasScrolledToTab = false;
+    this.editListingDetailsDraftValues = {};
 
     this.state = {
       draftId: null,
@@ -423,6 +456,8 @@ class EditListingWizard extends Component {
     this.handleCreateFlowTabScrolling = this.handleCreateFlowTabScrolling.bind(this);
     this.handlePublishListing = this.handlePublishListing.bind(this);
     this.handlePayoutModalClose = this.handlePayoutModalClose.bind(this);
+    this.handleEditListingDetailsDraftChange =
+      this.handleEditListingDetailsDraftChange.bind(this);
   }
 
   componentDidMount() {
@@ -474,6 +509,13 @@ class EditListingWizard extends Component {
 
   handlePayoutModalClose() {
     this.setState({ showPayoutDetails: false });
+  }
+
+  handleEditListingDetailsDraftChange(values) {
+    this.editListingDetailsDraftValues = {
+      ...this.editListingDetailsDraftValues,
+      ...values,
+    };
   }
 
   render() {
@@ -692,6 +734,8 @@ class EditListingWizard extends Component {
                 handlePublishListing={this.handlePublishListing}
                 fetchInProgress={fetchInProgress}
                 onListingTypeChange={selectedListingType => this.setState({ selectedListingType })}
+                editListingDetailsDraftValues={this.editListingDetailsDraftValues}
+                onEditListingDetailsDraftChange={this.handleEditListingDetailsDraftChange}
                 onManageDisableScrolling={onManageDisableScrolling}
                 config={config}
                 routeConfiguration={routeConfiguration}

@@ -2,7 +2,7 @@
 
 .root {
   display: none;
-
+  background-color: var(--colorWhite);
 
   @media (--viewportMedium) {
     display: flex;

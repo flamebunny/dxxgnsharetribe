@@ -17,10 +17,12 @@ import { maxLength, required, composeValidators } from '../../../../util/validat
 import {
   Form,
   Button,
+  FieldRadioButton,
   FieldSelect,
   FieldTextInput,
   Heading,
   CustomExtendedDataField,
+  ValidationError,
 } from '../../../../components';
 // Import modules from this directory
 import css from './EditListingIdForm.module.css';
@@ -93,9 +95,7 @@ const FieldSelectListingType = props => {
         name={name}
         className={css.listingTypeSelect}
         label={intl.formatMessage({ id: 'EditListingIdForm.listingTypeLabel' })}
-        validate={required(
-          intl.formatMessage({ id: 'EditListingIdForm.listingTypeRequired' })
-        )}
+        validate={required(intl.formatMessage({ id: 'EditListingIdForm.listingTypeRequired' }))}
         onChange={handleOnChange}
       >
         <option disabled value="">
@@ -146,28 +146,73 @@ const CategoryField = props => {
   const { currentCategoryOptions, level, values, prefix, handleCategoryChange, intl } = props;
 
   const currentCategoryKey = `${prefix}${level}`;
+  const isSubcategoryLevel = level > 1;
+  const label = intl.formatMessage(
+    { id: 'EditListingIdForm.categoryLabel' },
+    { categoryLevel: currentCategoryKey }
+  );
+  const validationMessage = intl.formatMessage(
+    { id: 'EditListingIdForm.categoryRequired' },
+    { categoryLevel: currentCategoryKey }
+  );
 
   const categoryConfig = findCategoryConfig(currentCategoryOptions, values[`${prefix}${level}`]);
 
   return (
     <>
-      {currentCategoryOptions ? (
+      {currentCategoryOptions && isSubcategoryLevel ? (
+        <Field
+          name={currentCategoryKey}
+          validate={required(validationMessage)}
+          subscription={{ touched: true, error: true, invalid: true }}
+        >
+          {fieldRenderProps => {
+            const { meta } = fieldRenderProps;
+
+            return (
+              <fieldset className={css.subcategoryRadioGroup}>
+
+                <div className={css.subcategoryRadioOptions}>
+                  {currentCategoryOptions.map(option => {
+                    const optionId = `${currentCategoryKey}.${option.id}`;
+                    const isChecked = values[currentCategoryKey] === option.id;
+
+                    return (
+                      <FieldRadioButton
+                        key={option.id}
+                        id={optionId}
+                        name={currentCategoryKey}
+                        value={option.id}
+                        label={option.name}
+                        rootClassName={css.subcategoryRadioOption}
+                        className={classNames({
+                          [css.subcategoryRadioOptionSelected]: isChecked,
+                        })}
+                        onChange={event => {
+                          handleCategoryChange(
+                            event.currentTarget.value,
+                            level,
+                            currentCategoryOptions
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+                <ValidationError fieldMeta={meta} />
+              </fieldset>
+            );
+          }}
+        </Field>
+      ) : currentCategoryOptions ? (
         <FieldSelect
           key={currentCategoryKey}
           id={currentCategoryKey}
           name={currentCategoryKey}
           className={css.listingTypeSelect}
           onChange={event => handleCategoryChange(event, level, currentCategoryOptions)}
-          label={intl.formatMessage(
-            { id: 'EditListingIdForm.categoryLabel' },
-            { categoryLevel: currentCategoryKey }
-          )}
-          validate={required(
-            intl.formatMessage(
-              { id: 'EditListingIdForm.categoryRequired' },
-              { categoryLevel: currentCategoryKey }
-            )
-          )}
+          label={label}
+          validate={required(validationMessage)}
         >
           <option disabled value="">
             {intl.formatMessage(
@@ -207,7 +252,7 @@ const FieldSelectCategory = props => {
 
   // Counts the number of selected categories in the form values based on the given prefix.
   const countSelectedCategories = () => {
-    return Object.keys(values).filter(key => key.startsWith(prefix)).length;
+    return Object.keys(values).filter(key => key.startsWith(prefix) && values[key]).length;
   };
 
   // Checks if initial values exist for categories and sets the state accordingly.
@@ -225,7 +270,7 @@ const FieldSelectCategory = props => {
         formApi.change(`${prefix}${i}`, null);
       }
     }
-    const categoryConfig = findCategoryConfig(currentCategoryOptions, category).subcategories;
+    const categoryConfig = findCategoryConfig(currentCategoryOptions, category)?.subcategories;
     setAllCategoriesChosen(!categoryConfig || categoryConfig.length === 0);
   };
 
@@ -395,19 +440,7 @@ const EditListingIdForm = props => (
               intl={intl}
             />
 
-            {showCategories && isCompatibleCurrency && (
-              <FieldSelectCategory
-                values={values}
-                prefix={categoryPrefix}
-                listingCategories={selectableCategories}
-                formApi={formApi}
-                intl={intl}
-                allCategoriesChosen={allCategoriesChosen}
-                setAllCategoriesChosen={setAllCategoriesChosen}
-              />
-            )}
-
-            {showTitle && isCompatibleCurrency && (
+            {isCompatibleCurrency && (
               <FieldTextInput
                 id={`${formId}title`}
                 name="title"
@@ -423,7 +456,7 @@ const EditListingIdForm = props => (
               />
             )}
 
-            {showDescription && isCompatibleCurrency && (
+            {isCompatibleCurrency && (
               <FieldTextInput
                 id={`${formId}description`}
                 name="description"
@@ -441,15 +474,27 @@ const EditListingIdForm = props => (
               />
             )}
 
-            {showListingFields && isCompatibleCurrency && (
-            <div className={css.customfields}>
-              <AddListingFields
-                listingType={listingType}
-                listingFieldsConfig={listingFieldsConfig}
-                selectedCategories={pickSelectedCategories(values)}
-                formId={formId}
+            {showCategories && isCompatibleCurrency && (
+              <FieldSelectCategory
+                values={values}
+                prefix={categoryPrefix}
+                listingCategories={selectableCategories}
+                formApi={formApi}
                 intl={intl}
+                allCategoriesChosen={allCategoriesChosen}
+                setAllCategoriesChosen={setAllCategoriesChosen}
               />
+            )}
+
+            {isCompatibleCurrency && (
+              <div className={css.customfields}>
+                <AddListingFields
+                  listingType={listingType}
+                  listingFieldsConfig={listingFieldsConfig}
+                  selectedCategories={pickSelectedCategories(values)}
+                  formId={formId}
+                  intl={intl}
+                />
               </div>
             )}
 

@@ -23,6 +23,22 @@
   }
 }
 
+.materialsFilter {
+}
+
+.colorsFilter {
+}
+
+.materialsFilterContent {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.colorsFilterContent {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
 .accessibilityLegend {
   visibility: hidden;
   position: absolute;
@@ -38,6 +54,22 @@
 
   /* Fix broken multi-column layout in Chrome */
   page-break-inside: avoid;
+
+  @media (--viewportMedium) {
+    padding: 4px 0;
+  }
+}
+
+.subcategoryList {
+  margin: 6px 0 8px 22px;
+
+  @media (--viewportMedium) {
+    margin-left: 24px;
+  }
+}
+
+.subcategoryItem {
+  padding: 4px 0 2px 0;
 
   @media (--viewportMedium) {
     padding: 4px 0;

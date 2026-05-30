@@ -28,8 +28,6 @@
 .rootForImage {
   composes: coverEverything;
   width: 100%;
-  border: solid 1px var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
 }
 
 .menuOverlayWrapper {
@@ -62,13 +60,23 @@
 .finishListingDraftLink {
   composes: buttonPrimaryInline from global;
 
+  /* margin-top + n * line-height + margin-bottom => x * 6px */
   margin-top: 10px;
   margin-bottom: 8px;
-
-  @media (--viewportMedium) {
-    margin-top: 10px;
-    margin-bottom: 14px;
-  }
+  font-weight: var(--fontWeightRegular);
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  background: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0;
+  color: #000;
+  font-family: 'Cousine', sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 .previewListingLink {
@@ -84,4 +92,45 @@
 
 .alternativeActionLink {
   composes: a textSmall from global;
+}
+
+.thumbnailWrapper {
+  /* Layout */
+  display: block;
+  width: 100%;
+  position: relative;
+  transition: var(--transitionStyleButton);
+  cursor: pointer;
+
+  .finishListingDraftLink {
+    color: #000;
+  }
+
+  .openListingButton {
+    color: #000;
+  }
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: var(--boxShadowListingCard);
+
+    .alternativeActionText {
+      display: unset;
+    }
+
+    .finishListingDraftLink {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+    }
+
+    .openListingButton {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+    }
+  }
+
+  > div:first-child {
+    position: relative;
+    overflow: hidden;
+  }
 }

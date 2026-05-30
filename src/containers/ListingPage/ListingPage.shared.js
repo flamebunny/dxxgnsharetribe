@@ -163,7 +163,7 @@ export const getDerivedRenderData = ({
   const listingPathParamType = isDraftVariant
     ? LISTING_PAGE_PARAM_TYPE_DRAFT
     : LISTING_PAGE_PARAM_TYPE_EDIT;
-  const listingTab = isDraftVariant ? 'photos' : 'details';
+  const listingTab = isDraftVariant ? 'photos' : 'id';
 
   const {
     description = '',

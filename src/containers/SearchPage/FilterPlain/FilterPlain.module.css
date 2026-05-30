@@ -64,6 +64,7 @@
 .labelSelected {
   composes: marketplaceSmallFontStyles from global;
   font-weight: var(--fontWeightBold);
+  text-transform: uppercase;
 
   /* Baseline adjustment for label text */
   margin-top: 0;
@@ -98,6 +99,7 @@
   font-weight: var(--fontWeightMedium);
   color: var(--colorGrey600);
   padding: 2px 0 4px 12px;
+  text-transform: uppercase;
 
   /* Override button styles */
   outline: none;

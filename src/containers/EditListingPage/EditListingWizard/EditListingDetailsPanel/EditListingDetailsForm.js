@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Field, Form as FinalForm } from 'react-final-form';
+import { Field, Form as FinalForm, FormSpy } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
+import { FieldArray } from 'react-final-form-arrays';
 import classNames from 'classnames';
 
 // Import util modules
 import { FormattedMessage, useIntl } from '../../../../util/reactIntl';
 import { displayDescription } from '../../../../util/configHelpers.js';
 import { useConfiguration } from '../../../../context/configurationContext.js';
-import { EXTENDED_DATA_SCHEMA_TYPES, propTypes } from '../../../../util/types';
+import { EXTENDED_DATA_SCHEMA_TYPES, SCHEMA_TYPE_ENUM, propTypes } from '../../../../util/types';
 import {
   isFieldForCategory,
   isFieldForListingType,
@@ -19,12 +20,22 @@ import { maxLength, required, composeValidators } from '../../../../util/validat
 import {
   Form,
   Button,
+  FieldRadioButton,
   FieldSelect,
   FieldTextInput,
   Heading,
   CustomExtendedDataField,
+  FieldCheckbox,
+  ValidationError,
 } from '../../../../components';
+
 // Import modules from this directory
+import {
+  getMaterialSubcategoryFieldConfig,
+  isMaterialsField,
+  isMaterialSubcategoryField,
+  isMaterialSubcategorySelected,
+} from '../materialSubcategoryFields';
 import css from './EditListingDetailsForm.module.css';
 
 const TITLE_MAX_LENGTH = 60;
@@ -140,64 +151,86 @@ const findCategoryConfig = (categories, categoryIdToFind) => {
 };
 
 /**
- * Recursively render subcategory field inputs if there are subcategories available.
- * This function calls itself with updated props to render nested category fields.
- * The select field is used for choosing a category or subcategory.
+ * Recursively render category fields as nested radio groups.
  */
 const CategoryField = props => {
   const { currentCategoryOptions, level, values, prefix, handleCategoryChange, intl } = props;
 
   const currentCategoryKey = `${prefix}${level}`;
-
-  const categoryConfig = findCategoryConfig(currentCategoryOptions, values[`${prefix}${level}`]);
-
-  return (
-    <>
-      {currentCategoryOptions ? (
-        <FieldSelect
-          key={currentCategoryKey}
-          id={currentCategoryKey}
-          name={currentCategoryKey}
-          className={css.listingTypeSelect}
-          onChange={event => handleCategoryChange(event, level, currentCategoryOptions)}
-          label={intl.formatMessage(
-            { id: 'EditListingDetailsForm.categoryLabel' },
-            { categoryLevel: currentCategoryKey }
-          )}
-          validate={required(
-            intl.formatMessage(
-              { id: 'EditListingDetailsForm.categoryRequired' },
-              { categoryLevel: currentCategoryKey }
-            )
-          )}
-        >
-          <option disabled value="">
-            {intl.formatMessage(
-              { id: 'EditListingDetailsForm.categoryPlaceholder' },
-              { categoryLevel: currentCategoryKey }
-            )}
-          </option>
-
-          {currentCategoryOptions.map(option => (
-            <option key={option.id} value={option.id}>
-              {option.name}
-            </option>
-          ))}
-        </FieldSelect>
-      ) : null}
-
-      {categoryConfig?.subcategories?.length > 0 ? (
-        <CategoryField
-          currentCategoryOptions={categoryConfig.subcategories}
-          level={level + 1}
-          values={values}
-          prefix={prefix}
-          handleCategoryChange={handleCategoryChange}
-          intl={intl}
-        />
-      ) : null}
-    </>
+  const label = intl.formatMessage(
+    { id: 'EditListingIdForm.categoryLabel' },
+    { categoryLevel: currentCategoryKey }
   );
+  const validationMessage = intl.formatMessage(
+    { id: 'EditListingIdForm.categoryRequired' },
+    { categoryLevel: currentCategoryKey }
+  );
+
+  const selectedCategory = values[currentCategoryKey];
+
+  return currentCategoryOptions ? (
+    <Field
+      name={currentCategoryKey}
+      validate={required(validationMessage)}
+      subscription={{ touched: true, error: true, invalid: true }}
+    >
+      {fieldRenderProps => {
+        const { meta } = fieldRenderProps;
+
+        return (
+          <fieldset
+            className={classNames(css.categoryGroup, css.categoryRadioGroup, {
+              [css.subcategoryRadioGroup]: level > 1,
+            })}
+          >
+            {label && level === 1 ? <div className={css.label}>{label}</div> : null}
+            <ul className={css.categoryRadioOptions}>
+              {currentCategoryOptions.map(option => {
+                const optionId = `${currentCategoryKey}.${option.id}`;
+                const isChecked = selectedCategory === option.id;
+                const hasNestedCategories = option.subcategories?.length > 0;
+
+                return (
+                  <li key={option.id} className={css.categoryRadioItem}>
+                    <FieldRadioButton
+                      id={optionId}
+                      name={currentCategoryKey}
+                      value={option.id}
+                      label={option.name}
+                      rootClassName={css.categoryRadioOption}
+                      className={classNames({
+                        [css.categoryRadioOptionSelected]: isChecked,
+                      })}
+                      onChange={event => {
+                        handleCategoryChange(
+                          event.currentTarget.value,
+                          level,
+                          currentCategoryOptions
+                        );
+                      }}
+                    />
+                    {isChecked && hasNestedCategories ? (
+                      <div className={css.nestedCategoryRadioGroup}>
+                        <CategoryField
+                          currentCategoryOptions={option.subcategories}
+                          level={level + 1}
+                          values={values}
+                          prefix={prefix}
+                          handleCategoryChange={handleCategoryChange}
+                          intl={intl}
+                        />
+                      </div>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+            <ValidationError fieldMeta={meta} />
+          </fieldset>
+        );
+      }}
+    </Field>
+  ) : null;
 };
 
 const FieldSelectCategory = props => {
@@ -243,34 +276,347 @@ const FieldSelectCategory = props => {
   );
 };
 
+const createFilterOptions = options => options.map(o => ({ key: `${o.option}`, label: o.label }));
+
+const normalizeFieldName = str =>
+  typeof str === 'string'
+    ? str
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/['’]/g, '')
+        .replace(/[_-]+/g, ' ')
+        .trim()
+        .toLowerCase()
+    : '';
+
+const fieldMatchesName = (fieldConfig, fieldNames) => {
+  const label =
+    fieldConfig?.saveConfig?.label ||
+    fieldConfig?.showConfig?.label ||
+    fieldConfig?.filterConfig?.label ||
+    fieldConfig?.label ||
+    '';
+  const normalizedLabel = normalizeFieldName(label);
+  const normalizedKey = normalizeFieldName(fieldConfig?.key);
+
+  return fieldNames.some(fieldName => {
+    const normalizedFieldName = normalizeFieldName(fieldName);
+    return normalizedLabel === normalizedFieldName || normalizedKey === normalizedFieldName;
+  });
+};
+
+const isEditionTypeField = fieldConfig => {
+  return fieldMatchesName(fieldConfig, ['edition type']);
+};
+
+const isEditionDetailsField = fieldConfig => {
+  return fieldMatchesName(fieldConfig, [
+    'edition details',
+    'edition of',
+    "artist's proof",
+    'artist proof',
+    'artists proof',
+  ]);
+};
+
+const isEditionDetailsGroupField = fieldConfig => {
+  return fieldMatchesName(fieldConfig, [
+    'edition of',
+    "artist's proof",
+    'artist proof',
+    'artists proof',
+  ]);
+};
+
+const isAuthenticationField = fieldConfig => {
+  return fieldMatchesName(fieldConfig, ['authentication']);
+};
+
+const isColorsField = fieldConfig => {
+  console.log
+  return fieldMatchesName(fieldConfig, ['colorId']);
+};
+
+const isDimensionField = fieldConfig => {
+  return fieldMatchesName(fieldConfig, ['width', 'depth', 'height']);
+};
+
+const namespacedFieldName = fieldConfig => {
+  const { key, scope = 'public' } = fieldConfig || {};
+  return scope === 'public' ? `pub_${key}` : `priv_${key}`;
+};
+
+const isLimitedEditionSelected = (values, listingFieldsConfig = []) => {
+  const editionTypeField = listingFieldsConfig.find(isEditionTypeField);
+  const editionTypeValue = editionTypeField ? values?.[namespacedFieldName(editionTypeField)] : null;
+  const selectedOption = editionTypeField?.enumOptions?.find(
+    optionConfig => optionConfig.option === editionTypeValue
+  );
+  const selectedOptionText = `${selectedOption?.option || editionTypeValue || ''} ${
+    selectedOption?.label || ''
+  }`;
+
+  return selectedOptionText.toLowerCase().includes('limited');
+};
+
+const EnumRadioField = props => {
+  const { fieldConfig, formId, intl, className } = props;
+  const { key, scope = 'public', enumOptions = [], saveConfig = {} } = fieldConfig || {};
+  const name = scope === 'public' ? `pub_${key}` : `priv_${key}`;
+  const fieldId = formId ? `${formId}.${name}` : name;
+  const options = createFilterOptions(enumOptions);
+  const label = saveConfig.label || fieldConfig?.label;
+  const validateMaybe = saveConfig.isRequired
+    ? required(
+        saveConfig.requiredMessage ||
+          intl.formatMessage({ id: 'EditListingDetailsForm.defaultRequiredMessage' })
+      )
+    : null;
+
+  return (
+    <Field
+      name={name}
+      validate={validateMaybe}
+      subscription={{ touched: true, error: true, invalid: true }}
+    >
+      {fieldRenderProps => {
+        const { meta } = fieldRenderProps;
+
+        return (
+          <fieldset className={classNames(css.enumRadioField, className)}>
+            {label ? <div className={css.label}>{label}</div> : null}
+            <div className={css.enumRadioOptions}>
+              {options.map(optionConfig => (
+                <FieldRadioButton
+                  key={optionConfig.key}
+                  id={`${fieldId}.${optionConfig.key}`}
+                  name={name}
+                  value={optionConfig.key}
+                  label={optionConfig.label}
+                  rootClassName={css.enumRadioOption}
+                  textClassName={css.editionOptionText}
+                />
+              ))}
+            </div>
+            <ValidationError fieldMeta={meta} />
+          </fieldset>
+        );
+      }}
+    </Field>
+  );
+};
+
+const MaterialSubcategoryField = props => {
+  const { fieldConfig, formId, intl } = props;
+  const { key, scope = 'public' } = fieldConfig || {};
+  const name = scope === 'public' ? `pub_${key}` : `priv_${key}`;
+
+  return (
+    <div className={css.materialSubcategory}>
+      <CustomExtendedDataField
+        name={name}
+        hideLabel
+        fieldConfig={fieldConfig}
+        defaultRequiredMessage={intl.formatMessage({
+          id: 'EditListingDetailsForm.defaultRequiredMessage',
+        })}
+        formId={formId}
+      />
+    </div>
+  );
+};
+
+const MaterialsField = props => {
+  const { fieldConfig, listingFieldsConfig, formId, intl } = props;
+  const { key, scope = 'public', saveConfig = {}, enumOptions = [] } = fieldConfig || {};
+  const name = scope === 'public' ? `pub_${key}` : `priv_${key}`;
+  const options = createFilterOptions(enumOptions);
+
+  return (
+    <FieldArray name={name}>
+      {({ fields, meta }) => (
+        <fieldset className={css.materialsField}>
+          {saveConfig.label ? <div className={css.label}>{saveConfig.label}</div> : null}
+          <ul className={css.materialsList}>
+            {options.map(optionConfig => {
+              const fieldId = `${formId}.${name}.${optionConfig.key}`;
+              const subcategoryFieldConfig = getMaterialSubcategoryFieldConfig(
+                optionConfig.key,
+                listingFieldsConfig
+              );
+
+              return (
+                <li key={fieldId} className={css.materialsItem}>
+                  <FieldCheckbox
+                    id={fieldId}
+                    name={fields.name}
+                    label={optionConfig.label}
+                    value={optionConfig.key}
+                  />
+                  {subcategoryFieldConfig ? (
+                    <MaterialSubcategoryField
+                      fieldConfig={subcategoryFieldConfig}
+                      formId={formId}
+                      intl={intl}
+                    />
+                  ) : null}
+                </li>
+              );
+            })}
+          </ul>
+          {meta.touched && meta.error ? <p className={css.error}>{meta.error}</p> : null}
+        </fieldset>
+      )}
+    </FieldArray>
+  );
+};
+
+const EditionDetailsFieldGroup = props => {
+  const { fields, formId, intl } = props;
+
+  return (
+    <fieldset className={css.editionDetailsFieldGroup}>
+      <div className={css.label}>
+        {intl.formatMessage({ id: 'EditListingDetailsForm.editionDetailsLabel' })}
+      </div>
+      <div className={css.editionDetailsFields}>
+        {fields.map(fieldConfig => {
+          const namespacedKey = namespacedFieldName(fieldConfig);
+
+          return (
+            <CustomExtendedDataField
+              key={namespacedKey}
+              name={namespacedKey}
+              className={css.editionDetailsInputField}
+              labelClassName={css.editionDetailsInputLabel}
+              inputRootClass={css.editionDetailsInput}
+              hidePlaceholder
+              fieldConfig={fieldConfig}
+              defaultRequiredMessage={intl.formatMessage({
+                id: 'EditListingDetailsForm.defaultRequiredMessage',
+              })}
+              formId={formId}
+            />
+          );
+        })}
+      </div>
+    </fieldset>
+  );
+};
+
 // Add collect data for listing fields (both publicData and privateData) based on configuration
 const AddListingFields = props => {
-  const { listingType, listingFieldsConfig, selectedCategories, formId, intl } = props;
+  const {
+    listingType,
+    listingFieldsConfig,
+    selectedCategories,
+    formId,
+    intl,
+    values,
+    isEditionTab,
+    isInformationTab,
+  } = props;
   const targetCategoryIds = Object.values(selectedCategories);
+  const limitedEditionSelected = isLimitedEditionSelected(values, listingFieldsConfig);
+  let hasRenderedEditionDetailsGroup = false;
 
   const fields = listingFieldsConfig.reduce((pickedFields, fieldConfig) => {
     const { key, schemaType, scope } = fieldConfig || {};
-    const namespacedKey = scope === 'public' ? `pub_${key}` : `priv_${key}`;
+    const namespacedKey = namespacedFieldName(fieldConfig);
 
     const isKnownSchemaType = EXTENDED_DATA_SCHEMA_TYPES.includes(schemaType);
     const isProviderScope = ['public', 'private'].includes(scope);
     const isTargetListingType = isFieldForListingType(listingType, fieldConfig);
     const isTargetCategory = isFieldForCategory(targetCategoryIds, fieldConfig);
+    const isSelectedMaterialSubcategory = isMaterialSubcategorySelected(
+      values,
+      fieldConfig,
+      listingFieldsConfig
+    );
+    const isNestedMaterialSubcategory = isMaterialSubcategoryField(
+      fieldConfig,
+      listingFieldsConfig
+    );
+    const isHiddenEditionDetails = isEditionDetailsField(fieldConfig) && !limitedEditionSelected;
+    const isEditionDetailsSubfield = isEditionDetailsGroupField(fieldConfig);
+    const shouldRenderField =
+      isKnownSchemaType &&
+      isProviderScope &&
+      isTargetListingType &&
+      isTargetCategory &&
+      isSelectedMaterialSubcategory &&
+      !isNestedMaterialSubcategory &&
+      !isHiddenEditionDetails;
 
-    return isKnownSchemaType && isProviderScope && isTargetListingType && isTargetCategory
-      ? [
-          ...pickedFields,
-          <CustomExtendedDataField
-            key={namespacedKey}
-            name={namespacedKey}
-            fieldConfig={fieldConfig}
-            defaultRequiredMessage={intl.formatMessage({
-              id: 'EditListingDetailsForm.defaultRequiredMessage',
-            })}
-            formId={formId}
-          />,
-        ]
-      : pickedFields;
+    if (!shouldRenderField) {
+      return pickedFields;
+    }
+
+    if (isEditionDetailsSubfield) {
+      if (hasRenderedEditionDetailsGroup) {
+        return pickedFields;
+      }
+
+      hasRenderedEditionDetailsGroup = true;
+      const editionDetailsFields = listingFieldsConfig.filter(detailsFieldConfig => {
+        const detailsTargetCategory = isFieldForCategory(targetCategoryIds, detailsFieldConfig);
+
+        return (
+          isEditionDetailsGroupField(detailsFieldConfig) &&
+          isFieldForListingType(listingType, detailsFieldConfig) &&
+          detailsTargetCategory
+        );
+      });
+
+      return [
+        ...pickedFields,
+        <EditionDetailsFieldGroup
+          key="editionDetailsFieldGroup"
+          fields={editionDetailsFields}
+          formId={formId}
+          intl={intl}
+        />,
+      ];
+    }
+
+    const field =
+      isMaterialsField(fieldConfig) && schemaType === 'multi-enum' ? (
+        <MaterialsField
+          key={namespacedKey}
+          fieldConfig={fieldConfig}
+          listingFieldsConfig={listingFieldsConfig}
+          formId={formId}
+          intl={intl}
+        />
+      ) : schemaType === SCHEMA_TYPE_ENUM && isEditionTypeField(fieldConfig) ? (
+        <EnumRadioField
+          key={namespacedKey}
+          fieldConfig={fieldConfig}
+          formId={formId}
+          intl={intl}
+          className={css.editionTypeField}
+        />
+      ) : (
+        <CustomExtendedDataField
+          key={namespacedKey}
+          name={namespacedKey}
+          className={classNames({
+            [css.editionCustomField]: isEditionTab,
+            [css.authenticationField]: isEditionTab && isAuthenticationField(fieldConfig),
+            [css.colorsCustomField]: isColorsField(fieldConfig),
+            colorsCustomField: isColorsField(fieldConfig),
+            [css.dimensionField]: isInformationTab && isDimensionField(fieldConfig),
+          })}
+          labelClassName={isEditionTab ? css.editionFieldLabel : null}
+          optionLabelClassName={isEditionTab ? css.editionOptionText : null}
+          fieldConfig={fieldConfig}
+          defaultRequiredMessage={intl.formatMessage({
+            id: 'EditListingDetailsForm.defaultRequiredMessage',
+          })}
+          formId={formId}
+        />
+      );
+
+    return [...pickedFields, field];
   }, []);
 
   return <>{fields}</>;
@@ -321,6 +667,7 @@ const EditListingDetailsForm = props => (
         formId = 'EditListingDetailsForm',
         form: formApi,
         handleSubmit,
+        onChange,
         onListingTypeChange,
         invalid,
         pristine,
@@ -337,6 +684,10 @@ const EditListingDetailsForm = props => (
         fetchErrors,
         listingFieldsConfig = [],
         listingCurrency,
+        isIdTab = false,
+        isEditionTab = false,
+        isInformationTab = false,
+        customListingFieldsOnly = false,
         values,
       } = formRenderProps;
 
@@ -381,9 +732,13 @@ const EditListingDetailsForm = props => (
         ? allCategoriesChosen && showDescriptionMaybe
         : showDescriptionMaybe;
 
-      const showListingFields = hasCategories ? allCategoriesChosen : listingType;
+      const showListingFields = customListingFieldsOnly
+        ? listingType
+        : hasCategories
+        ? allCategoriesChosen
+        : listingType;
 
-      const classes = classNames(css.root, className);
+      const classes = classNames(css.root, css.form, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
       const hasMandatoryListingTypeData = listingType && transactionProcessAlias && unitType;
@@ -396,92 +751,121 @@ const EditListingDetailsForm = props => (
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
-          <ErrorMessage fetchErrors={fetchErrors} />
+          {onChange ? (
+            <FormSpy subscription={{ values: true }} onChange={({ values }) => onChange(values)} />
+          ) : null}
 
-          <FieldSelectListingType
-            name="listingType"
-            listingTypes={selectableListingTypes}
-            hasPredefinedListingType={hasPredefinedListingType}
-            onListingTypeChange={onListingTypeChange}
-            formApi={formApi}
-            formId={formId}
-            intl={intl}
-          />
+          <div className={css.containerGroup}>
 
-          {showCategories && isCompatibleCurrency && (
-            <FieldSelectCategory
-              values={values}
-              prefix={categoryPrefix}
-              listingCategories={selectableCategories}
+            <ErrorMessage fetchErrors={fetchErrors} />
+
+            <FieldSelectListingType
+              name="listingType"
+              listingTypes={selectableListingTypes}
+              hasPredefinedListingType={hasPredefinedListingType}
+              onListingTypeChange={onListingTypeChange}
               formApi={formApi}
-              intl={intl}
-              allCategoriesChosen={allCategoriesChosen}
-              setAllCategoriesChosen={setAllCategoriesChosen}
-            />
-          )}
-
-          {showTitle && isCompatibleCurrency && (
-            <FieldTextInput
-              id={`${formId}title`}
-              name="title"
-              className={css.title}
-              type="text"
-              label={intl.formatMessage({ id: 'EditListingDetailsForm.title' })}
-              placeholder={intl.formatMessage({
-                id: 'EditListingDetailsForm.titlePlaceholder',
-              })}
-              maxLength={TITLE_MAX_LENGTH}
-              validate={composeValidators(required(titleRequiredMessage), maxLength60Message)}
-              autoFocus={autoFocus}
-            />
-          )}
-
-          {showDescription && isCompatibleCurrency && (
-            <FieldTextInput
-              id={`${formId}description`}
-              name="description"
-              className={css.description}
-              type="textarea"
-              label={intl.formatMessage({ id: 'EditListingDetailsForm.description' })}
-              placeholder={intl.formatMessage({
-                id: 'EditListingDetailsForm.descriptionPlaceholder',
-              })}
-              validate={required(
-                intl.formatMessage({
-                  id: 'EditListingDetailsForm.descriptionRequired',
-                })
-              )}
-            />
-          )}
-
-          {showListingFields && isCompatibleCurrency && (
-            <AddListingFields
-              listingType={listingType}
-              listingFieldsConfig={listingFieldsConfig}
-              selectedCategories={pickSelectedCategories(values)}
               formId={formId}
               intl={intl}
             />
-          )}
 
-          {!isCompatibleCurrency && listingType && (
-            <p className={css.error}>
-              <FormattedMessage
-                id="EditListingDetailsForm.incompatibleCurrency"
-                values={{ marketplaceName, marketplaceCurrency }}
+            
+
+            {!customListingFieldsOnly && isCompatibleCurrency && (
+              <FieldTextInput
+                id={`${formId}title`}
+                name="title"               
+                className={ classNames(css.title, css.fullWidth)}
+                type="text"
+                label={intl.formatMessage({ id: 'EditListingDetailsForm.title' })}
+                placeholder={intl.formatMessage({
+                  id: 'EditListingDetailsForm.titlePlaceholder',
+                })}
+                maxLength={TITLE_MAX_LENGTH}
+                validate={composeValidators(required(titleRequiredMessage), maxLength60Message)}
+                autoFocus={autoFocus}
               />
-            </p>
-          )}
+            )}
 
-          <Button
-            className={css.submitButton}
-            type="submit"
-            inProgress={submitInProgress}
-            disabled={submitDisabled}
-            ready={submitReady}
-          >
-            {saveActionMsg}
-          </Button>
+            {!customListingFieldsOnly && isCompatibleCurrency && (
+              <FieldTextInput
+                id={`${formId}description`}
+                name="description"
+                className={ classNames(css.description, css.fullWidth)}
+                type="textarea"
+                label={intl.formatMessage({ id: 'EditListingDetailsForm.description' })}
+                placeholder={intl.formatMessage({
+                  id: 'EditListingDetailsForm.descriptionPlaceholder',
+                })}
+                validate={required(
+                  intl.formatMessage({
+                    id: 'EditListingDetailsForm.descriptionRequired',
+                  })
+                )}
+              />
+            )}
+
+            {!customListingFieldsOnly && showCategories && isCompatibleCurrency && (
+              <div
+                className={classNames({
+                  [css.idCategoryColumn]: isIdTab,
+                  [css.fullWidth]: !isIdTab,
+                })}
+              >
+                <FieldSelectCategory
+                  values={values}
+                  prefix={categoryPrefix}
+                  listingCategories={selectableCategories}
+                  formApi={formApi}
+                  intl={intl}
+                  allCategoriesChosen={allCategoriesChosen}
+                  setAllCategoriesChosen={setAllCategoriesChosen}
+                />
+              </div>
+            )}
+
+            {isCompatibleCurrency && (
+              <div
+                className={classNames(css.customfields, {
+                  [css.idCustomFieldsColumn]: isIdTab,
+                  [css.editionCustomFields]: isEditionTab,
+                  [css.informationCustomFields]: isInformationTab,
+                  [css.fullWidth]: !isIdTab,
+                })}
+              >
+                <AddListingFields
+                  listingType={listingType}
+                  listingFieldsConfig={listingFieldsConfig}
+                  selectedCategories={pickSelectedCategories(values)}
+                  formId={formId}
+                  intl={intl}
+                  values={values}
+                  isEditionTab={isEditionTab}
+                  isInformationTab={isInformationTab}
+                />
+              </div>
+            )}
+
+            {!isCompatibleCurrency && listingType && (
+              <p className={css.error}>
+                <FormattedMessage
+                  id="EditListingDetailsForm.incompatibleCurrency"
+                  values={{ marketplaceName, marketplaceCurrency }}
+                />
+              </p>
+            )}
+
+            <Button
+              
+              className={ classNames(css.submitButton, css.fullWidth)}
+              type="submit"
+              inProgress={submitInProgress}
+              disabled={submitDisabled}
+              ready={submitReady}
+            >
+              {saveActionMsg}
+            </Button>
+            </div>
         </Form>
       );
     }}

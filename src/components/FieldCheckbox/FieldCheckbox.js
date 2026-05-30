@@ -17,32 +17,46 @@ import css from './FieldCheckbox.module.css';
 const IconCheckbox = props => {
   const { className, checkedClassName, boxClassName } = props;
   return (
-    <svg
-      className={className}
-      width="14"
-      height="14"
-      xmlns="http://www.w3.org/2000/svg"
-      role="presentation"
-      viewBox="0 0 24 24"
-    >
-      <g fill="none" fillRule="evenodd">
-        <g transform="translate(0 0)">
-          <path
-            className={checkedClassName || css.checked}
-            d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
-          />
-          <path
-            className={boxClassName || css.box}
-            strokeWidth="2"
-            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
-          />
-        </g>
-        <path
-          d=""
-          fill="#FFF"
-        />
-      </g>
-    </svg>
+    <>
+<svg
+  className={className}
+  width="20"
+  height="20"
+  xmlns="http://www.w3.org/2000/svg"
+  role="presentation"
+  viewBox="0 0 20 20"
+>
+  <g fill="none" fillRule="evenodd">
+    <rect
+      className={checkedClassName || css.checked}
+      x="2"
+      y="2"
+      width="16"
+      height="16"
+      rx="0"
+    />
+
+    <rect
+      className={boxClassName || css.box}
+      x="2"
+      y="2"
+      width="16"
+      height="16"
+      strokeWidth="2"
+      rx="0"
+    />
+
+    <path
+      className={checkedClassName || css.pathchecked}
+      d="M6 6L14 14M14 6L6 14"
+      stroke="#FFF"
+      strokeWidth="2"
+      strokeLinecap="round"
+    />
+  </g>
+</svg>
+
+    </>
   );
 };
 

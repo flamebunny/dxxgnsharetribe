@@ -125,28 +125,6 @@ const DraftOverlay = props => {
         >
           {intl.formatMessage({ id: 'ManageListingCard.finishListingDraft' })}
         </NamedLink>
-        <div className={css.alternativeActionText}>
-          {intl.formatMessage(
-            { id: 'ManageListingCard.discardDraftText' },
-            {
-              discardDraftLink: (
-                <InlineTextButton
-                  key="discardDraftLink"
-                  id={`discardButton_${listingId.uuid}`}
-                  rootClassName={css.alternativeActionLink}
-                  disabled={!!inProgressListingId}
-                  onClick={() => {
-                    if (!inProgressListingId) {
-                      onDiscardDraft(listingId);
-                    }
-                  }}
-                >
-                  <FormattedMessage id="ManageListingCard.discardDraftLinkText" />
-                </InlineTextButton>
-              ),
-            }
-          )}
-        </div>
       </Overlay>
     </>
   );

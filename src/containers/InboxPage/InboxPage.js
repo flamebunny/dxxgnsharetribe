@@ -9,7 +9,7 @@ import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 
 import { FormattedMessage, intlShape, useIntl } from '../../util/reactIntl';
 import { parse } from '../../util/urlHelpers';
-import { getCurrentUserTypeRoles } from '../../util/userHelpers';
+import { getCurrentUserTypeRoles, showCreateListingLinkForUser } from '../../util/userHelpers';
 import {
   propTypes,
   DATE_TYPE_DATE,
@@ -47,6 +47,7 @@ import {
   TimeRange,
   UserDisplayName,
   LayoutSideNavigation,
+  UserNav
 } from '../../components';
 
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
@@ -377,15 +378,24 @@ export const InboxPageComponent = props => {
 
   const tabs = [...ordersTabMaybe, ...salesTabMaybe];
 
+  
+  const showManageListingsLink = showCreateListingLinkForUser(config, currentUser);
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation
         sideNavClassName={css.navigation}
         topbar={
-          <TopbarContainer
-            mobileRootClassName={css.mobileTopbar}
-            desktopClassName={css.desktopTopbar}
-          />
+          <>
+            <TopbarContainer
+              mobileRootClassName={css.mobileTopbar}
+              desktopClassName={css.desktopTopbar}
+            />
+            <UserNav
+              currentPage="InboxPage"
+              showManageListingsLink={showManageListingsLink}
+            />
+          </>
         }
         sideNav={
           <>

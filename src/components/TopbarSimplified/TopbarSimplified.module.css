@@ -13,9 +13,6 @@
   /* fill */
   background-color: var(--colorWhite);
 
-  /* shadows */
-  box-shadow: var(--boxShadow);
-
   @media (--viewportMedium) {
     height: var(--topbarHeightDesktop);
     justify-content: center;

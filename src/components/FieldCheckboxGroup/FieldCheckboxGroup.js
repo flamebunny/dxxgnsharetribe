@@ -19,6 +19,7 @@ const FieldCheckboxRenderer = props => {
     className,
     rootClassName,
     label,
+    labelClassName,
     helpText,
     optionLabelClassName,
     twoColumns,
@@ -34,7 +35,7 @@ const FieldCheckboxRenderer = props => {
 
   return (
     <Tag className={classes}>
-      {label ? <legend>{label}</legend> : null}
+      {label ? <div className={classNames(css.label, labelClassName)}>{label}</div> : null}
       <ul className={listClasses}>
         {options.map((option, index) => {
           const fieldId = `${id}.${option.key}`;

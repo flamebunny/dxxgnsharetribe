@@ -110,34 +110,38 @@ const config = {
   ],
 };
 
-const FormComponent = props => (
-  <FinalForm
-    {...props}
-    render={formRenderProps => {
-      const { handleSubmit, invalid, pristine, submitting } = formRenderProps;
-      const submitDisabled = invalid || pristine || submitting;
-      const required = validators.requiredSelectTreeOption('This field is required');
-      return (
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            handleSubmit(e);
-          }}
-        >
-          <FieldSelectTree
-            label="Nested options"
-            name="nestedLevel"
-            options={config.options}
-            validate={required}
-          />
-          <button style={{ marginTop: 24 }} type="submit" disabled={submitDisabled}>
-            Submit
-          </button>
-        </form>
-      );
-    }}
-  />
-);
+const FormComponent = props => {
+  const { alwaysShowSuboptions = false, ...formProps } = props;
+  return (
+    <FinalForm
+      {...formProps}
+      render={formRenderProps => {
+        const { handleSubmit, invalid, pristine, submitting } = formRenderProps;
+        const submitDisabled = invalid || pristine || submitting;
+        const required = validators.requiredSelectTreeOption('This field is required');
+        return (
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              handleSubmit(e);
+            }}
+          >
+            <FieldSelectTree
+              label="Nested options"
+              name="nestedLevel"
+              options={config.options}
+              validate={required}
+              alwaysShowSuboptions={alwaysShowSuboptions}
+            />
+            <button style={{ marginTop: 24 }} type="submit" disabled={submitDisabled}>
+              Submit
+            </button>
+          </form>
+        );
+      }}
+    />
+  );
+};
 
 const initialData = {}; //{ nestedLevel1: 'women', nestedLevel2: 'jackets', foo: 'bar' };
 
@@ -170,5 +174,66 @@ describe('FieldSelectTree', () => {
     expect(
       screen.getByRole('button', { name: 'Choose Fish/Freshwater/Pike.' })
     ).toBeInTheDocument();
+  });
+
+  it('can always show suboptions and select a nested option with its parent path', async () => {
+    const user = userEvent.setup();
+    const onSubmit = jest.fn();
+    render(<FormComponent onSubmit={onSubmit} initialValues={initialData} alwaysShowSuboptions />, {
+      messages: {
+        'FieldSelectTree.screenreader.option': 'Choose {optionName}.',
+        'FieldSelectTree.screenreader.optionSelected': '{optionName} is selected.',
+      },
+    });
+
+    const pikeOption = screen.getByRole('button', { name: 'Choose Fish/Freshwater/Pike.' });
+    expect(pikeOption).toBeInTheDocument();
+
+    await user.click(pikeOption);
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        nestedLevel: {
+          nestedLevel1: 'fish',
+          nestedLevel2: 'freshwater',
+          nestedLevel3: 'pike',
+        },
+      },
+      expect.anything(),
+      expect.anything()
+    );
+  });
+
+  it('replaces the selected parent path when selecting a visible suboption under another branch', async () => {
+    const user = userEvent.setup();
+    const onSubmit = jest.fn();
+    render(
+      <FormComponent
+        onSubmit={onSubmit}
+        initialValues={{ nestedLevel: { nestedLevel1: 'cats' } }}
+        alwaysShowSuboptions
+      />,
+      {
+        messages: {
+          'FieldSelectTree.screenreader.option': 'Choose {optionName}.',
+          'FieldSelectTree.screenreader.optionSelected': '{optionName} is selected.',
+        },
+      }
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Choose Dogs/Labradors.' }));
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      {
+        nestedLevel: {
+          nestedLevel1: 'dogs',
+          nestedLevel2: 'labradors',
+        },
+      },
+      expect.anything(),
+      expect.anything()
+    );
   });
 });

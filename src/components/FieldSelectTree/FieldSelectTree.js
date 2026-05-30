@@ -138,7 +138,16 @@ const hasSuboptions = optionConfig => getSuboptions(optionConfig)?.length > 0;
  */
 const Option = props => {
   const intl = useIntl();
-  const { config, level, handleChange, branchPath, ancestors = [], containerRef, ...rest } = props;
+  const {
+    config,
+    level,
+    handleChange,
+    branchPath,
+    ancestors = [],
+    containerRef,
+    alwaysShowSuboptions = false,
+    ...rest
+  } = props;
   const { option, label, suboptions } = config;
   const foundFromBranchPath = branchPath.find(bc => bc.option === option);
   const isOptSelected = !!foundFromBranchPath;
@@ -196,7 +205,7 @@ const Option = props => {
           e.preventDefault();
           e.stopPropagation();
           // Expand suboptions by selecting this option
-          handleChange(option, level);
+          handleChange(option, level, ancestors);
           // Focus will move to first child after suboptions are rendered
           setTimeout(() => {
             const allOptions = getAllFocusableOptions(containerRef.current);
@@ -273,7 +282,7 @@ const Option = props => {
           e.preventDefault();
           e.stopPropagation();
           if (isClickable) {
-            handleChange(option, level);
+            handleChange(option, level, ancestors);
           }
         }}
         onKeyDown={handleKeyDown}
@@ -282,14 +291,15 @@ const Option = props => {
         {optionLabel}
       </button>
 
-      {hasSuboptions(config) && isOptSelected ? (
+      {hasSuboptions(config) && (isOptSelected || alwaysShowSuboptions) ? (
         <SelectOptions
           options={suboptions}
           level={level + 1}
           handleChange={handleChange}
           branchPath={branchPath}
-          ancestors={[...ancestors, { option, label }]}
+          ancestors={[...ancestors, { option, label, level }]}
           containerRef={containerRef}
+          alwaysShowSuboptions={alwaysShowSuboptions}
           {...rest}
         />
       ) : null}
@@ -361,11 +371,16 @@ const getBranchPath = (primaryOptions, currentSelections) => {
  */
 const handleChangeFn = (primaryOptions, currentSelections, namePrefix, onChange) => (
   currentOption,
-  level
+  level,
+  ancestors = []
 ) => {
   const branchPath = getBranchPath(primaryOptions, currentSelections);
+  const ancestorValues = ancestors.reduce((picked, ancestor) => {
+    const levelKey = `${namePrefix}${ancestor.level}`;
+    return { ...picked, [levelKey]: ancestor.option };
+  }, {});
 
-  const updatedCurrentBranchPath = branchPath.reduce((picked, selectedOptionByLevel) => {
+  const currentBranchPathValues = branchPath.reduce((picked, selectedOptionByLevel) => {
     const { level: branchPathLevel, option: optionByLevel } = selectedOptionByLevel;
     const levelKey = `${namePrefix}${branchPathLevel}`;
 
@@ -375,6 +390,8 @@ const handleChangeFn = (primaryOptions, currentSelections, namePrefix, onChange)
       ? { ...picked, [levelKey]: currentOption }
       : picked;
   }, {});
+
+  const updatedCurrentBranchPath = { ...currentBranchPathValues, ...ancestorValues };
 
   const levelKeyToUpdate = `${namePrefix}${level}`;
   const isUpdateANewBranchPath = updatedCurrentBranchPath[levelKeyToUpdate] == null;
@@ -406,7 +423,8 @@ const handleChangeFn = (primaryOptions, currentSelections, namePrefix, onChange)
  * @returns {JSX.Element} Final Form Field containing nested "select" input
  */
 const FieldSelectTree = props => {
-  const { className, rootClassName, label, name, options, ...rest } = props;
+  const { className, rootClassName, label, name, options, alwaysShowSuboptions = false, ...rest } =
+    props;
   const namePrefix = name;
   const level = 1;
   const validOptions = pickValidOptions(options);
@@ -433,6 +451,7 @@ const FieldSelectTree = props => {
               containerRef={containerRef}
               namePrefix={namePrefix}
               onChange={onChange}
+              alwaysShowSuboptions={alwaysShowSuboptions}
             />
 
             <ValidationError fieldMeta={meta} />

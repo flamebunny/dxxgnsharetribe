@@ -2,7 +2,15 @@ import React from 'react';
 
 // utils
 import { SCHEMA_TYPE_ENUM, SCHEMA_TYPE_MULTI_ENUM, SCHEMA_TYPE_LONG } from '../../util/types';
-import { convertCategoriesToSelectTreeOptions, constructQueryParamName } from '../../util/search';
+import {
+  convertCategoriesToSelectTreeOptions,
+  constructQueryParamName,
+  isFilterEnabled,
+} from '../../util/search';
+import {
+  getMaterialSubcategoryFieldConfig,
+  isMaterialsField,
+} from '../EditListingPage/EditListingWizard/materialSubcategoryFields';
 
 // component imports
 import SelectSingleFilter from './SelectSingleFilter/SelectSingleFilter';
@@ -24,6 +32,7 @@ const FilterComponent = props => {
     initialValues,
     getHandleChangedValueFn,
     listingCategories,
+    listingFieldsConfig = [],
     marketplaceCurrency,
     intl,
     ...rest
@@ -62,6 +71,7 @@ const FilterComponent = props => {
           onSubmit={getHandleChangedValueFn(useHistoryPush)}
           options={convertCategoriesToSelectTreeOptions(listingCategories)}
           isNestedEnum={isNestedEnum}
+          alwaysShowSuboptions
           getAriaLabel={getAriaLabel}
           {...rest}
         />
@@ -184,17 +194,36 @@ const FilterComponent = props => {
       const { scope, enumOptions, filterConfig = {} } = config;
       const { label, searchMode } = filterConfig;
       const queryParamNames = [constructQueryParamName(key, scope)];
+      const materialsFilter = isMaterialsField(config);
+      const colorsFilter = key === 'colorId';
+      const materialSubcategoryFilters = materialsFilter
+        ? enumOptions
+            .map(optionConfig =>
+              getMaterialSubcategoryFieldConfig(optionConfig.option, listingFieldsConfig)
+            )
+            .filter(fieldConfig => isFilterEnabled(fieldConfig?.filterConfig))
+            .filter(Boolean)
+        : [];
+      const subcategoryQueryParamNames = materialSubcategoryFilters.map(fieldConfig =>
+        constructQueryParamName(fieldConfig.key, fieldConfig.scope)
+      );
       return (
         <SelectMultipleFilter
           label={label}
           getAriaLabel={getAriaLabel}
           name={name}
           queryParamNames={queryParamNames}
-          initialValues={initialValues(queryParamNames, liveEdit)}
+          initialValues={initialValues(
+            [...queryParamNames, ...subcategoryQueryParamNames],
+            liveEdit
+          )}
           onSubmit={getHandleChangedValueFn(useHistoryPush)}
           options={enumOptions}
           schemaType={schemaType}
           searchMode={searchMode}
+          materialSubcategoryFilters={materialSubcategoryFilters}
+          isMaterialsFilter={materialsFilter}
+          isColorsFilter={colorsFilter}
           {...rest}
         />
       );

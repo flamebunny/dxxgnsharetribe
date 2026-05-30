@@ -20,6 +20,7 @@ import {
   stringifyDateToISO8601,
 } from '../../util/dates';
 import { isFieldForCategory, isFieldForListingType } from '../../util/fieldHelpers';
+import { isMaterialSubcategoryField } from '../EditListingPage/EditListingWizard/materialSubcategoryFields';
 
 const validURLParamForCategoryData = (prefix, categories, level, params) => {
   const levelKey = constructQueryParamName(`${prefix}${level}`, 'public');
@@ -699,8 +700,11 @@ export const getDerivedRenderData = ({
         f => !['keywords', 'categoryLevel', 'listingType'].includes(f.key)
       )
     : defaultFiltersConfig.filter(f => !['categoryLevel', 'listingType'].includes(f.key));
+  const visibleListingFieldFilters = listingFieldsConfig.filter(
+    fieldConfig => !isMaterialSubcategoryField(fieldConfig, listingFieldsConfig)
+  );
   const [customPrimaryFilters, customSecondaryFilters] = groupListingFieldConfigs(
-    listingFieldsConfig,
+    visibleListingFieldFilters,
     activeListingTypes
   );
   const availablePrimaryFilters = [
@@ -787,6 +791,7 @@ export const getDerivedRenderData = ({
     schema,
     marketplaceCurrency,
     listingCategories,
+    listingFieldsConfig,
   };
 };
 

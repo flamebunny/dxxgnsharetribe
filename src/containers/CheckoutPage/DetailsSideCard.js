@@ -11,7 +11,6 @@ import {
   AvatarMedium,
   H3,
   H4,
-  H6,
   NamedLink,
   ResponsiveImage,
 } from '../../components';
@@ -107,12 +106,14 @@ const DetailsSideCard = props => {
 
       {!!breakdown ? (
         <div className={css.orderBreakdownHeader}>
+          <H4 as="h2" className={css.orderBreakdownTitle}>
+            <FormattedMessage id={`CheckoutPage.${processName}.orderBreakdown`} />
+          </H4>
           {priceVariantName ? (
             <div className={css.bookingPriceVariant}>
               <p>{priceVariantName}</p>
             </div>
-          ) : null}          
-         
+          ) : null}
         </div>
       ) : null}
       {breakdown}

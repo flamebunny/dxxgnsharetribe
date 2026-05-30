@@ -271,7 +271,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
           ) : null}
 
           <div className={css.priceContainer}>
-            <div className={css.priceTable}>
+            <div>
               <FieldCurrencyInput
                 id={`${formId}.price`}
                 name="price"
@@ -288,14 +288,16 @@ export const EditListingPricingAndStockFormComponentPage = props => (
                 validate={priceValidators}
                 onChange={handleChildChange}
               />
+              
+            </div>
+            <div className={css.priceTable}>
               <div className={classNames(css.priceEarning)}>
-                <label>You earn</label>
+                <label><FormattedMessage id="EditListingPricingAndStockForm.priceEarning" /></label>
                 <div id='priceEarning' className={css.priceEarningValue}>{earningFormatted}</div>          
               </div>
-            </div>
-            <div>
               <div className={css.priceBuyerFee}>
-                The buyer will also pay <span className='css.priceBuyerFeeValue'>{customerCommission}</span> service fee <a href='#'>Learn more</a>
+                <label><FormattedMessage id="EditListingPricingAndStockForm.priceBuyerFee" /></label>
+                <div className={css.priceEarningValue}>{earningFormatted+customerCommission}</div>               
               </div>
 
               <div className={classNames(css.priceEarningInfo)}>

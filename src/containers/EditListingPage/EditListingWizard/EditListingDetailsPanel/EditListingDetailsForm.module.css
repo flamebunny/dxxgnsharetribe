@@ -21,6 +21,19 @@
   color: var(--colorFail);
 }
 
+.form {
+  flex-grow: 1;
+  width: unset;
+
+  @media (--viewportMedium) {
+    width: unset;
+  }
+  @media (--viewportLarge) {
+    width: 600px;
+  }
+}
+
+
 .formMargins {
   margin-bottom: 24px;
 
@@ -78,24 +91,306 @@
 }
 
 .customfields {
+}
+
+.informationCustomFields {
+  display: grid;
+  grid-template-columns: 1fr;
+  column-gap: 10px;
+}
+
+.informationCustomFields > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.informationCustomFields > .dimensionField {
+  grid-column: span 1;
+}
+
+@media (--viewportMedium) {
+  .informationCustomFields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.editionCustomFields {
+  max-width: 420px;
+}
+
+.enumRadioField {
+  margin: 0 0 24px 0;
+  padding: 18px 18px 18px 18px;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #DADADA;
+  border-radius: 4px 4px 4px 4px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+  }
+}
+
+.enumRadioOptions {
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.enumRadioOption {
+  display: block;
+  padding: 4px 0 2px 0;
+
+  @media (--viewportMedium) {
+    padding: 6px 0 2px 0;
+  }
+}
+
+.editionTypeField {
+  margin: 0 0 72px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.editionDetailsFieldGroup {
+  margin: 0 0 24px 0;
+  padding: 18px 18px 18px 18px;
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #DADADA;
+  border-radius: 4px 4px 4px 4px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+  }
+}
+
+.editionCustomField,
+.editionDetailsFieldGroup {
+  margin: 0 0 72px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+
+
+.editionTypeField .enumRadioOptions {
+  max-height: none;
+  overflow: visible;
+}
+
+.editionTypeField .enumRadioOption {
+  padding: 0 0 14px 0;
+}
+
+.editionDetailsFields {
+  display: block;
+}
+
+.editionDetailsInputField {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+
+.editionDetailsInput:focus {
+  border-bottom-color: var(--colorBlack);
+  outline: none;
+  box-shadow: none;
+}
+
+.authenticationField {
+  margin-bottom: 72px;
+}
+
+.colorsCustomField {
+  width: 280px;
+
+  >ul {
+    max-height: 380px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .label {
+    padding-bottom: 10px;
+  }
 
 }
 
-.customfields div:nth-child(1) {
+.materialsField {
+  margin: 0;
+  padding: 0;
+  border: none;
+  width: 280px;
+
+
+ >ul {
+    max-height: 380px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  margin-bottom: 24px;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+
+  }
+
+}
+
+.label {
+  padding-bottom: 10px;
+}
+
+.categoryRadioGroup {
+  margin: 0 0 24px 0;
+  padding: 0;
+  border: 0;
+
+  @media (--viewportMedium) {
+    margin-bottom: 32px;
+  }
+}
+
+.subcategoryRadioGroup {
+  margin-bottom: 0;
+}
+
+.categoryRadioOptions {
+  margin: 0;
+}
+
+.categoryRadioItem {
+  padding: 4px 0 2px 0;
+
+  @media (--viewportMedium) {
+    padding: 6px 0 2px 0;
+  }
+}
+
+.categoryRadioOption {
+  display: block;
+}
+
+.categoryRadioOptionSelected {
+}
+
+.nestedCategoryRadioGroup {
+  margin: 6px 0 12px 22px;
+
+  @media (--viewportMedium) {
+    margin-left: 24px;
+  }
+}
+
+.materialsList {
+  margin: 0;
+}
+
+.materialsItem {
+  padding: 4px 0 2px 0;
+
+  @media (--viewportMedium) {
+    padding: 6px 0 2px 0;
+  }
+}
+
+.materialSubcategory {
+  margin: 6px 0 12px 22px;
+
+  @media (--viewportMedium) {
+    margin-left: 24px;
+  }
+}
+
+
+/*
+.customfields > div:nth-child(1) {
   display: table-cell;
 }
-.customfields div:nth-child(2) {
+.customfields > div:nth-child(2) {
   display: table-cell;
 }
-.customfields div:nth-child(3) {
+.customfields > div:nth-child(3) {
   display: table-cell;
 }
-.customfields div:nth-child(4) {
+.customfields > div:nth-child(4) {
   margin-top: 24px;
 }
-
+*/
 .defaultListingFields {
   label {
     display: none;
+  }
+}
+
+
+.categoryGroup {
+  display: table-cell;
+}
+
+.idCategoryColumn,
+.idCustomFieldsColumn {
+  min-width: 0;
+}
+
+.idCategoryColumn {
+  grid-column: 1;
+}
+
+.idCategoryColumn .categoryGroup {
+  display: block;
+}
+
+.idCustomFieldsColumn {
+  grid-column: 2;
+}
+
+.containerGroup {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 10px;
+}
+
+.half {
+  flex: 1 1 calc(50% - 10px); /* Spans 50% minus the gap */
+}
+
+.full {
+  flex: 1 1 100%; /* Spans 100% */
+}
+
+.fullWidth {
+  grid-column: span 2; /* Forces this div to take both columns */
+}
+
+
+.infoTable {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  column-gap: 10px;
+
+  @media (min-width: 550px) {
+   
+  }
+
+  @media (--viewportMedium) {
+    
+  }
+
+  @media (--viewportLarge) {  
+    width: 600px;;  
+
+  }
+
+  @media (min-width: 1440px) {
+
   }
 }

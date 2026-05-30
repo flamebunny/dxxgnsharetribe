@@ -63,6 +63,14 @@
   }
 }
 
+.input {
+  /* Display the "check" when checked */
+  &:checked + label .pathchecked {
+    display: inline;
+  
+  }
+}
+
 .label {
   display: flex;
   align-items: center;
@@ -87,9 +95,13 @@
 }
 
 .checked {
-  display: none;
+
   fill: var(--colorBlack);
   /* fill: var(--marketplaceColor); */
+}
+.pathchecked {
+  display: none;
+  fill: var(--colorBlack);
 }
 .checkedSuccess {
   display: none;

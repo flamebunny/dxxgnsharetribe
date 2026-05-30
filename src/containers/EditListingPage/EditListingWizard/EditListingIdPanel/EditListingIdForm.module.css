@@ -46,6 +46,42 @@
   }
 }
 
+.subcategoryRadioGroup {
+  composes: formMargins;
+  border: 0;
+  padding: 0;
+}
+
+.subcategoryRadioGroupLabel {
+  composes: label from global;
+  margin-bottom: 12px;
+}
+
+.subcategoryRadioOptions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+
+  @media (--viewportMedium) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.subcategoryRadioOption {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid var(--colorGrey300);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.subcategoryRadioOptionSelected {
+  border-color: var(--marketplaceColor);
+}
+
 .selectedLabel {
   composes: label from global;
 }
@@ -76,9 +112,8 @@
     margin-top: 100px;
   }
 }
-
+/*
 .customfields {
-
 }
 
 .customfields div:nth-child(1) {
@@ -93,7 +128,7 @@
 .customfields div:nth-child(4) {
   margin-top: 24px;
 }
-
+*/
 .defaultListingFields {
   label {
     display: none;

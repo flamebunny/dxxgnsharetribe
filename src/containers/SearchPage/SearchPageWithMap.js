@@ -252,6 +252,7 @@ export class SearchPageComponent extends Component {
       schema,
       marketplaceCurrency,
       listingCategories,
+      listingFieldsConfig,
     } = getDerivedRenderData({
       intl,
       location,
@@ -363,6 +364,7 @@ export class SearchPageComponent extends Component {
                     config={filterConfig}
                     containerId="SearchPage_MobileFilters"
                     listingCategories={listingCategories}
+                    listingFieldsConfig={listingFieldsConfig}
                     marketplaceCurrency={marketplaceCurrency}
                     urlQueryParams={validQueryParams}
                     initialValues={initialValues(this.props, this.state.currentQueryParams)}
@@ -401,6 +403,7 @@ export class SearchPageComponent extends Component {
                       config={filterConfig}
                       containerId="SearchPageWithMap_PrimaryFilters"
                       listingCategories={listingCategories}
+                      listingFieldsConfig={listingFieldsConfig}
                       marketplaceCurrency={marketplaceCurrency}
                       urlQueryParams={validQueryParams}
                       initialValues={initialValues(this.props, this.state.currentQueryParams)}
@@ -435,6 +438,7 @@ export class SearchPageComponent extends Component {
                         config={filterConfig}
                         containerId="SearchPageWithMap_SecondaryFilters"
                         listingCategories={listingCategories}
+                        listingFieldsConfig={listingFieldsConfig}
                         marketplaceCurrency={marketplaceCurrency}
                         urlQueryParams={validQueryParams}
                         initialValues={initialValues(this.props, this.state.currentQueryParams)}
@@ -520,6 +524,7 @@ const SearchPage = props => {
     searchInProgress,
     searchListingsError,
     searchParams,
+    searchAuthorName,
     activeListingId,
   } = useSelector(state => state.SearchPage);
   const listings = useSelector(state =>
@@ -547,6 +552,7 @@ const SearchPage = props => {
       searchInProgress={searchInProgress}
       searchListingsError={searchListingsError}
       searchParams={searchParams}
+      searchAuthorName={searchAuthorName}
       activeListingId={activeListingId}
       onManageDisableScrolling={onManageDisableScrolling}
       onActivateListing={onActivateListing}

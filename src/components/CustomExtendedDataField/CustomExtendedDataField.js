@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 // Import config and utils
 import { useIntl } from '../../util/reactIntl';
@@ -17,6 +18,7 @@ import {
   validateInteger,
   validateYoutubeURL,
 } from '../../util/validators';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions';
 // Import shared components
 import { FieldCheckboxGroup, FieldSelect, FieldTextInput, FieldBoolean } from '../../components';
 // Import modules from this directory
@@ -24,7 +26,14 @@ import css from './CustomExtendedDataField.module.css';
 
 const createFilterOptions = options => options.map(o => ({ key: `${o.option}`, label: o.label }));
 
-const getLabel = fieldConfig => fieldConfig?.saveConfig?.label || fieldConfig?.label;
+const getLabel = props =>
+  props.hideLabel ? null : props.fieldConfig?.saveConfig?.label || props.fieldConfig?.label;
+const getClassName = props => classNames(css.customField, props.className);
+const getPlaceholder = (props, fallbackMessageId) =>
+  props.hidePlaceholder
+    ? ''
+    : props.fieldConfig?.saveConfig?.placeholderMessage ||
+      props.intl.formatMessage({ id: fallbackMessageId });
 
 const CustomFieldEnum = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
@@ -33,16 +42,14 @@ const CustomFieldEnum = props => {
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
-  const placeholder =
-    placeholderMessage ||
-    intl.formatMessage({ id: 'CustomExtendedDataField.placeholderSingleSelect' });
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderSingleSelect');
   const filterOptions = createFilterOptions(enumOptions);
 
-  const label = getLabel(fieldConfig);
+  const label = getLabel(props);
 
   return filterOptions ? (
     <FieldSelect
-      className={css.customField}
+      className={getClassName(props)}
       name={name}
       id={formId ? `${formId}.${name}` : name}
       label={label}
@@ -65,21 +72,30 @@ const CustomFieldEnum = props => {
 };
 
 const CustomFieldMultiEnum = props => {
-  const { name, fieldConfig, defaultRequiredMessage, formId } = props;
+  const {
+    name,
+    fieldConfig,
+    defaultRequiredMessage,
+    formId,
+    labelClassName,
+    optionLabelClassName,
+  } = props;
   const { enumOptions = [], saveConfig } = fieldConfig || {};
   const { isRequired, requiredMessage } = saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const label = getLabel(props);
   const validateMaybe = isRequired
     ? { validate: nonEmptyArray(requiredMessage || defaultRequiredMessage) }
     : {};
 
   return enumOptions ? (
     <FieldCheckboxGroup
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       label={label}
+      labelClassName={labelClassName}
       helpText={fieldConfig?.helpText}
+      optionLabelClassName={optionLabelClassName}
       options={createFilterOptions(enumOptions)}
       {...validateMaybe}
     />
@@ -88,22 +104,23 @@ const CustomFieldMultiEnum = props => {
 
 const CustomFieldShortText = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
-  const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const { isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
+  const label = getLabel(props);
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
-  const placeholder =
-    placeholderMessage || intl.formatMessage({ id: 'CustomExtendedDataField.placeholderText' });
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderText');
 
   return (
     <FieldTextInput
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       type="text"
       maxLength={70}
       label={label}
+      labelClassName={props.labelClassName}
+      inputRootClass={props.inputRootClass}
       helpText={fieldConfig?.helpText}
       placeholder={placeholder}
       {...validateMaybe}
@@ -113,21 +130,22 @@ const CustomFieldShortText = props => {
 
 const CustomFieldText = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
-  const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const { isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
+  const label = getLabel(props);
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
-  const placeholder =
-    placeholderMessage || intl.formatMessage({ id: 'CustomExtendedDataField.placeholderText' });
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderText');
 
   return (
     <FieldTextInput
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       type="textarea"
       label={label}
+      labelClassName={props.labelClassName}
+      inputRootClass={props.inputRootClass}
       helpText={fieldConfig?.helpText}
       placeholder={placeholder}
       {...validateMaybe}
@@ -138,10 +156,9 @@ const CustomFieldText = props => {
 const CustomFieldLong = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
   const { minimum, maximum, saveConfig } = fieldConfig;
-  const { placeholderMessage, isRequired, requiredMessage } = saveConfig || {};
-  const label = getLabel(fieldConfig);
-  const placeholder =
-    placeholderMessage || intl.formatMessage({ id: 'CustomExtendedDataField.placeholderLong' });
+  const { isRequired, requiredMessage } = saveConfig || {};
+  const label = getLabel(props);
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderLong');
   const numberTooSmallMessage = intl.formatMessage(
     { id: 'CustomExtendedDataField.numberTooSmall' },
     { min: minimum }
@@ -161,7 +178,7 @@ const CustomFieldLong = props => {
 
   return (
     <FieldTextInput
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       type="number"
@@ -172,6 +189,8 @@ const CustomFieldLong = props => {
         return Number.isNaN(parsed) ? null : parsed;
       }}
       label={label}
+      labelClassName={props.labelClassName}
+      inputRootClass={props.inputRootClass}
       placeholder={placeholder}
       validate={value => validate(value, minimum, maximum)}
       onWheel={e => {
@@ -192,17 +211,16 @@ const CustomFieldLong = props => {
 
 const CustomFieldBoolean = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
-  const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
+  const { isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
+  const label = getLabel(props);
   const validateMaybe = isRequired
     ? { validate: required(requiredMessage || defaultRequiredMessage) }
     : {};
-  const placeholder =
-    placeholderMessage || intl.formatMessage({ id: 'CustomExtendedDataField.placeholderBoolean' });
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderBoolean');
 
   return (
     <FieldBoolean
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       label={label}
@@ -215,11 +233,9 @@ const CustomFieldBoolean = props => {
 
 const CustomFieldYoutube = props => {
   const { name, fieldConfig, defaultRequiredMessage, formId, intl } = props;
-  const { placeholderMessage, isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
-  const label = getLabel(fieldConfig);
-  const placeholder =
-    placeholderMessage ||
-    intl.formatMessage({ id: 'CustomExtendedDataField.placeholderYoutubeVideoURL' });
+  const { isRequired, requiredMessage } = fieldConfig?.saveConfig || {};
+  const label = getLabel(props);
+  const placeholder = getPlaceholder(props, 'CustomExtendedDataField.placeholderYoutubeVideoURL');
 
   const notValidUrlMessage = intl.formatMessage({
     id: 'CustomExtendedDataField.notValidYoutubeVideoURL',
@@ -234,7 +250,7 @@ const CustomFieldYoutube = props => {
 
   return (
     <FieldTextInput
-      className={css.customField}
+      className={getClassName(props)}
       id={formId ? `${formId}.${name}` : name}
       name={name}
       type="text"
@@ -258,7 +274,9 @@ const CustomFieldYoutube = props => {
  */
 const CustomExtendedDataField = props => {
   const intl = useIntl();
-  const { enumOptions = [], schemaType } = props?.fieldConfig || {};
+  const fieldConfig = addDynamicListingFieldOptions([props?.fieldConfig])[0];
+  const { enumOptions = [], schemaType } = fieldConfig || {};
+  const propsWithDynamicOptions = { ...props, fieldConfig };
   const defaultRequiredMessage = intl.formatMessage({
     id: 'CustomExtendedDataField.required',
   });
@@ -267,19 +285,19 @@ const CustomExtendedDataField = props => {
   );
 
   return schemaType === SCHEMA_TYPE_ENUM && enumOptions
-    ? renderFieldComponent(CustomFieldEnum, props)
+    ? renderFieldComponent(CustomFieldEnum, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_MULTI_ENUM && enumOptions
-    ? renderFieldComponent(CustomFieldMultiEnum, props)
+    ? renderFieldComponent(CustomFieldMultiEnum, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_SHORT_TEXT
-    ? renderFieldComponent(CustomFieldShortText, props)
+    ? renderFieldComponent(CustomFieldShortText, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_TEXT
-    ? renderFieldComponent(CustomFieldText, props)
+    ? renderFieldComponent(CustomFieldText, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_LONG
-    ? renderFieldComponent(CustomFieldLong, props)
+    ? renderFieldComponent(CustomFieldLong, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_BOOLEAN
-    ? renderFieldComponent(CustomFieldBoolean, props)
+    ? renderFieldComponent(CustomFieldBoolean, propsWithDynamicOptions)
     : schemaType === SCHEMA_TYPE_YOUTUBE
-    ? renderFieldComponent(CustomFieldYoutube, props)
+    ? renderFieldComponent(CustomFieldYoutube, propsWithDynamicOptions)
     : null;
 };
 

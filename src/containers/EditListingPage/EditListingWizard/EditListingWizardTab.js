@@ -39,7 +39,6 @@ export const SUPPORTED_TABS = [
   ID,
   INFORMATION,
   EDITION,
-  DETAILS,
   PRICING,
   PRICING_AND_STOCK,
   DELIVERY,
@@ -120,6 +119,8 @@ const EditListingWizardTab = props => {
     routeConfiguration,
     titleId,
     intl,
+    editListingDetailsDraftValues,
+    onEditListingDetailsDraftChange,
   } = props;
 
   const { type } = params;
@@ -192,6 +193,8 @@ const EditListingWizardTab = props => {
         return onCompleteEditListingWizardTab(tab, values);
       },
       intl,
+      editListingDetailsDraftValues,
+      onEditListingDetailsDraftChange,
       updatePageTitle: ({ panelHeading }) => (
         <Helmet>
           <title>{intl.formatMessage({ id: titleId }, { panelHeading })}</title>
@@ -204,8 +207,9 @@ const EditListingWizardTab = props => {
   switch (tab) {
     case ID: {
       return (
-        <EditListingIdPanel
+        <EditListingDetailsPanel
           {...panelProps(ID)}
+          activeTab={ID}
           onListingTypeChange={onListingTypeChange}
           config={config}
         />
@@ -214,7 +218,8 @@ const EditListingWizardTab = props => {
     case EDITION: {
       return (
         <EditListingDetailsPanel
-          {...panelProps(DETAILS)}
+          {...panelProps(EDITION)}
+          activeTab={EDITION}
           onListingTypeChange={onListingTypeChange}
           config={config}
         />
@@ -223,21 +228,13 @@ const EditListingWizardTab = props => {
     case INFORMATION: {
       return (
         <EditListingDetailsPanel
-          {...panelProps(DETAILS)}
+          {...panelProps(INFORMATION)}
+          activeTab={INFORMATION}
           onListingTypeChange={onListingTypeChange}
           config={config}
         />
       );
-    }
-    case DETAILS: {
-      return (
-        <EditListingDetailsPanel
-          {...panelProps(DETAILS)}
-          onListingTypeChange={onListingTypeChange}
-          config={config}
-        />
-      );
-    }
+    }   
     case PRICING_AND_STOCK: {
       return (
         <EditListingPricingAndStockPanel

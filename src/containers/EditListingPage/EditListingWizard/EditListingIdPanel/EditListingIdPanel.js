@@ -14,6 +14,7 @@ import {
   isFieldForListingType,
   pickCategoryFields,
 } from '../../../../util/fieldHelpers';
+import { addDynamicListingFieldOptions } from '../../../../util/dynamicListingFieldOptions';
 import { isBookingProcessAlias } from '../../../../transactions/transaction';
 
 // Import shared components
@@ -22,6 +23,7 @@ import { H3, ListingLink } from '../../../../components';
 // Import modules from this directory
 import ErrorMessage from './ErrorMessage';
 import EditListingIdForm from './EditListingIdForm';
+import { filterListingFieldsForTab, ID_FIELD_TAB } from '../listingFieldTabs';
 import css from './EditListingIdPanel.module.css';
 
 /**
@@ -286,7 +288,8 @@ const EditListingIdPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const { publicData, state } = listing?.attributes || {};
   const listingTypes = config.listing.listingTypes;
-  const listingFields = config.listing.listingFields;
+  const listingFields = addDynamicListingFieldOptions(config.listing.listingFields);
+  const listingFieldsForTab = filterListingFieldsForTab(listingFields, ID_FIELD_TAB);
   const listingCategories = config.categoryConfiguration.categories;
   const categoryKey = config.categoryConfiguration.key;
 
@@ -313,21 +316,20 @@ const EditListingIdPanel = props => {
   const canShowEditListingIdForm =
     hasListingTypesSet && (!hasExistingListingType || hasValidExistingListingType);
   const isPublished = listing?.id && state !== LISTING_STATE_DRAFT;
-  
+
   return (
     <div className={classes}>
       <H3 as="h1">
         {isPublished ? (
           <div>
-                      isPublished = True
-                      <ListingLink listing={listing} />
-                      <br/>
-                      <FormattedMessage
-                        id="EditListingDetailsPanel.title"
-                        values={{ listingTitle: <ListingLink listing={listing} />, lineBreak: <br /> }}
-                      />
-                    </div>
-          
+            isPublished = True
+            <ListingLink listing={listing} />
+            <br />
+            <FormattedMessage
+              id="EditListingDetailsPanel.title"
+              values={{ listingTitle: <ListingLink listing={listing} />, lineBreak: <br /> }}
+            />
+          </div>
         ) : (
           <div>
             isPublished = False
@@ -336,7 +338,6 @@ const EditListingIdPanel = props => {
               values={{ lineBreak: <br /> }}
             />
           </div>
-          
         )}
       </H3>
 
@@ -366,14 +367,14 @@ const EditListingIdPanel = props => {
               'public',
               listingType,
               nestedCategories,
-              listingFields
+              listingFieldsForTab
             );
             const privateListingFields = pickListingFieldsData(
               rest,
               'private',
               listingType,
               nestedCategories,
-              listingFields
+              listingFieldsForTab
             );
             // New values for listing attributes
             const updateValues = {
@@ -400,7 +401,7 @@ const EditListingIdPanel = props => {
           }
           categoryPrefix={categoryKey}
           onListingTypeChange={onListingTypeChange}
-          listingFieldsConfig={listingFields}
+          listingFieldsConfig={listingFieldsForTab}
           listingCurrency={listing?.attributes?.price?.currency}
           marketplaceCurrency={config.currency}
           marketplaceName={config.marketplaceName}

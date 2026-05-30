@@ -7,6 +7,7 @@ import {
   pickCategoryFields,
   pickCustomFieldProps,
 } from '../../util/fieldHelpers.js';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions.js';
 
 import SectionDetailsMaybe2 from './SectionDetailsMaybe2.js';
 import SectionTextMaybe2 from './SectionTextMaybe2.js';
@@ -23,13 +24,15 @@ import css from './ListingPage.module.css';
  */
 const CustomListingFields2 = props => {
   const { publicData, metadata, listingFieldConfigs, categoryConfiguration, heading } = props;
-  const displayableFieldConfigs = Array.isArray(listingFieldConfigs) ? listingFieldConfigs : [];
+  const displayableFieldConfigs = addDynamicListingFieldOptions(
+    Array.isArray(listingFieldConfigs) ? listingFieldConfigs : []
+  );
 
   const { key: categoryPrefix, categories: listingCategoriesConfig } = categoryConfiguration;
   const categoriesObj = pickCategoryFields(publicData, categoryPrefix, 1, listingCategoriesConfig);
   const currentCategories = Object.values(categoriesObj);
 
-  const isFieldForSelectedCategories = fieldConfig => {    
+  const isFieldForSelectedCategories = fieldConfig => {
     const isTargetCategory = isFieldForCategory(currentCategories, fieldConfig);
     return isTargetCategory;
   };
@@ -55,8 +58,6 @@ const CustomListingFields2 = props => {
       />
       {propsForCustomFields.map(customFieldProps => {
         const { schemaType, key, ...fieldProps } = customFieldProps;
-
-        
 
         return schemaType === SCHEMA_TYPE_TEXT ? (
           <SectionTextMaybe2 key={key} {...fieldProps} />

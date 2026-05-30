@@ -42,7 +42,7 @@
 }
 
 .iconWrapper {
-  border-radius: var(--borderRadiusMedium);
+  border-radius: var(--borderRadiusNil);
   color: var(--colorWhite);
   padding: 8px 10px 5px;
   transition: var(--transitionStyleButton);
@@ -65,7 +65,7 @@
   z-index: var(--zIndexPopup);
 
   background-color: var(--colorGrey700);
-  border-radius: var(--borderRadiusMedium);
+  border-radius: var(--borderRadiusNil);
   box-shadow: var(--boxShadowPopup);
 }
 

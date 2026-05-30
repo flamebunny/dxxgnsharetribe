@@ -36,7 +36,7 @@
   padding: 8px 0 2px 0;
 
   @media (--viewportMedium) {
-    padding: 14px 0 2px 0;
+    padding: 10px 0 2px 0;
   }
 }
 
@@ -45,8 +45,7 @@
 
   /* Layout */
   flex-shrink: 0;
-  margin-bottom: 4px;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 }
 
 .priceValue {
@@ -81,7 +80,7 @@
 
 .noPrice {
   composes: perUnit;
-  padding: 5px 0 3px 0;
+  padding: 0;
 }
 
 .mainInfo {
@@ -110,7 +109,7 @@
   font-weight: var(--fontWeightSemiBold);
   line-height: 24px;
 
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   text-align: left;
 
   padding: 3px 0;
@@ -155,6 +154,8 @@
   line-height: 18px;
   padding-top: 2px;
   padding-bottom: 4px;
+  font-size: 14px;
+  text-transform: uppercase;
 
   /* Remove default margins from font */
   margin-top: 0;
@@ -171,8 +172,7 @@
 }
 
 .manageLink {
-  text-decoration: underline;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
   white-space: pre;
 
   &:hover {
@@ -181,6 +181,117 @@
   }
 }
 
+.manageLinkInline {
+  display: inline;
+}
+
 .manageLinksSeparator {
   margin: 0 3px 0 3px;
+}
+
+.alternativeActionText {
+  composes: h5 from global;
+  margin: 0px 24px;
+}
+
+.alternativeActionLink {
+  composes: a textSmall from global;
+  color: #000;
+  text-decoration: line-through;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.info2 {
+  left: 0;
+  font-size: 14px;
+  line-height: 18px;
+  width: 100%;
+  height: 30px;
+  text-transform: uppercase;
+
+  @media (--viewportSmall) {
+    height: auto;
+    font-size: 14px;
+  }
+
+  @media (--viewportMedium) {
+    bottom: -20px;
+  }
+}
+
+.infoAuthor {
+  max-width: 21%;
+  display: inline-block;
+
+  @media (--viewportSmall) {
+  }
+  @media (--viewportSmall) {
+  }
+
+  @media (min-width: 550px) {
+    max-width: 28%;
+  }
+
+  @media (--viewportMedium) {
+  }
+
+  @media (--viewportLarge) {
+    max-width: 21%;
+  }
+
+  @media (min-width: 1120px) {
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 28%;
+  }
+}
+
+.infoTitle {
+  max-width: 21%;
+  display: inline-block;
+
+  @media (--viewportSmall) {
+  }
+  @media (--viewportSmall) {
+  }
+
+  @media (min-width: 550px) {
+    max-width: 28%;
+  }
+
+  @media (--viewportMedium) {
+  }
+
+  @media (--viewportLarge) {
+    max-width: 21%;
+  }
+
+  @media (min-width: 1120px) {
+  }
+
+  @media (min-width: 1440px) {
+    max-width: 28%;
+  }
+}
+
+.infoPrice {
+  display: inline-block;
+  overflow: hidden;
+  font-weight: var(--fontWeightBold);
+}
+.slash {
+  padding: 0 5px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.elipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: inline-block;
 }

@@ -29,10 +29,6 @@
 .desktopTopbar,
 .mobileTopbar {
   box-shadow: none;
-
-  @media (--viewportLarge) {
-    box-shadow: var(--boxShadowLight);
-  }
 }
 
 .navigation {
@@ -47,7 +43,6 @@
   border-top-color: var(--colorGrey100);
   border-top-style: solid;
   background-color: var(--colorWhite);
-  box-shadow: var(--boxShadow);
 
   @media (--viewportMedium) {
     padding: 24px 24px 0 24px;
@@ -63,9 +58,10 @@
     background-color: transparent;
   }
   @media (--viewportLargeWithPaddings) {
-    padding: 40px 0 82px calc((100% - 1056px) / 2);
+
   }
 }
+
 
 .title {
   align-self: center;
@@ -113,6 +109,7 @@
   }
 
   @media (--viewportLarge) {
+    margin-bottom: 10px;
     margin-left: 0;
   }
 }

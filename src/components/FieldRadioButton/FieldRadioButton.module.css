@@ -11,7 +11,8 @@
   width: 0;
 
   /* Display the "check" when checked */
-  &:checked + label .checked {
+  &:checked + label .checked,
+  &:checked + label .pathChecked {
     display: inline;
   }
 
@@ -25,7 +26,7 @@
   }
 
   &:checked + label .notChecked {
-    stroke: none;
+    stroke: var(--colorBlack);
   }
 
   /* Hightlight the text on checked, hover and focus */
@@ -59,36 +60,44 @@
 
 .radioButtonWrapper {
   /* This should follow line-height */
-  height: 24px;
-  margin-top: -1px;
-  margin-right: 12px;
+  height: 32px;
+  margin-top: -2px;
+  margin-right: 8px;
   align-self: center;
 
   display: inline-flex;
   align-items: center;
   cursor: pointer;
+
+  @media (--viewportMedium) {
+    height: 24px;
+    margin-top: -1px;
+  }
 }
 
 .checkedStyle {
-  stroke: var(--marketplaceColor);
-  fill: var(--marketplaceColor);
+  fill: var(--colorBlack);
 }
 
 .checked {
   display: none;
 }
 
+.pathChecked {
+  display: none;
+}
+
 .notChecked {
-  stroke: var(--colorGrey300);
+  stroke: var(--colorBlack);
   &:hover {
-    stroke: pink;
+    stroke: var(--colorBlack);
   }
 }
 
 .required {
   stroke: var(--colorAttention);
   &:hover {
-    stroke: pink;
+    stroke: var(--colorBlack);
   }
 }
 

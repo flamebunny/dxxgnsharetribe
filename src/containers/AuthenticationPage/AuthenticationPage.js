@@ -280,6 +280,8 @@ export const AuthenticationPageComponent = props => {
   const topbarClasses = classNames({
     [css.hideOnMobile]: showEmailVerification,
   });
+  const tabsClasses  = classNames(css.tabs, css.tabNavigation, css.cousine);  
+  
 
   const shouldRedirectToFrom = isAuthenticated && from;
   const shouldRedirectToLandingPage =
@@ -357,7 +359,7 @@ export const AuthenticationPageComponent = props => {
           {showAuthenticationForm ? (
             <div className={css.content}>
               <LinkTabNavHorizontal
-                className={css.tabs}
+                className={tabsClasses}
                 tabs={getAuthenticationTabs({
                   isLogin,
                   signupRouteName,

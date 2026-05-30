@@ -19,7 +19,7 @@ import {
 } from '../../../util/urlHelpers';
 import { isBookingProcessAlias, isPurchaseProcessAlias } from '../../../transactions/transaction';
 
-import { NamedLink, IconSpinner } from '../../../components';
+import { NamedLink, IconSpinner, InlineTextButton } from '../../../components';
 
 import CardMenu from './CardMenu';
 import CardThumbnail from './CardThumbnail';
@@ -56,7 +56,7 @@ const LinkedListingTitle = props => {
 
   return (
     <NamedLink
-      className={css.title}
+      className={classNames(css.infoTitle, css.elipsis)}
       {...(state === LISTING_STATE_DRAFT || state === LISTING_STATE_PENDING_APPROVAL
         ? {
             name: 'ListingPageVariant',
@@ -110,7 +110,7 @@ const LinkToStockOrAvailabilityTab = props => {
 
   return (
     <>
-      <span className={css.manageLinksSeparator}>{' • '}</span>
+      <span className={css.manageLinksSeparator}>{' / '}</span>
 
       {isBookable ? (
         <NamedLink
@@ -190,6 +190,7 @@ export const ManageListingCard = props => {
     onDiscardDraft,
     onToggleMenu,
   } = props;
+
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
   const id = currentListing.id.uuid;
@@ -209,6 +210,10 @@ export const ManageListingCard = props => {
   const editListingLinkType = isDraft
     ? LISTING_PAGE_PARAM_TYPE_DRAFT
     : LISTING_PAGE_PARAM_TYPE_EDIT;
+
+  const currentStock = currentListing.currentStock?.attributes?.quantity;
+
+  const overlayType = listing.attributes?.state;
 
   return (
     <div className={classes}>
@@ -241,24 +246,28 @@ export const ManageListingCard = props => {
       </div>
 
       <div className={css.info}>
-        <PriceInfo
-          price={price}
-          publicData={publicData}
-          isBookable={isBookingProcessAlias(transactionProcessAlias)}
-          listingTypeConfig={listingTypeConfig}
-        />
+        <div className={classNames(css.info2, css.cousine)}>
+          <LinkedListingTitle state={state} id={id} slug={slug} title={title} />
+          <span className={css.slash}>/</span>
+          <span className={classNames(css.infoPrice)}>
+            <PriceInfo
+              price={price}
+              publicData={publicData}
+              isBookable={isBookingProcessAlias(transactionProcessAlias)}
+              listingTypeConfig={listingTypeConfig}
+            />
+          </span>
+        </div>
 
-        <div className={css.mainInfo}>
-          <div className={css.titleWrapper}>
-            <LinkedListingTitle state={state} id={id} slug={slug} title={title} />
-          </div>
+        <div>
+          <span>Quantity: {currentStock === undefined ? 0 : currentStock}</span>
         </div>
 
         <div className={css.manageLinks}>
           <NamedLink
             className={css.manageLink}
             name="EditListingPage"
-            params={{ id, slug, type: editListingLinkType, tab: 'details' }}
+            params={{ id, slug, type: editListingLinkType, tab: 'id' }}
             ariaLabel={intl.formatMessage(
               { id: 'ManageListingCard.screenreader.editListing' },
               { title }
@@ -267,10 +276,36 @@ export const ManageListingCard = props => {
             <FormattedMessage id="ManageListingCard.editListing" />
           </NamedLink>
 
-          <LinkToStockOrAvailabilityTab
-            listing={currentListing}
-            listingTypeConfig={listingTypeConfig}
-          />
+  
+
+          {overlayType === 'draft' ? (
+            <div className={css.manageLinkInline}>
+              <FormattedMessage
+                id="ManageListingCard.discardDraftText"
+                values={{
+                  discardDraftLink: (
+                    <>
+                      <span className={css.manageLinksSeparator}>{' / '}</span>
+                      <InlineTextButton
+                        key="discardDraftLink"
+                        id={`discardButton_${id}`}
+                        rootClassName={css.alternativeActionLink}
+                        className={classNames(css.alternativeActionLink)}
+                        disabled={!!actionsInProgressListingId}
+                        onClick={() => {
+                          if (!actionsInProgressListingId) {
+                            onDiscardDraft(currentListing.id);
+                          }
+                        }}
+                      >
+                        <FormattedMessage id="ManageListingCard.discardDraftLinkText" />
+                      </InlineTextButton>
+                    </>
+                  ),
+                }}
+              />
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

@@ -259,6 +259,9 @@ export const ListingPageComponent = props => {
     }
   };
 
+  console.log('publicData');
+  console.log(publicData);
+
   return (
     <Page
       title={schemaTitle}
@@ -364,20 +367,6 @@ export const ListingPageComponent = props => {
             />
 
             <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
-
-            <SectionAuthorMaybe
-              title={title}
-              listing={listingWithCommission}
-              authorDisplayName={authorDisplayName}
-              onContactUser={onContactUser}
-              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
-              onCloseInquiryModal={() => setInquiryModalOpen(false)}
-              sendInquiryError={sendInquiryError}
-              sendInquiryInProgress={sendInquiryInProgress}
-              onSubmitInquiry={onSubmitInquiry}
-              currentUser={currentUser}
-              onManageDisableScrolling={onManageDisableScrolling}
-            />
 
           </div>
         </div>

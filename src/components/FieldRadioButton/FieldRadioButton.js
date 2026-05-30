@@ -17,26 +17,39 @@ const IconRadioButton = props => {
   const { className, checkedClassName, showAsRequired } = props;
   return (
     <div>
-      <svg className={className} width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-        <circle
-          className={showAsRequired ? css.required : css.notChecked}
-          cx="5"
-          cy="19"
-          r="6"
-          transform="translate(2 -12)"
-          strokeWidth="2"
-          fill="none"
-          fillRule="evenodd"
-        />
-
-        <g
-          className={classNames(css.checked, checkedClassName || css.checkedStyle)}
-          transform="translate(2 -12)"
-          fill="none"
-          fillRule="evenodd"
-        >
-          <circle strokeWidth="2" cx="5" cy="19" r="6" />
-          <circle fill="#FFF" fillRule="nonzero" cx="5" cy="19" r="3" />
+      <svg
+        className={className}
+        width="20"
+        height="20"
+        xmlns="http://www.w3.org/2000/svg"
+        role="presentation"
+        viewBox="0 0 20 20"
+      >
+        <g fill="none" fillRule="evenodd">
+          <rect
+            className={classNames(css.checked, checkedClassName || css.checkedStyle)}
+            x="2"
+            y="2"
+            width="16"
+            height="16"
+            rx="0"
+          />
+          <rect
+            className={showAsRequired ? css.required : css.notChecked}
+            x="2"
+            y="2"
+            width="16"
+            height="16"
+            strokeWidth="2"
+            rx="0"
+          />
+          <path
+            className={css.pathChecked}
+            d="M6 6L14 14M14 6L6 14"
+            stroke="#FFF"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
         </g>
       </svg>
     </div>
@@ -65,6 +78,7 @@ const FieldRadioButton = props => {
     className,
     svgClassName,
     checkedClassName,
+    textClassName,
     id,
     label,
     showAsRequired,
@@ -72,17 +86,30 @@ const FieldRadioButton = props => {
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
-  const radioButtonProps = {
-    id,
-    className: css.input,
-    component: 'input',
-    type: 'radio',
-    ...rest,
+  const handleOnChange = (input, event) => {
+    input.onChange(event);
+
+    if (rest.onChange) {
+      rest.onChange(event);
+    }
   };
 
   return (
     <span className={classes}>
-      <Field {...radioButtonProps} />
+      <Field type="radio" {...rest}>
+        {fieldRenderProps => {
+          const { input, disabled } = fieldRenderProps;
+          return (
+            <input
+              id={id}
+              className={css.input}
+              {...input}
+              onChange={event => handleOnChange(input, event)}
+              disabled={disabled}
+            />
+          );
+        }}
+      </Field>
       <label htmlFor={id} className={css.label}>
         <span className={css.radioButtonWrapper}>
           <IconRadioButton
@@ -91,7 +118,7 @@ const FieldRadioButton = props => {
             showAsRequired={showAsRequired}
           />
         </span>
-        <span className={css.text}>{label}</span>
+        <span className={classNames(css.text, textClassName)}>{label}</span>
       </label>
     </span>
   );

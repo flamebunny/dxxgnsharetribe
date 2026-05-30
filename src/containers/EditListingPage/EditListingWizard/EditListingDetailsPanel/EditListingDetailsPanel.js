@@ -15,6 +15,7 @@ import {
   isFieldForListingType,
   pickCategoryFields,
 } from '../../../../util/fieldHelpers';
+import { addDynamicListingFieldOptions } from '../../../../util/dynamicListingFieldOptions';
 import { isBookingProcessAlias } from '../../../../transactions/transaction';
 
 // Import shared components
@@ -23,6 +24,13 @@ import { H3, ListingLink } from '../../../../components';
 // Import modules from this directory
 import ErrorMessage from './ErrorMessage';
 import EditListingDetailsForm from './EditListingDetailsForm';
+import {
+  DETAILS_FIELD_TAB,
+  EDITION_FIELD_TAB,
+  ID_FIELD_TAB,
+  INFORMATION_FIELD_TAB,
+  filterListingFieldsForTab,
+} from '../listingFieldTabs';
 import css from './EditListingDetailsPanel.module.css';
 
 /**
@@ -95,6 +103,56 @@ const hasSetListingType = publicData => {
   };
 };
 
+const normalizeFieldName = str =>
+  typeof str === 'string'
+    ? str
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/['’]/g, '')
+        .replace(/[_-]+/g, ' ')
+        .trim()
+        .toLowerCase()
+    : '';
+
+const fieldMatchesName = (fieldConfig, fieldNames) => {
+  const normalizedFieldNames = fieldNames.map(normalizeFieldName);
+  const fieldLabel =
+    fieldConfig?.saveConfig?.label ||
+    fieldConfig?.showConfig?.label ||
+    fieldConfig?.filterConfig?.label ||
+    fieldConfig?.label;
+  const candidates = [fieldConfig?.key, fieldLabel].map(normalizeFieldName);
+
+  return candidates.some(candidate => normalizedFieldNames.includes(candidate));
+};
+
+const isEditionTypeField = fieldConfig => fieldMatchesName(fieldConfig, ['edition type']);
+const isEditionDetailsField = fieldConfig =>
+  fieldMatchesName(fieldConfig, [
+    'edition details',
+    'edition of',
+    "artist's proof",
+    'artist proof',
+    'artists proof',
+  ]);
+
+const namespacedFieldName = fieldConfig => {
+  const { key, scope = 'public' } = fieldConfig || {};
+  return scope === 'public' ? `pub_${key}` : `priv_${key}`;
+};
+
+const isLimitedEditionSelected = (data, listingFieldConfigs = []) => {
+  const editionTypeField = listingFieldConfigs.find(isEditionTypeField);
+  const editionTypeValue = editionTypeField ? data?.[namespacedFieldName(editionTypeField)] : null;
+  const selectedOption = editionTypeField?.enumOptions?.find(
+    optionConfig => optionConfig.option === editionTypeValue
+  );
+  const selectedOptionText = `${selectedOption?.option || editionTypeValue || ''} ${
+    selectedOption?.label || ''
+  }`;
+
+  return selectedOptionText.toLowerCase().includes('limited');
+};
+
 /**
  * Pick extended data fields from given form data.
  * Picking is based on extended data configuration for the listing and target scope and listing type.
@@ -129,10 +187,15 @@ const pickListingFieldsData = (
     const isTargetScope = scope === targetScope;
     const isTargetListingType = isFieldForListingType(targetListingType, fieldConfig);
     const isTargetCategory = isFieldForCategory(targetCategoryIds, fieldConfig);
+    const isHiddenEditionDetails =
+      isEditionDetailsField(fieldConfig) && !isLimitedEditionSelected(data, listingFieldConfigs);
 
     if (isKnownSchemaType && isTargetScope && isTargetListingType && isTargetCategory) {
       const fieldValue = data[namespacedKey] != null ? data[namespacedKey] : null;
-      return { ...fields, [key]: fieldValue };
+      return {
+        ...fields,
+        [key]: isHiddenEditionDetails ? null : fieldValue,
+      };
     } else if (isKnownSchemaType && isTargetScope) {
       // Note: this clears extra custom fields
       // These might exists if provider swaps between listing types before saving the draft listing.
@@ -307,6 +370,9 @@ const EditListingDetailsPanel = props => {
     updateInProgress,
     errors,
     config,
+    activeTab = DETAILS_FIELD_TAB,
+    editListingDetailsDraftValues,
+    onEditListingDetailsDraftChange,
     updatePageTitle: UpdatePageTitle,
     intl,
   } = props;
@@ -314,7 +380,8 @@ const EditListingDetailsPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const { publicData, state } = listing?.attributes || {};
   const listingTypes = config.listing.listingTypes;
-  const listingFields = config.listing.listingFields;
+  const listingFields = addDynamicListingFieldOptions(config.listing.listingFields);
+  const listingFieldsForTab = filterListingFieldsForTab(listingFields, activeTab);
   const listingCategories = config.categoryConfiguration.categories;
   const categoryKey = config.categoryConfiguration.key;
 
@@ -349,6 +416,7 @@ const EditListingDetailsPanel = props => {
     listingCategories,
     categoryKey
   );
+  const formInitialValues = { ...initialValues, ...editListingDetailsDraftValues };
 
   const noListingTypesSet = listingTypes?.length === 0;
   const hasListingTypesSet = listingTypes?.length > 0;
@@ -383,8 +451,9 @@ const EditListingDetailsPanel = props => {
       {canShowEditListingDetailsForm ? (
         <EditListingDetailsForm
           className={css.form}
-          initialValues={initialValues}
+          initialValues={formInitialValues}
           saveActionMsg={submitButtonText}
+          onChange={onEditListingDetailsDraftChange}
           onSubmit={values => {
             const {
               title,
@@ -406,14 +475,14 @@ const EditListingDetailsPanel = props => {
               'public',
               listingType,
               nestedCategories,
-              listingFields
+              listingFieldsForTab
             );
             const privateListingFields = pickListingFieldsData(
               rest,
               'private',
               listingType,
               nestedCategories,
-              listingFields
+              listingFieldsForTab
             );
             // New values for listing attributes
             const updateValues = {
@@ -446,7 +515,13 @@ const EditListingDetailsPanel = props => {
           }
           categoryPrefix={categoryKey}
           onListingTypeChange={onListingTypeChange}
-          listingFieldsConfig={listingFields}
+          listingFieldsConfig={listingFieldsForTab}
+          isIdTab={activeTab === ID_FIELD_TAB}
+          isEditionTab={activeTab === EDITION_FIELD_TAB}
+          isInformationTab={activeTab === INFORMATION_FIELD_TAB}
+          customListingFieldsOnly={
+            activeTab !== DETAILS_FIELD_TAB && activeTab !== ID_FIELD_TAB
+          }
           listingCurrency={listing?.attributes?.price?.currency}
           marketplaceCurrency={config.currency}
           marketplaceName={config.marketplaceName}

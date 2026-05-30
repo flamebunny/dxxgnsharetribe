@@ -89,8 +89,21 @@ const setPageScrollPosition = (location, delayed) => {
   }
 };
 
-const handleLocationChanged = (dispatch, location, routeConfiguration, delayed) => {
-  setPageScrollPosition(location, delayed);
+const shouldSetPageScrollPosition = (prevLocation, location) => {
+  if (!prevLocation) {
+    return true;
+  }
+
+  const pathnameChanged = prevLocation.pathname !== location.pathname;
+  const hashChanged = prevLocation.hash !== location.hash;
+
+  return pathnameChanged || hashChanged;
+};
+
+const handleLocationChanged = (dispatch, location, routeConfiguration, delayed, prevLocation) => {
+  if (shouldSetPageScrollPosition(prevLocation, location)) {
+    setPageScrollPosition(location, delayed);
+  }
   const path = canonicalRoutePath(routeConfiguration, location);
   dispatch(locationChanged({ location, canonicalPath: path }));
 };
@@ -151,7 +164,13 @@ class RouteComponentRenderer extends Component {
       // This makes it possible to use loadData as default client side data loading technique.
       // However it is better to fetch data before location change to avoid "Loading data" state.
       callLoadData(this.props);
-      handleLocationChanged(dispatch, location, routeConfiguration, this.delayed);
+      handleLocationChanged(
+        dispatch,
+        location,
+        routeConfiguration,
+        this.delayed,
+        prevProps.location
+      );
     }
     handleFocusedElement(this.focusedElementDelay);
   }
