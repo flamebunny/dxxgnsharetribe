@@ -406,9 +406,17 @@ const EnumRadioField = props => {
 };
 
 const MaterialSubcategoryField = props => {
-  const { fieldConfig, formId, intl } = props;
+  const { fieldConfig, formId, intl, materialOption, materialsFields } = props;
   const { key, scope = 'public' } = fieldConfig || {};
   const name = scope === 'public' ? `pub_${key}` : `priv_${key}`;
+  const handleOptionChange = (_, event) => {
+    const isChecked = event?.target?.checked;
+    const selectedMaterials = materialsFields?.value || [];
+
+    if (isChecked && materialOption && !selectedMaterials.includes(materialOption)) {
+      materialsFields.push(materialOption);
+    }
+  };
 
   return (
     <div className={css.materialSubcategory}>
@@ -420,6 +428,7 @@ const MaterialSubcategoryField = props => {
           id: 'EditListingDetailsForm.defaultRequiredMessage',
         })}
         formId={formId}
+        onOptionChange={handleOptionChange}
       />
     </div>
   );
@@ -457,6 +466,8 @@ const MaterialsField = props => {
                       fieldConfig={subcategoryFieldConfig}
                       formId={formId}
                       intl={intl}
+                      materialOption={optionConfig.key}
+                      materialsFields={fields}
                     />
                   ) : null}
                 </li>

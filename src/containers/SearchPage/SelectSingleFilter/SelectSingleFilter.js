@@ -56,6 +56,7 @@ const SelectSingleFilter = props => {
     options,
     isNestedEnum = false,
     alwaysShowSuboptions = false,
+    isDesignYearFilter = false,
     id,
     name,
     label,
@@ -64,13 +65,23 @@ const SelectSingleFilter = props => {
     contentPlacementOffset = 0,
     onSubmit,
     getAriaLabel,
+    plainClassName: plainClassNameProp,
+    popupContentClassName: popupContentClassNameProp,
     ...rest
   } = props;
 
   const queryParamName = getQueryParamName(queryParamNames);
   const hasInitialValues = !!initialValues && !!initialValues[queryParamName];
 
-  const classes = classNames(rootClassName || css.root, className);
+  const classes = classNames(rootClassName || css.root, className, {
+    [css.designYearFilter]: isDesignYearFilter,
+  });
+  const popupContentClassName = classNames(popupContentClassNameProp, {
+    [css.designYearFilterContent]: isDesignYearFilter,
+  });
+  const plainClassName = classNames(plainClassNameProp, {
+    [css.designYearFilterContent]: isDesignYearFilter,
+  });
   const labelClass = hasInitialValues ? css.labelPlainSelected : css.labelPlain;
   const labelForPlain = <span className={labelClass}>{label}</span>;
 
@@ -116,6 +127,7 @@ const SelectSingleFilter = props => {
       id={`${id}.popup`}
       showAsPopup
       contentPlacementOffset={contentPlacementOffset}
+      popupContentClassName={popupContentClassName}
       onSubmit={handleSubmit(queryParamNames)}
       initialValues={pickedInitialValues}
       keepDirtyOnReinitialize
@@ -136,6 +148,7 @@ const SelectSingleFilter = props => {
       isSelected={hasInitialValues}
       id={`${id}.plain`}
       liveEdit
+      plainClassName={plainClassName}
       onSubmit={handleSubmit(queryParamNames)}
       initialValues={pickedInitialValues}
       {...rest}

@@ -14,3 +14,11 @@
     color: var(--marketplaceColorDark);
   }
 }
+
+.designYearFilter {
+}
+
+.designYearFilterContent {
+  max-height: 350px;
+  overflow-y: auto;
+}

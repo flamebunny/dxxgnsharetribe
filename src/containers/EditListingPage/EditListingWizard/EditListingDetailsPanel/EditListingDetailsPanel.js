@@ -475,14 +475,14 @@ const EditListingDetailsPanel = props => {
               'public',
               listingType,
               nestedCategories,
-              listingFieldsForTab
+              listingFields
             );
             const privateListingFields = pickListingFieldsData(
               rest,
               'private',
               listingType,
               nestedCategories,
-              listingFieldsForTab
+              listingFields
             );
             // New values for listing attributes
             const updateValues = {

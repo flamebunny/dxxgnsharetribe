@@ -196,9 +196,9 @@ export const EditListingPricingAndStockFormComponentPage = props => (
 
 
       const [earningFormatted, setEarningFormatted] = useState(0); 
-      const [earningUnformatted, setEarningUnformatted] = useState(0); 
+      const [earningValue, setEarningValue] = useState(0); 
       const [customerCommission, setCustomerCommissionFormatted] = useState(0); 
-      const [customerCommissionUnformatted, setCustomerCommissionUnformatted] = useState(0); 
+      const [customerCommissionValue, setCustomerCommissionValue] = useState(0); 
 
       const currencyConfig = appSettings.getCurrencyFormatting(marketplaceCurrency);
 
@@ -237,7 +237,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
             ? intl.formatNumber(ensureDotSeparator(unformattedValue), currencyConfig)
             : '';
     
-          return ({formattedValue: formattedValue, unformattedValue: unformattedValue})
+          return ({formattedValue: formattedValue, unformattedValue: unformattedValue, value: commissionValue})
 
         } catch (e) {
           log.error(e, 'currency-input-init-failed', { currencyConfig, commissionValue });
@@ -245,16 +245,38 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         }
       }
 
+      const formatCurrencyNumber = value => {
+        const numberValue = Number.isNaN(value) ? 0 : value;
+        const testSubUnitFormat = intl.formatNumber('1.1', currencyConfig);
+        const usesComma = testSubUnitFormat.indexOf(',') >= 0;
+
+        try {
+          const unformattedValue = truncateToSubUnitPrecision(
+            ensureSeparator(numberValue.toString(), usesComma),
+            unitDivisor(currencyConfig.currency),
+            usesComma
+          );
+
+          return intl.formatNumber(ensureDotSeparator(unformattedValue), currencyConfig);
+        } catch (e) {
+          log.error(e, 'currency-input-init-failed', { currencyConfig, value });
+          throw e;
+        }
+      };
+
+      const buyerPaysValue = earningValue + customerCommissionValue;
+      const buyerPaysFormatted = formatCurrencyNumber(buyerPaysValue);
+
       let providerValueObj;
       let customerValueObj;
 
       const handleChildChange = (newValue) => {
         providerValueObj = currencConvert(newValue, currencyConfig, providerCommissionPercentage, providerCommissionMinimum, 'deducted');     
         setEarningFormatted(providerValueObj.formattedValue);          
-        setEarningUnformatted(providerValueObj.unformattedValue);
+        setEarningValue(providerValueObj.value);
         customerValueObj = currencConvert(newValue, currencyConfig, customerCommissionPercentage, customerCommissionMinimum, 'added');  
         setCustomerCommissionFormatted(customerValueObj.formattedValue);          
-        setCustomerCommissionUnformatted(customerValueObj.unformattedValue); 
+        setCustomerCommissionValue(customerValueObj.value); 
       };
 
       return (
@@ -297,7 +319,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
               </div>
               <div className={css.priceBuyerFee}>
                 <label><FormattedMessage id="EditListingPricingAndStockForm.priceBuyerFee" /></label>
-                <div className={css.priceEarningValue}>{earningFormatted+customerCommission}</div>               
+                <div className={css.priceEarningValue}>{buyerPaysFormatted}</div>               
               </div>
 
               <div className={classNames(css.priceEarningInfo)}>

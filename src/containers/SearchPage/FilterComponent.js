@@ -7,6 +7,7 @@ import {
   constructQueryParamName,
   isFilterEnabled,
 } from '../../util/search';
+import { isDesignYearField } from '../../util/dynamicListingFieldOptions';
 import {
   getMaterialSubcategoryFieldConfig,
   isMaterialsField,
@@ -164,6 +165,7 @@ const FilterComponent = props => {
       const { scope, enumOptions, filterConfig = {} } = config;
       const { label, filterType } = filterConfig;
       const queryParamNames = [constructQueryParamName(key, scope)];
+      const designYearFilter = isDesignYearField(config);
       return filterType === 'SelectSingleFilter' ? (
         <SelectSingleFilter
           label={label}
@@ -174,6 +176,7 @@ const FilterComponent = props => {
           onSubmit={getHandleChangedValueFn(useHistoryPush)}
           options={enumOptions}
           isNestedEnum={false}
+          isDesignYearFilter={designYearFilter}
           {...rest}
         />
       ) : (
@@ -186,6 +189,7 @@ const FilterComponent = props => {
           onSubmit={getHandleChangedValueFn(useHistoryPush)}
           options={enumOptions}
           schemaType={schemaType}
+          isDesignYearFilter={designYearFilter}
           {...rest}
         />
       );
@@ -196,6 +200,7 @@ const FilterComponent = props => {
       const queryParamNames = [constructQueryParamName(key, scope)];
       const materialsFilter = isMaterialsField(config);
       const colorsFilter = key === 'colorId';
+      const designYearFilter = isDesignYearField(config);
       const materialSubcategoryFilters = materialsFilter
         ? enumOptions
             .map(optionConfig =>
@@ -224,6 +229,7 @@ const FilterComponent = props => {
           materialSubcategoryFilters={materialSubcategoryFilters}
           isMaterialsFilter={materialsFilter}
           isColorsFilter={colorsFilter}
+          isDesignYearFilter={designYearFilter}
           {...rest}
         />
       );

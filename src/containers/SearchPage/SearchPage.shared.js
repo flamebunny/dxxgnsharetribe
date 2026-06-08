@@ -20,6 +20,7 @@ import {
   stringifyDateToISO8601,
 } from '../../util/dates';
 import { isFieldForCategory, isFieldForListingType } from '../../util/fieldHelpers';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions';
 import { isMaterialSubcategoryField } from '../EditListingPage/EditListingWizard/materialSubcategoryFields';
 
 const validURLParamForCategoryData = (prefix, categories, level, params) => {
@@ -250,7 +251,8 @@ export const validFilterParams = (params, filterConfigs, dropNonFilterParams = t
  */
 export const validUrlQueryParamsFromProps = props => {
   const { location, config, params: currentPathParams = {} } = props;
-  const { listingFields: listingFieldsConfig } = config?.listing || {};
+  const { listingFields } = config?.listing || {};
+  const listingFieldsConfig = addDynamicListingFieldOptions(listingFields);
   const { defaultFilters: defaultFiltersConfig } = config?.search || {};
   const activeListingTypes = config?.listing?.listingTypes.map(config => config.listingType);
   const listingCategories = config.categoryConfiguration.categories;
@@ -458,7 +460,8 @@ export const pickListingFieldFilters = params => {
 
   const currentCategories = Object.values(validNestedCategoryParamNames);
   const currentListingType = Object.values(validListingTypeParamNames);
-  const pickedFields = listingFields.reduce((picked, fieldConfig) => {
+  const listingFieldsWithDynamicOptions = addDynamicListingFieldOptions(listingFields);
+  const pickedFields = listingFieldsWithDynamicOptions.reduce((picked, fieldConfig) => {
     const isTargetCategory = isFieldForCategory(currentCategories, fieldConfig);
     const isTargetListingField = isFieldForListingType(currentListingType, fieldConfig);
     return isTargetCategory && isTargetListingField ? [...picked, fieldConfig] : picked;
@@ -845,7 +848,8 @@ export const onApplyFilters = ({
   urlQueryParams,
   currentQueryParams,
 }) => {
-  const { listingFields: listingFieldsConfig } = config?.listing || {};
+  const { listingFields } = config?.listing || {};
+  const listingFieldsConfig = addDynamicListingFieldOptions(listingFields);
   const { defaultFilters: defaultFiltersConfig, sortConfig } = config?.search || {};
   const activeListingTypes = config?.listing?.listingTypes.map(c => c.listingType);
   const listingCategories = config.categoryConfiguration.categories;
@@ -889,7 +893,8 @@ export const createFilterValueChangeHandler = (
   },
   useHistoryPush
 ) => {
-  const { listingFields: listingFieldsConfig } = config?.listing || {};
+  const { listingFields } = config?.listing || {};
+  const listingFieldsConfig = addDynamicListingFieldOptions(listingFields);
   const { defaultFilters: defaultFiltersConfig, sortConfig } = config?.search || {};
   const activeListingTypes = config?.listing?.listingTypes.map(c => c.listingType);
   const listingCategories = config.categoryConfiguration.categories;

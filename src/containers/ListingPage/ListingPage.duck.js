@@ -7,6 +7,7 @@ import { fetchPageAssets } from '../../ducks/hostedAssets.duck';
 import { transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
 import { denormalisedResponseEntities } from '../../util/data';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions';
 import {
   bookingTimeUnits,
   findNextBoundary,
@@ -100,7 +101,7 @@ const showListingPayloadCreator = ({ listingId, config, isOwn = false }, thunkAP
 
   return show
     .then(data => {
-      const listingFields = config?.listing?.listingFields;
+      const listingFields = addDynamicListingFieldOptions(config?.listing?.listingFields);
       const sanitizeConfig = { listingFields };
       dispatch(addMarketplaceEntities(data, sanitizeConfig));
       return data;

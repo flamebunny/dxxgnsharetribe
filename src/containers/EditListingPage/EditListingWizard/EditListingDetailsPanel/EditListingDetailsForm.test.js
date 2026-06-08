@@ -120,7 +120,8 @@ describe('EditListingDetailsForm', () => {
     expect(screen.getByRole('button', { name: saveActionMsg })).toBeEnabled();
   });
 
-  it('shows material subcategory fields below their matching material option', () => {
+  it('shows material subcategory fields below their matching material option', async () => {
+    const user = userEvent.setup();
     const selectableListingTypes = [
       {
         listingType: 'sell-bicycles',
@@ -206,6 +207,10 @@ describe('EditListingDetailsForm', () => {
     expect(glassOption.compareDocumentPosition(glassMaterials)).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING
     );
+
+    expect(ceramicsOption).not.toBeChecked();
+    await user.click(ceramicMaterials);
+    expect(ceramicsOption).toBeChecked();
   });
 
   it('renders categories and nested subcategories as radio buttons', async () => {

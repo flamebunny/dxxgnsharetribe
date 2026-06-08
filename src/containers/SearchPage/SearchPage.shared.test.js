@@ -8,6 +8,7 @@ import {
   pickSearchParamsOnly,
   searchParamsPicker,
   groupListingFieldConfigs,
+  pickListingFieldFilters,
 } from './SearchPage.shared.js';
 
 const urlParams = {
@@ -280,6 +281,36 @@ describe('SearchPage.helpers', () => {
     });
   });
 
+  describe('pickListingFieldFilters', () => {
+    it('adds dynamic design year options for search filters', () => {
+      const currentYear = `${new Date(Date.now()).getFullYear()}`;
+      const fields = [
+        {
+          key: 'designYear',
+          scope: 'public',
+          schemaType: 'enum',
+          enumOptions: [{ option: '2010', label: '2010' }],
+          filterConfig: {
+            showFilter: true,
+            label: 'Design year',
+          },
+        },
+      ];
+
+      const pickedFields = pickListingFieldFilters({
+        listingFields: fields,
+        locationSearch: '',
+        categoryConfiguration: { key: 'categoryLevel', categories: listingCategories },
+        activeListingTypes,
+      });
+
+      expect(pickedFields[0].enumOptions).toContainEqual({
+        option: currentYear,
+        label: currentYear,
+      });
+    });
+  });
+
   describe('validFilterParams', () => {
     it('returns valid parameters', () => {
       const validParams = validFilterParams(urlParams, filterConfigs);
@@ -435,6 +466,39 @@ describe('SearchPage.helpers', () => {
 
       const iv = initialValues(props2, { pub_generalParam: 'one' })(queryParamNames, isLiveEdit);
       expect(iv).toEqual({ ...urlParams, pub_generalParam: undefined });
+    });
+
+    it('keeps dynamically added design year values as valid initial values', () => {
+      const props2 = {
+        ...props,
+        location: { search: '?pub_designYear=2012' },
+        config: {
+          ...props.config,
+          listing: {
+            ...props.config.listing,
+            listingFields: [
+              {
+                key: 'designYear',
+                scope: 'public',
+                schemaType: 'enum',
+                enumOptions: [
+                  { option: '2010', label: '2010' },
+                  { option: '2011', label: '2011' },
+                ],
+                filterConfig: {
+                  showFilter: true,
+                  label: 'Design year',
+                },
+              },
+            ],
+          },
+        },
+      };
+      const queryParamNames = ['pub_designYear'];
+      const isLiveEdit = true;
+
+      const iv = initialValues(props2, currentQueryParams)(queryParamNames, isLiveEdit);
+      expect(iv).toEqual({ pub_designYear: '2012' });
     });
   });
 

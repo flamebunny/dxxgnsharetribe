@@ -79,6 +79,7 @@ const CustomFieldMultiEnum = props => {
     formId,
     labelClassName,
     optionLabelClassName,
+    onOptionChange,
   } = props;
   const { enumOptions = [], saveConfig } = fieldConfig || {};
   const { isRequired, requiredMessage } = saveConfig || {};
@@ -96,6 +97,7 @@ const CustomFieldMultiEnum = props => {
       labelClassName={labelClassName}
       helpText={fieldConfig?.helpText}
       optionLabelClassName={optionLabelClassName}
+      onOptionChange={onOptionChange}
       options={createFilterOptions(enumOptions)}
       {...validateMaybe}
     />

@@ -29,12 +29,20 @@
 .colorsFilter {
 }
 
+.designYearFilter {
+}
+
 .materialsFilterContent {
   max-height: 350px;
   overflow-y: auto;
 }
 
 .colorsFilterContent {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.designYearFilterContent {
   max-height: 350px;
   overflow-y: auto;
 }

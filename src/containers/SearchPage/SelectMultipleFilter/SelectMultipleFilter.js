@@ -121,9 +121,10 @@ const SelectMultipleFilter = props => {
     queryParamNames,
     schemaType,
     searchMode,
-    materialSubcategoryFilters = [],
+    materialSubcategoryFilters = [],    
     isMaterialsFilter = false,
     isColorsFilter = false,
+    isDesignYearFilter = false,
     showAsPopup,
     plainClassName: plainClassNameProp,
     popupContentClassName: popupContentClassNameProp,
@@ -133,14 +134,17 @@ const SelectMultipleFilter = props => {
   const classes = classNames(rootClassName || css.root, className, {
     [css.materialsFilter]: isMaterialsFilter,
     [css.colorsFilter]: isColorsFilter,
+    [css.designYearFilter]: isDesignYearFilter,
   });
   const popupContentClassName = classNames(popupContentClassNameProp, {
     [css.materialsFilterContent]: isMaterialsFilter,
     [css.colorsFilterContent]: isColorsFilter,
+    [css.designYearFilterContent]: isDesignYearFilter,
   });
   const plainClassName = classNames(plainClassNameProp, {
     [css.materialsFilterContent]: isMaterialsFilter,
     [css.colorsFilterContent]: isColorsFilter,
+    [css.designYearFilterContent]: isDesignYearFilter,
   });
 
   const queryParamName = getQueryParamName(queryParamNames);

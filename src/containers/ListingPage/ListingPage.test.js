@@ -18,6 +18,7 @@ import {
 } from '../../util/testHelpers';
 
 import { storableError } from '../../util/errors';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions';
 
 import {
   LISTING_STATE_PENDING_APPROVAL,
@@ -560,7 +561,7 @@ describe('Duck', () => {
   const fakeResponse = resource => ({ data: { data: resource, include: [] } });
   const sdkFn = response => jest.fn(() => Promise.resolve(response));
 
-  const sanitizeConfig = { listingFields };
+  const sanitizeConfig = { listingFields: addDynamicListingFieldOptions(listingFields) };
 
   it("loadData() for currentUser with full viewing rights loads someone else's listing", () => {
     const currentUser = createCurrentUser('currentUser');

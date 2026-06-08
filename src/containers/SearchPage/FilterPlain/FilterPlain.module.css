@@ -107,6 +107,8 @@
   border: none;
   cursor: pointer;
 
+  display: none;
+
   &:focus,
   &:hover {
     color: var(--colorBlack);

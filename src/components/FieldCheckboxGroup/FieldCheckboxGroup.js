@@ -27,6 +27,7 @@ const FieldCheckboxRenderer = props => {
     fields,
     options,
     meta,
+    onOptionChange,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -41,6 +42,9 @@ const FieldCheckboxRenderer = props => {
           const fieldId = `${id}.${option.key}`;
           const textClassName = optionLabelClassName;
           const textClassNameMaybe = textClassName ? { textClassName } : {};
+          const onChangeMaybe = onOptionChange
+            ? { onChange: event => onOptionChange(option.key, event) }
+            : {};
           return (
             <li key={fieldId} className={css.item}>
               <FieldCheckbox
@@ -49,6 +53,7 @@ const FieldCheckboxRenderer = props => {
                 label={option.label}
                 value={option.key}
                 {...textClassNameMaybe}
+                {...onChangeMaybe}
               />
             </li>
           );

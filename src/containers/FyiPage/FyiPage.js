@@ -11,11 +11,12 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import { H1 } from '../PageBuilder/Primitives/Heading';
+import StaticPage from '../PageBuilder/StaticPage';
+import { validProps } from '../PageBuilder/Field';
 import FallbackPage, { fallbackSections } from './FallbackPage';
 import { ASSET_NAME, textAccordionSectionId } from './FyiPage.duck';
 
 import {
-  Page,
   LayoutSideNavigationFyi,
 } from '../../components';
 
@@ -33,7 +34,25 @@ const PageBuilder = loadable(() =>
 
 const textAccordionSectionType = 'textaccordion';
 
-const title = 'test';
+const getMetadata = pageData => {
+  const meta = pageData?.meta || {};
+  const { pageTitle, pageDescription, socialSharing } = meta;
+  const title = validProps(pageTitle)?.content;
+  const description = validProps(pageDescription)?.content;
+  const openGraph = validProps(socialSharing);
+
+  return {
+    title,
+    description,
+    schema: {
+      '@context': 'http://schema.org',
+      '@type': 'WebPage',
+      description,
+      name: title,
+    },
+    socialSharing: openGraph,
+  };
+};
 
 const SectionBuilder = loadable(
   () => import(/* webpackChunkName: "SectionBuilder" */ '../PageBuilder/PageBuilder'),
@@ -50,7 +69,6 @@ const FyiPageComponent = props => {
     inProgress, 
     error, 
     params,
-    scrollingDisabled,
     providerNotificationCount = 0,
   } = props;
 
@@ -84,6 +102,7 @@ const FyiPageComponent = props => {
 
   // Construct custom page data
   const pageData = pageAssetsData?.[assetName]?.data;
+  const pageMetaProps = getMetadata(pageData);
 
   const customSections = pageData
     ? [
@@ -113,7 +132,7 @@ const FyiPageComponent = props => {
 
   return (
     <>
-    <Page title={title} scrollingDisabled={scrollingDisabled}>
+    <StaticPage {...pageMetaProps}>
         <LayoutSideNavigationFyi
           topbar={
             <>
@@ -146,7 +165,7 @@ const FyiPageComponent = props => {
 
           </div>
         </LayoutSideNavigationFyi>
-      </Page>    
+      </StaticPage>    
     </>   
   );
 };

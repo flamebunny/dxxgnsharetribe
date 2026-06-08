@@ -4,6 +4,7 @@ import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 
 import { isOriginInUse } from '../../util/search';
+import { addDynamicListingFieldOptions } from '../../util/dynamicListingFieldOptions';
 import { parse } from '../../util/urlHelpers';
 import { createResourceLocatorString, pathByRouteName } from '../../util/routes';
 import { makeGetListingsByIdSelector } from '../../ducks/marketplaceData.duck';
@@ -94,7 +95,8 @@ export class SearchPageComponent extends Component {
     // (i.e. 'moveend' event in Mapbox and 'bounds_changed' in Google Maps)
     if (viewportBoundsChanged && isSearchPage) {
       const { history, location, config } = this.props;
-      const { listingFields: listingFieldsConfig } = config?.listing || {};
+      const { listingFields } = config?.listing || {};
+      const listingFieldsConfig = addDynamicListingFieldOptions(listingFields);
       const { defaultFilters: defaultFiltersConfig } = config?.search || {};
       const activeListingTypes = config?.listing?.listingTypes.map(config => config.listingType);
       const listingCategories = config.categoryConfiguration.categories;

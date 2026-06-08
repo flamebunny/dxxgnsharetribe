@@ -79,6 +79,62 @@ const redirectAfterDraftUpdate = (listingId, params, tab, marketplaceTabs, histo
   history.push(to);
 };
 
+const hasOwnValue = (values, key) => Object.prototype.hasOwnProperty.call(values || {}, key);
+
+const pickDraftListingFields = (draftValues = {}, listingFields = [], scope = 'public') => {
+  const namespacePrefix = scope === 'public' ? 'pub_' : 'priv_';
+
+  return listingFields.reduce((pickedFields, fieldConfig) => {
+    const { key, scope: fieldScope = 'public' } = fieldConfig || {};
+    const namespacedKey = `${namespacePrefix}${key}`;
+
+    return fieldScope === scope && hasOwnValue(draftValues, namespacedKey)
+      ? { ...pickedFields, [key]: draftValues[namespacedKey] }
+      : pickedFields;
+  }, {});
+};
+
+const pickDraftCategoryFields = (draftValues = {}, categoryKey) => {
+  return [1, 2, 3].reduce((pickedFields, level) => {
+    const key = `${categoryKey}${level}`;
+    return hasOwnValue(draftValues, key) ? { ...pickedFields, [key]: draftValues[key] } : pickedFields;
+  }, {});
+};
+
+const mergeDetailsDraftValues = (updateValues, draftValues, config) => {
+  const listingFields = config?.listing?.listingFields || [];
+  const categoryKey = config?.categoryConfiguration?.key;
+  const titleMaybe = hasOwnValue(draftValues, 'title') ? { title: draftValues.title } : {};
+  const descriptionMaybe = hasOwnValue(draftValues, 'description')
+    ? { description: draftValues.description }
+    : {};
+  const transactionInfo = ['listingType', 'transactionProcessAlias', 'unitType'].reduce(
+    (pickedFields, key) =>
+      hasOwnValue(draftValues, key) ? { ...pickedFields, [key]: draftValues[key] } : pickedFields,
+    {}
+  );
+  const publicDataFromDraft = {
+    ...transactionInfo,
+    ...(categoryKey ? pickDraftCategoryFields(draftValues, categoryKey) : {}),
+    ...pickDraftListingFields(draftValues, listingFields, 'public'),
+  };
+  const privateDataFromDraft = pickDraftListingFields(draftValues, listingFields, 'private');
+
+  return {
+    ...updateValues,
+    ...titleMaybe,
+    ...descriptionMaybe,
+    publicData: {
+      ...publicDataFromDraft,
+      ...(updateValues.publicData || {}),
+    },
+    privateData: {
+      ...privateDataFromDraft,
+      ...(updateValues.privateData || {}),
+    },
+  };
+};
+
 /**
  * A single tab on the EditListingWizard.
  *
@@ -190,7 +246,10 @@ const EditListingWizardTab = props => {
       listingTypes: config.listing.listingTypes,
       onManageDisableScrolling,
       onSubmit: values => {
-        return onCompleteEditListingWizardTab(tab, values);
+        return onCompleteEditListingWizardTab(
+          tab,
+          mergeDetailsDraftValues(values, editListingDetailsDraftValues, config)
+        );
       },
       intl,
       editListingDetailsDraftValues,

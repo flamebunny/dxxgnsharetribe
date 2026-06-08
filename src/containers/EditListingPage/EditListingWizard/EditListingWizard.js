@@ -319,12 +319,18 @@ const tabCompleted = (tab, listing, config) => {
  */
 const tabsActive = (isNew, listing, tabs, config) => {
   return tabs.reduce((acc, tab) => {
-    const previousTabIndex = tabs.findIndex(t => t === tab) - 1;
-    const validTab = previousTabIndex >= 0;
+    const currentTabIndex = tabs.findIndex(t => t === tab);
+    const previousTabs = tabs.slice(0, currentTabIndex);
     const hasListingType = !!listing?.attributes?.publicData?.listingType;
-    const prevTabComletedInNewFlow = tabCompleted(tabs[previousTabIndex], listing, config);
+    const previousTabsCompletedInNewFlow = previousTabs.every(previousTab =>
+      tabCompleted(previousTab, listing, config)
+    );
     const isActive =
-      validTab && !isNew ? hasListingType : validTab && isNew ? prevTabComletedInNewFlow : true;
+      currentTabIndex > 0 && !isNew
+        ? hasListingType
+        : currentTabIndex > 0 && isNew
+        ? previousTabsCompletedInNewFlow
+        : true;
     return { ...acc, [tab]: isActive };
   }, {});
 };
