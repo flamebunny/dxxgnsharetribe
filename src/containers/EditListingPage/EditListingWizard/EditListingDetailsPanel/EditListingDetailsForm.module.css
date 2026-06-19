@@ -209,7 +209,7 @@
 }
 
 .colorsCustomField {
-  width: 280px;
+  width: auto;
 
   >ul {
     max-height: 380px;
@@ -220,13 +220,17 @@
     padding-bottom: 10px;
   }
 
+  @media (--viewportLarge) {  
+    width: 280px;    
+  }
+
 }
 
 .materialsField {
   margin: 0;
   padding: 0;
   border: none;
-  width: 280px;
+  width: auto;
 
 
  >ul {
@@ -236,6 +240,10 @@
   }
 
   margin-bottom: 24px;
+  
+  @media (--viewportLarge) {  
+    width: 280px;    
+  }
 
   @media (--viewportMedium) {
     margin-bottom: 32px;

@@ -55,7 +55,6 @@
 
 .priceBuyerFee {
   margin-bottom: 20px;
-  opacity: 0.5;
 }
 .priceEarningInfo{
   padding: 20px;
@@ -92,7 +91,7 @@
 
 .priceEarningValue{
   border: 1px solid #D8DCE6;
-  color: #AAA;
+  color: #777;
   background: #EEE;
   padding: 3px 12px 3px 12px;
   

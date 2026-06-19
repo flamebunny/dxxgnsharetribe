@@ -44,7 +44,7 @@
   @media (--viewportMedium) {
     padding: 0 0 96px 0;
     gap: 24px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 
   @media (--viewportLarge) {

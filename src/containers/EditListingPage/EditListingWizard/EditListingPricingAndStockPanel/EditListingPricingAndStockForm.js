@@ -264,9 +264,10 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         }
       };
 
-      const buyerPaysValue = earningValue + customerCommissionValue;
+      const priceValue = values.price instanceof Money ? convertMoneyToNumber(values.price) : 0;
+      const buyerPaysValue = priceValue + customerCommissionValue;
       const buyerPaysFormatted = formatCurrencyNumber(buyerPaysValue);
-
+      
       let providerValueObj;
       let customerValueObj;
 
@@ -275,6 +276,7 @@ export const EditListingPricingAndStockFormComponentPage = props => (
         setEarningFormatted(providerValueObj.formattedValue);          
         setEarningValue(providerValueObj.value);
         customerValueObj = currencConvert(newValue, currencyConfig, customerCommissionPercentage, customerCommissionMinimum, 'added');  
+
         setCustomerCommissionFormatted(customerValueObj.formattedValue);          
         setCustomerCommissionValue(customerValueObj.value); 
       };
