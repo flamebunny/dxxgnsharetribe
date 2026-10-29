@@ -47,7 +47,6 @@ const EmailVerificationForm = props => (
       const verifyEmail = (
         <div className={css.root}>
           <div>
-            <IconEmailAttention className={css.modalIcon} />
             <Heading as="h1" rootClassName={css.modalTitle}>
               <FormattedMessage id="EmailVerificationForm.verifyEmailAddress" />
             </Heading>
@@ -80,8 +79,7 @@ const EmailVerificationForm = props => (
 
       const alreadyVerified = (
         <div className={css.root}>
-          <div>
-            <IconEmailSuccess className={css.modalIcon} />
+          <div>            
             <Heading as="h1" rootClassName={css.modalTitle}>
               <FormattedMessage id="EmailVerificationForm.successTitle" values={{ name }} />
             </Heading>
@@ -102,8 +100,7 @@ const EmailVerificationForm = props => (
       const currentEmail = <strong>{email}</strong>;
       const alreadyVerifiedButErrorReturned = (
         <div className={css.root}>
-          <div>
-            <IconEmailSuccess className={css.modalIcon} />
+          <div>            
             <Heading as="h1" rootClassName={css.modalTitle}>
               <FormattedMessage id="EmailVerificationForm.noPendingTitle" values={{ name }} />
             </Heading>

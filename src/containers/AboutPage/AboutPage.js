@@ -1,5 +1,6 @@
 import React from 'react';
 import loadable from '@loadable/component';
+import { useLocation } from 'react-router-dom';
 
 import { bool, object } from 'prop-types';
 import { compose } from 'redux';
@@ -14,6 +15,16 @@ import { ASSET_NAME, heroimgcustomSectionId, articleaboutSectionId, articleabout
 
 import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/SectionHeroImgCustom';
 import SectionArticleAbout from '../PageBuilder/SectionBuilder/SectionArticleAbout';
+
+import {
+  LayoutSideNavigationFyi,
+} from '../../components';
+
+import TopbarContainer from '../TopbarContainer/TopbarContainer';
+import FooterContainer from '../FooterContainer/FooterContainer';
+import NotFoundPage from '../NotFoundPage/NotFoundPage';
+
+import css from './AboutPage.module.css';
 
 const PageBuilder = loadable(() =>
   import(/* webpackChunkName: "PageBuilder" */ '../PageBuilder/PageBuilder')
@@ -36,11 +47,40 @@ const SectionBuilder = loadable(
 
 // This "content-only" component can be used in modals etc.
 const AboutContent = props => {
-  const { inProgress, error, data } = props;
+  const { 
+    pageAssetsData, 
+    inProgress, 
+    error, 
+    data,
+    params,
+    providerNotificationCount = 0,
+  } = props;
 
   if (inProgress) {
     return null;
   }
+
+  const location = useLocation();
+
+  const pageMap = {
+    '/about': 'AboutPage',
+    '/aboutquestionnaire': 'AboutQuestionnairePage',
+  };
+
+  const assetPageMap = {
+    '/about': 'aboutOverview',
+    '/aboutquestionnaire': 'aboutQuestionnaire',
+  };  
+
+  const aboutNavProps = {
+    currentPage: pageMap[`${location.pathname}`] || '',
+  };
+  
+  const assetName = assetPageMap[`${location.pathname}`];
+
+  // Construct custom page data
+  const pageData = pageAssetsData?.[assetName]?.data;
+  const pageMetaProps = getMetadata(pageData);
 
   // We don't want to add h1 heading twice to the HTML (SEO issue).
   // Modal's header is mapped as h2
@@ -51,19 +91,44 @@ const AboutContent = props => {
   const CustomHeading1 = props => <H1 as="h2" {...props} />;
 
   const hasData = error === null && data;
-  const sectionsData = hasData ? data : fallbackSections;
+  const sectionsData = hasData ? data : fallbackSections;  
 
   return (
-    <SectionBuilder
-      {...sectionsData}
-      options={{
-        fieldComponents: {
-          heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
-        },
-        isInsideContainer: true,
-      }}
-    />
+    <>
+    <StaticPage {...pageMetaProps}>
+        <LayoutSideNavigationFyi
+          topbar={
+            <>
+              <TopbarContainer
+                desktopClassName={css.desktopTopbar}
+                mobileClassName={css.mobileTopbar}
+              />
+             
+            </>
+          }
+          sideNav={null}
+          useAccountSettingsNav
+          accountSettingsNavProps={aboutNavProps}
+          footer={<FooterContainer />}
+        >
+          <div className={css.content}>
+            
+            <SectionBuilder
+              {...sectionsData}
+              options={{
+                fieldComponents: {
+                  heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
+                },
+                isInsideContainer: true,
+              }}
+            /> 
+
+          </div>
+        </LayoutSideNavigationFyi>
+      </StaticPage>    
+    </>   
   );
+
 };
 
 // Presentational component for AboutPage

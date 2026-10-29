@@ -35,7 +35,6 @@ const EmailVerificationInfo = props => {
         </span>
         <IconClose rootClassName={css.closeIcon} />
       </NamedLink>
-      <IconEmailSent className={css.modalIcon} />
       <Heading as="h1" rootClassName={css.modalTitle}>
         <FormattedMessage id="AuthenticationPage.verifyEmailTitle" values={{ name }} />
       </Heading>

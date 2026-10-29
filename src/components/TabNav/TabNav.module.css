@@ -61,8 +61,7 @@
     padding-bottom: 0;
 
     &:hover {
-      background-image: url("data:image/svg+xml;utf8,<svg width='4' height='32' viewBox='0 0 4 32' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h4v32H0z' fill='%234a4a4a' fill-rule='evenodd'/></svg>");
-      background-position: right center;
+
     }
   }
 }
@@ -70,17 +69,13 @@
 .selectedLink {
   border-bottom-color: var(--colorBlack);
   color: var(--colorBlack);
-  font-weight: var(--fontWeightBold);
   text-decoration: none;
 
   @media (--viewportLarge) {
-    width: var(--TabNav_linkWidth);
-    background-image: url("data:image/svg+xml;utf8,<svg width='4' height='32' viewBox='0 0 4 32' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h4v32H0z' fill='%23000' fill-rule='evenodd'/></svg>");
-    background-position: right center;
+    width: var(--TabNav_linkWidth);    
 
     &:hover {
-      background-image: url("data:image/svg+xml;utf8,<svg width='4' height='32' viewBox='0 0 4 32' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h4v32H0z' fill='%234a4a4a' fill-rule='evenodd'/></svg>");
-      background-position: right center;
+
     }
   }
 }

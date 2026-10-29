@@ -2,7 +2,6 @@ import React from 'react';
 import loadable from '@loadable/component';
 import { useLocation } from 'react-router-dom';
 
-
 import { bool, object } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';

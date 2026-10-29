@@ -310,6 +310,7 @@
   color: var(--colorBlack);
   position: relative;
 
+  /*
   & .menuItemBorder {
     width: 6px;
     background-color: var(--colorBlack);
@@ -320,4 +321,5 @@
       background-color: var(--colorBlack);
     }
   }
+    */
 }

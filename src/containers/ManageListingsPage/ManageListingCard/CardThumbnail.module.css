@@ -111,8 +111,6 @@
   }
 
   &:hover {
-    transform: scale(1.02);
-    box-shadow: var(--boxShadowListingCard);
 
     .alternativeActionText {
       display: unset;

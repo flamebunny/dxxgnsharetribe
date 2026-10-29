@@ -24,11 +24,12 @@
 
   @media (--viewportMedium) {
     margin-bottom: 0;
-
+/*
     &:hover {
       transform: scale(1.02);
       box-shadow: var(--boxShadowListingCard);
     }
+*/
   }
 }
 

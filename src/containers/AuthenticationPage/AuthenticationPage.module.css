@@ -208,6 +208,7 @@
 /* Title of the modal */
 .modalTitle {
   composes: marketplaceModalTitleStyles from global;
+  font-weight: bold;
 }
 
 /* Paragraph for the Modal */

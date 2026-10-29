@@ -141,6 +141,22 @@ const LayoutWrapperFyiSideNav = props => {
         name: 'FyiReturnsPage',
       },
     },
+    {
+      text: <FormattedMessage id="LayoutWrapperFyiSideNav.aboutPageTabTitle" />,
+      selected: currentPage === 'AboutPage',
+      id: 'AboutPageTab',
+      linkProps: {
+        name: 'AboutPage',
+      },
+    },
+    {
+      text: <FormattedMessage id="LayoutWrapperAboutSideNav.aboutQuestionnairePageTabTitle" />,
+      selected: currentPage === 'AboutQuestionnairePage',
+      id: 'AboutQuestionnairePageTab',
+      linkProps: {
+        name: 'AboutQuestionnairePage',
+      },
+    },
   ];
 
   return <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;

@@ -16,7 +16,6 @@
   padding-top: 24px;
   padding-bottom: 24px;
   min-width: 300px;
-  border-radius: var(--borderRadiusMedium);
 }
 
 /* left animated "border" like hover element */
@@ -32,17 +31,19 @@
 
 /* left static border for selected element */
 .menuItemBorderSelected {
+  /*
   position: absolute;
   top: 2px;
   left: 0px;
   height: calc(100% - 7px);
   width: 6px;
   background-color: var(--colorBlack);
+  */
 }
 
 .menuItem {
   composes: marketplaceListingAttributeFontStyles from global;
-  color: var(--colorGrey700);
+  color: var(--colorBlack);
 
   /* Layout */
   position: relative;
@@ -54,7 +55,7 @@
   outline: none;
   text-align: left;
   border: none;
-
+  text-transform: uppercase;
   cursor: pointer;
 
   &:focus,
@@ -76,41 +77,46 @@
 }
 
 .sortLabel {
-  display: inline-flex;
+   display: inline-flex;
   align-items: center;
   gap: 12px;
   width: auto;
-  height: 35px;
+  height: auto;
   min-height: 35px;
 
-  padding: 0 18px;
+  padding: 0;
+  margin: 0;
 
   transition: all var(--transitionStyleButton);
   cursor: pointer;
 
   /* Font */
-  font-weight: var(--fontWeightSemiBold);
-  font-size: 13px;
+  font-weight: var(--fontWeightRegular);
+  font-size: 14px;
   line-height: 18px;
-  letter-spacing: 0.2px;
 
   /* Button text styles */
   /* Default button text is centered without decorations */
   text-align: center;
-  text-decoration: none;
+  text-decoration: line-through;
+  text-transform: uppercase;
 
   /* Button borders */
-  border: 1px solid var(--colorGrey100);
-  border-radius: var(--borderRadiusMedium);
+  
 
   background-color: var(--colorWhite);
 
+  /* transparent sort */
+  border: none;
+
+  padding-right: 30px;
+  
   &:focus,
   &:hover {
     outline: none;
-    box-shadow: var(--boxShadowFilterButton);
+    /* box-shadow: var(--boxShadowFilterButton); */
     text-decoration: none;
-    border-color: var(--colorGrey300);
+
   }
 
   &:disabled {
@@ -125,13 +131,18 @@
     padding: var(--marketplaceButtonSmallDesktopPadding);
     margin: 0;
 
-    font-weight: var(--fontWeightMedium);
-    font-size: 13px;
-    line-height: 20px;
+    font-weight: var(--fontWeightRegular);
+    font-size: 14px;
+    line-height: 18px;
+    padding-right: 30px;
 
     &:hover,
     &:focus {
-      border-color: transparent;
+      border-color: var(--colorBlack);
     }
+  }
+
+  svg {
+    display: none;
   }
 }

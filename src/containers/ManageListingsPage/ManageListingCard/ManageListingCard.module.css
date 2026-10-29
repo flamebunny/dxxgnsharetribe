@@ -18,11 +18,12 @@
   width: 100%;
   position: relative;
   transition: var(--transitionStyleButton);
-
+/*
   &:hover {
     transform: scale(1.02);
     box-shadow: var(--boxShadowListingCard);
   }
+    */
 }
 
 .clickWrapperClickable {
