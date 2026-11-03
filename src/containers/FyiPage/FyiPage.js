@@ -165,7 +165,7 @@ const FyiPageComponent = props => {
           </div>
         </LayoutSideNavigationFyi>
       </StaticPage>    
-    </>   
+    </>
   );
 };
 

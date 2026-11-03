@@ -85,7 +85,7 @@
   composes: a from global;
   color: var(--colorGrey700);
   font-weight: var(--fontWeightMedium);
-  text-decoration: underline;
+  text-decoration: line-through;
 
   &:hover {
     text-decoration: none;

@@ -68,7 +68,7 @@
   composes: marketplaceModalHelperLink from global;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration: line-through;
     cursor: pointer;
   }
 }

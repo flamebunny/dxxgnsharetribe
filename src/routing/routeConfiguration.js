@@ -407,6 +407,12 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       component: AboutPage,
       loadData: pageDataLoadingAPI.AboutPage.loadData,
     },
+      {
+      path: '/aboutquestionnaire',
+      name: 'AboutQuestionnairePage',
+      component: AboutPage,
+      loadData: pageDataLoadingAPI.AboutPage.loadDataQuestionnaire,
+    },
     {
       path: '/fyi',
       name: 'FyiPage',

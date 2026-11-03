@@ -10,6 +10,8 @@ import { camelize } from '../../util/string';
 import { propTypes } from '../../util/types';
 
 import { H1 } from '../PageBuilder/Primitives/Heading';
+import StaticPage from '../PageBuilder/StaticPage';
+import { validProps } from '../PageBuilder/Field';
 import FallbackPage, { fallbackSections } from './FallbackPage';
 import { ASSET_NAME, heroimgcustomSectionId, articleaboutSectionId, articleaboutSection2Id, articleaboutSection3Id, articleaboutSection4Id } from './AboutPage.duck';
 
@@ -17,7 +19,7 @@ import SectionHeroImgCustom from '../../containers/PageBuilder/SectionBuilder/Se
 import SectionArticleAbout from '../PageBuilder/SectionBuilder/SectionArticleAbout';
 
 import {
-  LayoutSideNavigationFyi,
+  LayoutSideNavigationAbout,
 } from '../../components';
 
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
@@ -36,7 +38,25 @@ const articleaboutSectionType2 = 'articleabout2';
 const articleaboutSectionType3 = 'articleabout3';
 const articleaboutSectionType4 = 'articleabout4';
 
+const getMetadata = pageData => {
+  const meta = pageData?.meta || {};
+  const { pageTitle, pageDescription, socialSharing } = meta;
+  const title = validProps(pageTitle)?.content;
+  const description = validProps(pageDescription)?.content;
+  const openGraph = validProps(socialSharing);
 
+  return {
+    title,
+    description,
+    schema: {
+      '@context': 'http://schema.org',
+      '@type': 'WebPage',
+      description,
+      name: title,
+    },
+    socialSharing: openGraph,
+  };
+};
 
 const SectionBuilder = loadable(
   () => import(/* webpackChunkName: "SectionBuilder" */ '../PageBuilder/PageBuilder'),
@@ -45,9 +65,9 @@ const SectionBuilder = loadable(
   }
 );
 
-// This "content-only" component can be used in modals etc.
-const AboutContent = props => {
-  const { 
+// Presentational component for AboutPage
+const AboutPageComponent = props => {
+const { 
     pageAssetsData, 
     inProgress, 
     error, 
@@ -68,7 +88,7 @@ const AboutContent = props => {
   };
 
   const assetPageMap = {
-    '/about': 'aboutOverview',
+    '/about': 'about',
     '/aboutquestionnaire': 'aboutQuestionnaire',
   };  
 
@@ -92,52 +112,6 @@ const AboutContent = props => {
 
   const hasData = error === null && data;
   const sectionsData = hasData ? data : fallbackSections;  
-
-  return (
-    <>
-    <StaticPage {...pageMetaProps}>
-        <LayoutSideNavigationFyi
-          topbar={
-            <>
-              <TopbarContainer
-                desktopClassName={css.desktopTopbar}
-                mobileClassName={css.mobileTopbar}
-              />
-             
-            </>
-          }
-          sideNav={null}
-          useAccountSettingsNav
-          accountSettingsNavProps={aboutNavProps}
-          footer={<FooterContainer />}
-        >
-          <div className={css.content}>
-            
-            <SectionBuilder
-              {...sectionsData}
-              options={{
-                fieldComponents: {
-                  heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
-                },
-                isInsideContainer: true,
-              }}
-            /> 
-
-          </div>
-        </LayoutSideNavigationFyi>
-      </StaticPage>    
-    </>   
-  );
-
-};
-
-// Presentational component for AboutPage
-const AboutPageComponent = props => {
-
-  const { pageAssetsData, inProgress, error } = props;
-
-  // Construct custom page data
-  const pageData = pageAssetsData?.[camelize(ASSET_NAME)]?.data;
 
   // HeroImgCustom Section
   const heroimgcustomSectionIdx = pageData?.sections.findIndex(s => s.sectionId === heroimgcustomSectionId);
@@ -231,21 +205,47 @@ const AboutPageComponent = props => {
     : pageData;
 
   return (
-    <PageBuilder
-      pageAssetsData={customPageData}
-      options={{
-        sectionComponents: {       
-          [heroimgcustomSectionType]: { component: SectionHeroImgCustom },
-          [articleaboutSectionType]: { component: SectionArticleAbout }, 
-          [articleaboutSectionType2]: { component: SectionArticleAbout }, 
-          [articleaboutSectionType3]: { component: SectionArticleAbout }, 
-          [articleaboutSectionType4]: { component: SectionArticleAbout }, 
-        },
-      }}
-      inProgress={inProgress}
-      error={error}
-      fallbackPage={<FallbackPage />}
-    />   
+    <>
+    <StaticPage {...pageMetaProps}>
+        <LayoutSideNavigationAbout
+          topbar={
+            <>
+              <TopbarContainer
+                desktopClassName={css.desktopTopbar}
+                mobileClassName={css.mobileTopbar}
+              />
+             
+            </>
+          }
+          sideNav={null}
+          useAccountSettingsNav
+          accountSettingsNavProps={aboutNavProps}
+          footer={<FooterContainer />}
+        >
+          <div className={css.content}>
+            
+            <SectionBuilder
+              {...customPageData}
+              options={{
+                fieldComponents: {
+                  heading1: { component: CustomHeading1, pickValidProps: exposeContentAsChildren },
+                },
+                isInsideContainer: true,
+                sectionComponents: {       
+                  [heroimgcustomSectionType]: { component: SectionHeroImgCustom },
+                  [articleaboutSectionType]: { component: SectionArticleAbout }, 
+                  [articleaboutSectionType2]: { component: SectionArticleAbout }, 
+                  [articleaboutSectionType3]: { component: SectionArticleAbout }, 
+                  [articleaboutSectionType4]: { component: SectionArticleAbout }, 
+                },
+              }}
+            />          
+
+          </div>
+        </LayoutSideNavigationAbout>
+      </StaticPage>    
+    </>
+    
   );
 };
 
@@ -269,6 +269,6 @@ const mapStateToProps = state => {
 const AboutPage = compose(connect(mapStateToProps))(AboutPageComponent);
 
 const ABOUT_ASSET_NAME = ASSET_NAME;
-export { ABOUT_ASSET_NAME, AboutPageComponent, AboutContent };
+export { ABOUT_ASSET_NAME, AboutPageComponent };
 
 export default AboutPage;

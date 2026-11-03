@@ -38,6 +38,7 @@
     stroke: var(--colorBlack);
     /* stroke: var(--marketplaceColor); */
     stroke-width: 0px;
+    fill: var(--colorBlack);
   }
 
   /* Display the "check" when checked */
@@ -96,7 +97,7 @@
 
 .checked {
 
-  fill: var(--colorBlack);
+  /* fill: var(--colorBlack); */
   /* fill: var(--marketplaceColor); */
 }
 .pathchecked {
